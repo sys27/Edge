@@ -5,6 +5,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edge", "Edge\Edge.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edge.Tests", "Edge.Tests\Edge.Tests.csproj", "{514F55FF-1EB2-4077-A1B5-13F03E14512F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{06E40E40-C1B2-45BA-9824-E9463572BFD8}"
+	ProjectSection(SolutionItems) = preProject
+		MainView.edge = MainView.edge
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
