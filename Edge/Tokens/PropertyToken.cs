@@ -13,6 +13,20 @@ namespace Edge.Tokens
             this.property = property;
         }
 
+        public override bool Equals(object obj)
+        {
+            var token = obj as PropertyToken;
+            if (token != null && token.property == this.property)
+                return true;
+
+            return false;
+        }
+
+        public override string ToString()
+        {
+            return "Property: " + property;
+        }
+
         public string Property
         {
             get

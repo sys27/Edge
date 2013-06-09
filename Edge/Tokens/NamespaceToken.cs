@@ -2,21 +2,21 @@
 
 namespace Edge.Tokens
 {
-   
-    public class SymbolToken : IToken
+
+    public class NamespaceToken : IToken
     {
 
-        private char symbol;
+        private string ns;
 
-        public SymbolToken(char symbol)
+        public NamespaceToken(string ns)
         {
-            this.symbol = symbol;
+            this.ns = ns;
         }
 
         public override bool Equals(object obj)
         {
-            var token = obj as SymbolToken;
-            if (token != null && token.symbol == this.symbol)
+            var token = obj as NamespaceToken;
+            if (token != null && token.ns == this.ns)
                 return true;
 
             return false;
@@ -24,14 +24,14 @@ namespace Edge.Tokens
 
         public override string ToString()
         {
-            return "Symbol: " + symbol;
+            return "Namespace: " + ns;
         }
 
-        public char Symbol
+        public string Namespace
         {
             get
             {
-                return symbol;
+                return ns;
             }
         }
 

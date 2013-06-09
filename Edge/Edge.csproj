@@ -43,11 +43,13 @@
     <Compile Include="ILexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tokens\IToken.cs" />
+    <Compile Include="Tokens\NamespaceToken.cs" />
     <Compile Include="Tokens\NumberToken.cs" />
     <Compile Include="Tokens\PropertyToken.cs" />
     <Compile Include="Tokens\StringToken.cs" />
     <Compile Include="Tokens\SymbolToken.cs" />
     <Compile Include="Tokens\TypeToken.cs" />
+    <Compile Include="Tokens\UsingToken.cs" />
     <Compile Include="Tokens\WordToken.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
