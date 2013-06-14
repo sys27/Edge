@@ -31,13 +31,13 @@ Window {
             Text: @tb.Text,                     // ?simple binding
                                                 // ?full binding
                                                 // Text: @(Path=Text, ElementName=tb, Convertor=...),
-            Column: 1,                          // ?как использовать привязанные свойства
+            Grid.Column: 1,                     // ?как использовать вложенные свойства
             Style: {                            // +автоматичесвок использование Style, т.е. {...}
                 HorizontalAlignment: Center     // использование краткой записи, без указания имени перечесления
             }
         }
         
-    }
+    },
     
     Resources: [                                // ?как организовать работу с ресурсами приложения,
                                                 // окна или др. эл. управления
