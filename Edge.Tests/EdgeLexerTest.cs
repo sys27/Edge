@@ -20,14 +20,64 @@ namespace Edge.Tests
             CollectionAssert.AreEqual(expected, tokens);
         }
 
+        private void TestFail(string text)
+        {
+            lexer.Tokenize(text);
+        }
+
         [TestMethod]
         public void IdTest()
         {
-            TestTokens("Window#window1", new List<IToken>()
+            TestTokens("#window", new List<IToken>()
+            {
+                new SymbolToken('#'),
+                new IdToken("window")
+            });
+        }
+
+        [TestMethod]
+        public void IdWithNumberTest()
+        {
+            TestTokens("#window1", new List<IToken>()
+            {
+                new SymbolToken('#'),
+                new IdToken("window1")
+            });
+        }
+
+        [TestMethod]
+        public void TypeAndIdTest()
+        {
+            TestTokens("Window#window", new List<IToken>()
             {
                 new TypeToken("Window"),
                 new SymbolToken('#'),
-                new IdToken("window1")
+                new IdToken("window")
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeLexerException))]
+        public void TypeAndSpaceIdTest()
+        {
+            TestFail("Window# window");
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeLexerException))]
+        public void TypeAndNumberIdTest()
+        {
+            TestFail("Window#1window");
+        }
+
+        [TestMethod]
+        public void TypeAndBracketTest()
+        {
+            TestTokens("Window {}", new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new SymbolToken('}')
             });
         }
 
@@ -85,7 +135,7 @@ namespace Edge.Tests
         {
             TestTokens("WindowState: Maximized", new List<IToken>()
             {
-                new PropertyToken("Width"),
+                new PropertyToken("WindowState"),
                 new SymbolToken(':'),
                 new WordToken("Maximized")
             });

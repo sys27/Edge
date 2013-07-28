@@ -9,6 +9,13 @@ namespace Edge
     public class EdgeLexer : ILexer
     {
 
+        private readonly HashSet<char> brackets;
+
+        public EdgeLexer()
+        {
+            brackets = new HashSet<char>() { '{', '}', '[', ']', '(', ')' };
+        }
+
         public IEnumerable<IToken> Tokenize(string text)
         {
             var tokens = new List<IToken>();
@@ -16,6 +23,74 @@ namespace Edge
             for (int i = 0; i < text.Length; )
             {
                 char peek = text[i];
+
+                if (peek == ' ' || peek == '\n' || peek == '\r' || peek == '\t')
+                {
+                    i++;
+                    continue;
+                }
+                if (char.IsLetter(peek))
+                {
+                    int length = 1;
+
+                    for (int j = i + 1; j < text.Length && char.IsLetter(text[j]); j++)
+                        length++;
+
+                    string word = text.Substring(i, length);
+                    i += length;
+
+                    if (i < text.Length)
+                    {
+                        if (text[i] == '#')
+                        {
+                            tokens.Add(new TypeToken(word));
+                        }
+                        else if (text[i] == ':')
+                        {
+                            tokens.Add(new PropertyToken(word));
+                        }
+                        else if (word == "using")
+                        {
+                            tokens.Add(new UsingToken());
+                        }
+                        else
+                        {
+                            tokens.Add(new WordToken(word));
+                        }
+                    }
+                    else
+                    {
+                        tokens.Add(new WordToken(word));
+                    }
+
+                    continue;
+                }
+                if (peek == '#')
+                {
+                    int length = 0;
+
+                    for (int j = i + 1; j < text.Length && (char.IsLetter(text[j]) || text[j] == '_'); j++)
+                        length++;
+
+                    if (length == 0)
+                        // todo: error message
+                        throw new EdgeLexerException();
+
+                    string word = text.Substring(i + 1, length);
+                    i += length + 1;
+
+                    tokens.Add(new SymbolToken('#'));
+                    tokens.Add(new IdToken(word));
+
+                    continue;
+                }
+                if (peek == ':' || brackets.Contains(peek) || peek == ';')
+                {
+                    tokens.Add(new SymbolToken(peek));
+                    i++;
+
+                    continue;
+                }
                 if (peek == '"')
                 {
                     int length = 0;

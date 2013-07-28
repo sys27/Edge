@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EdgeLexer.cs" />
+    <Compile Include="EdgeLexerException.cs" />
     <Compile Include="ILexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tokens\IdToken.cs" />
