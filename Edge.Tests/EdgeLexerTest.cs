@@ -50,6 +50,15 @@ namespace Edge.Tests
         }
 
         [TestMethod]
+        public void StringTest()
+        {
+            TestTokens("\"Hello\"", new List<IToken>()
+            {
+                new StringToken("Hello")
+            });
+        }
+
+        [TestMethod]
         public void PropertyTest()
         {
             TestTokens("Width: 1024", new List<IToken>()
@@ -61,24 +70,24 @@ namespace Edge.Tests
         }
 
         [TestMethod]
-        public void WordTest()
-        {
-            TestTokens("WindowState: Maximized", new List<IToken>()
-            {
-                new PropertyToken("Width"),
-                new SymbolToken(':'),
-                new WordToken("Maximized")
-            });
-        }
-
-        [TestMethod]
-        public void StringTest()
+        public void PropertyStringTest()
         {
             TestTokens("Title: \"Hello\"", new List<IToken>()
             {
                 new PropertyToken("Title"),
                 new SymbolToken(':'),
                 new StringToken("Hello")
+            });
+        }
+
+        [TestMethod]
+        public void PropertyWordTest()
+        {
+            TestTokens("WindowState: Maximized", new List<IToken>()
+            {
+                new PropertyToken("Width"),
+                new SymbolToken(':'),
+                new WordToken("Maximized")
             });
         }
 
