@@ -152,6 +152,27 @@ namespace Edge.Tests
             });
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void NullStr()
+        {
+            TestFail(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void EmptyStr()
+        {
+            TestFail(string.Empty);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void WhiteSpaceStr()
+        {
+            TestFail("              ");
+        }
+
     }
 
 }

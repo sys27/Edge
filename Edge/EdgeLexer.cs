@@ -16,8 +16,55 @@ namespace Edge
             brackets = new HashSet<char>() { '{', '}', '[', ']', '(', ')' };
         }
 
+        //private bool IsBalanced(string str)
+        //{
+        //    int roundBrackets = 0;
+        //    int squareBrackets = 0;
+        //    int curlyBrackets = 0;
+        //    int quotes = 0;
+
+        //    foreach (var item in str)
+        //    {
+        //        switch (item)
+        //        {
+        //            case '{':
+        //                curlyBrackets++;
+        //                break;
+        //            case '}':
+        //                curlyBrackets--;
+        //                break;
+        //            case '(':
+        //                roundBrackets++;
+        //                break;
+        //            case ')':
+        //                roundBrackets--;
+        //                break;
+        //            case '[':
+        //                squareBrackets++;
+        //                break;
+        //            case ']':
+        //                squareBrackets--;
+        //                break;
+        //            case '"':
+        //                quotes++;
+        //                break;
+        //        }
+
+        //        if (curlyBrackets < 0 || roundBrackets < 0 || squareBrackets < 0)
+        //            return false;
+        //    }
+
+        //    return curlyBrackets == 0 || roundBrackets == 0 || squareBrackets == 0 || quotes % 2 == 0;
+        //}
+
         public IEnumerable<IToken> Tokenize(string text)
         {
+            if (string.IsNullOrWhiteSpace(text))
+                throw new ArgumentNullException("text");
+            //if (!IsBalanced(text))
+            //    // todo: error message
+            //    throw new EdgeLexerException();
+
             var tokens = new List<IToken>();
 
             for (int i = 0; i < text.Length; )
@@ -44,32 +91,47 @@ namespace Edge
                         if (text[i] == '#')
                         {
                             tokens.Add(new TypeToken(word));
+                            continue;
+                        }
+                        else if (text[i] == ' ')
+                        {
+                            do
+                                i++;
+                            while (text[i] == ' ');
+
+                            if (brackets.Contains(text[i]))
+                            {
+                                tokens.Add(new TypeToken(word));
+                                continue;
+                            }
                         }
                         else if (text[i] == ':')
                         {
                             tokens.Add(new PropertyToken(word));
+                            continue;
                         }
                         else if (word == "using")
                         {
                             tokens.Add(new UsingToken());
+                            continue;
                         }
-                        else
-                        {
-                            tokens.Add(new WordToken(word));
-                        }
-                    }
-                    else
-                    {
-                        tokens.Add(new WordToken(word));
                     }
 
+                    tokens.Add(new WordToken(word));
                     continue;
                 }
                 if (peek == '#')
                 {
                     int length = 0;
 
-                    for (int j = i + 1; j < text.Length && (char.IsLetter(text[j]) || text[j] == '_'); j++)
+                    i++;
+                    if (i < text.Length && (char.IsLetter(text[i]) || text[i] == '_'))
+                        length++;
+                    else
+                        // todo: error message
+                        throw new EdgeLexerException();
+
+                    for (int j = i + 2; j < text.Length && (char.IsLetter(text[j]) || char.IsDigit(text[j]) || text[j] == '_'); j++)
                         length++;
 
                     if (length == 0)
