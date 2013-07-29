@@ -93,24 +93,25 @@ namespace Edge
                             tokens.Add(new TypeToken(word));
                             continue;
                         }
-                        else if (text[i] == ' ')
-                        {
-                            do
-                                i++;
-                            while (text[i] == ' ');
-
-                            if (brackets.Contains(text[i]))
-                            {
-                                tokens.Add(new TypeToken(word));
-                                continue;
-                            }
-                        }
-                        else if (text[i] == ':')
+                        if (text[i] == ':')
                         {
                             tokens.Add(new PropertyToken(word));
                             continue;
                         }
-                        else if (word == "using")
+
+                        if (text[i] == ' ')
+                        {
+                            do
+                                i++;
+                            while (text[i] == ' ');
+                        }
+                        if (brackets.Contains(text[i]))
+                        {
+                            tokens.Add(new TypeToken(word));
+                            continue;
+                        }
+                        
+                        if (word == "using")
                         {
                             tokens.Add(new UsingToken());
                             continue;
@@ -146,7 +147,7 @@ namespace Edge
 
                     continue;
                 }
-                if (peek == ':' || brackets.Contains(peek) || peek == ';')
+                if (peek == ':' || brackets.Contains(peek) || peek == ';' || peek == '.' || peek == ',')
                 {
                     tokens.Add(new SymbolToken(peek));
                     i++;

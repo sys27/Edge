@@ -147,8 +147,25 @@ namespace Edge.Tests
             TestTokens("using System.Windows;", new List<IToken>()
             {
                 new UsingToken(),
-                new NamespaceToken("System.Windows"),
+                new WordToken("System"),
+                new SymbolToken('.'),
+                new WordToken("Windows"),
                 new SymbolToken(';')
+            });
+        }
+
+        [TestMethod]
+        public void PropertiesTest()
+        {
+            TestTokens("Width: 100,\r\nWindowState: Maximized", new List<IToken>()
+            {
+                new PropertyToken("Width"),
+                new SymbolToken(':'),
+                new NumberToken(100),
+                new SymbolToken(','),
+                new PropertyToken("WindowState"),
+                new SymbolToken(':'),
+                new WordToken("Maximized")
             });
         }
 
