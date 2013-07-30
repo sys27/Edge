@@ -24,10 +24,12 @@ namespace Edge
     {
 
         private readonly HashSet<char> brackets;
+        private readonly HashSet<char> symbols;
 
         public EdgeLexer()
         {
             brackets = new HashSet<char>() { '{', '}', '[', ']', '(', ')' };
+            symbols = new HashSet<char>() { ':', ';', '.', ',', '@' };
         }
 
         //private bool IsBalanced(string str)
@@ -124,7 +126,7 @@ namespace Edge
                             tokens.Add(new TypeToken(word));
                             continue;
                         }
-                        
+
                         if (word == "using")
                         {
                             tokens.Add(new UsingToken());
@@ -161,7 +163,7 @@ namespace Edge
 
                     continue;
                 }
-                if (peek == ':' || brackets.Contains(peek) || peek == ';' || peek == '.' || peek == ',')
+                if (brackets.Contains(peek) || symbols.Contains(peek))
                 {
                     tokens.Add(new SymbolToken(peek));
                     i++;

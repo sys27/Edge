@@ -170,6 +170,20 @@ namespace Edge.Tests
         }
 
         [TestMethod]
+        public void ShortBindingTest()
+        {
+            TestTokens("Title: @tb.Text", new List<IToken>()
+            {
+                new PropertyToken("Title"),
+                new SymbolToken(':'),
+                new SymbolToken('@'),
+                new WordToken("tb"),
+                new SymbolToken('.'),
+                new WordToken("Text")
+            });
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void NullStr()
         {
