@@ -71,13 +71,36 @@ namespace Edge.Tests
         }
 
         [TestMethod]
-        public void TypeAndBracketTest()
+        public void TypeAndCurlyBracketTest()
         {
             TestTokens("Window {}", new List<IToken>()
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
                 new SymbolToken('}')
+            });
+        }
+
+        [TestMethod]
+        public void TypeAndRoundBracketTest()
+        {
+            TestTokens("BitmapImage(\"Icon.ico\")", new List<IToken>()
+            {
+                new TypeToken("BitmapImage"),
+                new SymbolToken('('),
+                new StringToken("Icon.ico"),
+                new SymbolToken(')')
+            });
+        }
+
+        [TestMethod]
+        public void TypeAndSquareBracketTest()
+        {
+            TestTokens("TextBox []", new List<IToken>()
+            {
+                new TypeToken("TextBox"),
+                new SymbolToken('['),
+                new SymbolToken(']')
             });
         }
 
