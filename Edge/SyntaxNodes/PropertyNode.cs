@@ -4,13 +4,13 @@ using System.Reflection;
 namespace Edge.SyntaxNodes
 {
     
-    public class PropertyNode<T> : INode
+    public class PropertyNode : INode
     {
 
         private PropertyInfo propertyInfo;
-        private T value;
+        private object value;
 
-        public PropertyNode(PropertyInfo propertyInfo, T value)
+        public PropertyNode(PropertyInfo propertyInfo, object value)
         {
             this.propertyInfo = propertyInfo;
             this.value = value;
@@ -24,7 +24,7 @@ namespace Edge.SyntaxNodes
             }
         }
 
-        public T Value
+        public object Value
         {
             get
             {
