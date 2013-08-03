@@ -42,7 +42,7 @@ namespace Edge
             throw new NotImplementedException();
         }
 
-        public RootNode Parse(IEnumerable<IToken> tokens)
+        public RootNode Parse(string text)
         {
             throw new NotImplementedException();
         }

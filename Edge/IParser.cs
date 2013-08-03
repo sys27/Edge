@@ -9,7 +9,7 @@ namespace Edge
     public interface IParser
     {
 
-        RootNode Parse(IEnumerable<IToken> tokens);
+        RootNode Parse(string text);
 
     }
 
