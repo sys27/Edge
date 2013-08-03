@@ -11,6 +11,8 @@ namespace Edge
 
         private ILexer lexer;
 
+        private IEnumerable<IToken> tokens;
+
         public EdgeParser()
             : this(new EdgeLexer())
         {
@@ -24,7 +26,10 @@ namespace Edge
 
         private RootNode Root()
         {
-            throw new NotImplementedException();
+            var namespaces = Namespaces();
+            var obj = Object();
+
+            return new RootNode(obj, namespaces);
         }
 
         private IEnumerable<NamespaceNode> Namespaces()
@@ -44,6 +49,11 @@ namespace Edge
 
         public RootNode Parse(string text)
         {
+            if (string.IsNullOrWhiteSpace(text))
+                throw new ArgumentNullException("text");
+
+            tokens = lexer.Tokenize(text);
+
             throw new NotImplementedException();
         }
 
