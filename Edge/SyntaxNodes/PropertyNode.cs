@@ -16,6 +16,18 @@ namespace Edge.SyntaxNodes
             this.value = value;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (this == obj)
+                return true;
+
+            var prop = obj as PropertyNode;
+            if (prop == null)
+                return false;
+
+            return propertyInfo.Equals(prop.propertyInfo) && value.Equals(prop.value);
+        }
+
         public PropertyInfo Info
         {
             get

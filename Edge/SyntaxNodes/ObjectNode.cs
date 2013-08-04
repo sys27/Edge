@@ -23,6 +23,18 @@ namespace Edge.SyntaxNodes
             this.properties = properties;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (this == obj)
+                return true;
+
+            var o = obj as ObjectNode;
+            if (o == null)
+                return false;
+
+            return typeInfo.Equals(o.typeInfo) && properties.Equals(o.properties); // todo: !!!
+        }
+
         public Type Info
         {
             get

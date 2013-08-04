@@ -22,6 +22,18 @@ namespace Edge.SyntaxNodes
             this.namespaces = namespaces;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (this == obj)
+                return true;
+
+            var root = obj as RootNode;
+            if (root == null)
+                return false;
+            
+            return rootObject.Equals(root.rootObject) && namespaces.Equals(root.namespaces); // todo: !!!
+        }
+
         public ObjectNode Root
         {
             get
