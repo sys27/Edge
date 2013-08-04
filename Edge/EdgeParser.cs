@@ -3,6 +3,7 @@ using Edge.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Edge
@@ -35,7 +36,7 @@ namespace Edge
             return token;
         }
 
-        private IToken Peek()
+        private IToken PeekToken()
         {
             return tokens[position];
         }
@@ -55,7 +56,7 @@ namespace Edge
 
         private IEnumerable<NamespaceNode> Namespaces()
         {
-            if (Peek() is UsingToken)
+            if (PeekToken() is UsingToken)
             {
                 var namespaces = new List<NamespaceNode>();
 
@@ -106,14 +107,14 @@ namespace Edge
 
             var type = SearchType(((TypeToken)token).Type);
             //var ctor = Constructor();
-            var properties = Properties();
+            var properties = Properties(type);
 
             return new ObjectNode(type, properties);
         }
 
-        private IEnumerable<PropertyNode> Properties()
+        private IEnumerable<PropertyNode> Properties(Type type)
         {
-            var token = Peek();
+            var token = PeekToken();
             if (token is SymbolToken && ((SymbolToken)token).Symbol == '{')
             {
                 position++;
@@ -121,7 +122,7 @@ namespace Edge
 
                 while (true)
                 {
-                    token = Peek();
+                    token = PeekToken();
                     if (token is SymbolToken && ((SymbolToken)token).Symbol == '}')
                     {
                         position++;
@@ -129,7 +130,8 @@ namespace Edge
                     }
 
                     if (token is PropertyToken)
-                        properties.Add(GetProperty());
+                        properties.Add(GetProperty(type));
+                        // todo: comma
                     else
                         // todo: error message
                         throw new EdgeParserException();
@@ -144,7 +146,23 @@ namespace Edge
             return null;
         }
 
-        private PropertyNode GetProperty()
+        private PropertyNode GetProperty(Type type)
+        {
+            var token = GetToken();
+            if (!(token is PropertyToken))
+                // todo: error message
+                throw new EdgeParserException();
+
+            var propertyInfo = type.GetProperty(((PropertyToken)token).Property);
+            if (propertyInfo == null)
+                // todo: error message
+                throw new EdgeParserException();
+            var propertyValue = PropertyValue(propertyInfo);
+
+            return new PropertyNode(propertyInfo, propertyValue);
+        }
+
+        private object PropertyValue(PropertyInfo propertyInfo)
         {
             throw new NotImplementedException();
         }
