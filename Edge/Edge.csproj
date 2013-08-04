@@ -42,6 +42,7 @@
     <Compile Include="EdgeLexer.cs" />
     <Compile Include="EdgeLexerException.cs" />
     <Compile Include="EdgeParser.cs" />
+    <Compile Include="EdgeParserException.cs" />
     <Compile Include="ILexer.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
