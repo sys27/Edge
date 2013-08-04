@@ -17,6 +17,9 @@ namespace Edge
         private List<IToken> tokens;
         private int position;
 
+        // todo: load from config
+        private HashSet<string> defaultAssemblies;
+
         public EdgeParser()
             : this(new EdgeLexer())
         {
@@ -26,6 +29,17 @@ namespace Edge
         public EdgeParser(ILexer lexer)
         {
             this.lexer = lexer;
+
+            defaultAssemblies = new HashSet<string>()
+            {
+                "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                "WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+                "PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+                "PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+                "System.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+            };
         }
 
         private IToken GetToken()
@@ -43,7 +57,19 @@ namespace Edge
 
         private Type SearchType(string type)
         {
-            throw new NotImplementedException();
+            var types = from lib in defaultAssemblies
+                        let assembly = Assembly.Load(lib)
+                        from t in assembly.GetTypes()
+                        where t.Name == type
+                        select t;
+
+            // todo: error message
+            if (types.Count() == 0)
+                throw new EdgeParserException();
+            if (types.Count() > 1)
+                throw new EdgeParserException();
+
+            return types.First();
         }
 
         private RootNode Root()
@@ -60,7 +86,7 @@ namespace Edge
             {
                 var namespaces = new List<NamespaceNode>();
 
-                while (GetToken() is UsingToken)
+                while (PeekToken() is UsingToken)
                 {
                     namespaces.Add(GetNamespace());
                 }
@@ -73,11 +99,16 @@ namespace Edge
 
         private NamespaceNode GetNamespace()
         {
+            var token = GetToken();
+            if (!(token is UsingToken))
+                // todo: error message
+                throw new EdgeParserException();
+
             StringBuilder sb = new StringBuilder();
 
             while (true)
             {
-                var token = GetToken();
+                token = GetToken();
                 if (token is SymbolToken && ((SymbolToken)token).Symbol == ';')
                     break;
 
