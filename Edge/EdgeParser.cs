@@ -162,7 +162,7 @@ namespace Edge
 
                     if (token is PropertyToken)
                         properties.Add(GetProperty(type));
-                        // todo: comma
+                    // todo: comma
                     else
                         // todo: error message
                         throw new EdgeParserException();
@@ -195,7 +195,52 @@ namespace Edge
 
         private object PropertyValue(PropertyInfo propertyInfo)
         {
-            throw new NotImplementedException();
+            var token = GetToken();
+            if (!(token is SymbolToken) || ((SymbolToken)token).Symbol != ':')
+                // todo: error message
+                throw new EdgeParserException();
+
+            object value = null;
+            try
+            {
+                token = GetToken();
+                if (token is NumberToken)
+                {
+                    var numberToken = token as NumberToken;
+
+                    CastHelper.CheckCast(numberToken.Number, propertyInfo.PropertyType);
+                    value = numberToken.Number;
+                }
+                else if (token is StringToken)
+                {
+                    var stringToken = token as StringToken;
+
+                    CastHelper.CheckCast(stringToken.Str, propertyInfo.PropertyType);
+                    value = stringToken.Str;
+                }
+                else if (token is TypeToken)
+                {
+                    position--;
+                    var obj = Object();
+
+                    if (!propertyInfo.PropertyType.IsAssignableFrom(obj.Info))
+                        // todo: error message
+                        throw new InvalidCastException();
+
+                    value = obj;
+                }
+                else if (token is WordToken)
+                {
+                    // todo: ...
+                }
+            }
+            catch (InvalidCastException ice)
+            {
+                // todo: error message
+                throw new EdgeParserException("", ice);
+            }
+
+            return value;
         }
 
         public RootNode Parse(string text)

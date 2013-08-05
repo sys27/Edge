@@ -50,6 +50,86 @@ namespace Edge.Tests
             Assert.AreEqual(expected, root);
         }
 
+        [TestMethod]
+        public void ObjectWithNumberPropertyTest()
+        {
+            lexer.Tokens = new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Width"),
+                new SymbolToken(':'),
+                new NumberToken(1024.6),
+                new SymbolToken('}')
+            };
+            var type = typeof(System.Windows.Window);
+            var expected = new RootNode(
+                new ObjectNode(
+                    type,
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("Width"), 1024.6)
+                    }));
+
+            var root = parser.Parse("Window { Width: 1024.6 }");
+
+            Assert.AreEqual(expected, root);
+        }
+
+        [TestMethod]
+        public void ObjectWithStringPropertyTest()
+        {
+            lexer.Tokens = new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Title"),
+                new SymbolToken(':'),
+                new StringToken("Hello"),
+                new SymbolToken('}')
+            };
+            var type = typeof(System.Windows.Window);
+            var expected = new RootNode(
+                new ObjectNode(
+                    type,
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("Title"), "Hello")
+                    }));
+
+            var root = parser.Parse("Window { Title: \"Hello\" }");
+
+            Assert.AreEqual(expected, root);
+        }
+
+        [TestMethod]
+        public void ObjectWithObjectPropertyTest()
+        {
+            lexer.Tokens = new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new TypeToken("Grid"),
+                new SymbolToken('{'),
+                new SymbolToken('}'),
+                new SymbolToken('}')
+            };
+            var type = typeof(System.Windows.Window);
+            var expected = new RootNode(
+                new ObjectNode(
+                    type,
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid)))
+                    }));
+
+            var root = parser.Parse("Window { Content: Grid { } }");
+
+            Assert.AreEqual(expected, root);
+        }
+
     }
 
 }

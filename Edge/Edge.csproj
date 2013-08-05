@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CastHelper.cs" />
     <Compile Include="EdgeLexer.cs" />
     <Compile Include="EdgeLexerException.cs" />
     <Compile Include="EdgeParser.cs" />
