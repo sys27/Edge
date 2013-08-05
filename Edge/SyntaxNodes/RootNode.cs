@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Edge.SyntaxNodes
 {
@@ -30,8 +31,10 @@ namespace Edge.SyntaxNodes
             var root = obj as RootNode;
             if (root == null)
                 return false;
-            
-            return rootObject.Equals(root.rootObject) && namespaces.Equals(root.namespaces); // todo: !!!
+
+            return rootObject.Equals(root.rootObject) && 
+                   ((namespaces == null && root.namespaces == null) ||
+                    (namespaces != null && root.namespaces != null && namespaces.SequenceEqual(root.namespaces)));
         }
 
         public ObjectNode Root

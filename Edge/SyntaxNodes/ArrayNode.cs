@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Edge.SyntaxNodes
 {
@@ -12,6 +13,9 @@ namespace Edge.SyntaxNodes
 
         public ArrayNode(Type arrayType, object[] array)
         {
+            if (array == null)
+                throw new ArgumentNullException("array");
+
             this.arrayType = arrayType;
             this.array = array;
         }
@@ -25,7 +29,7 @@ namespace Edge.SyntaxNodes
             if (arr == null)
                 return false;
 
-            return arrayType.Equals(arr.arrayType) && array.Equals(arr.array); // todo: !!!
+            return arrayType.Equals(arr.arrayType) && array.SequenceEqual(arr.array);
         }
 
         public Type ArrayType

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Edge.Tokens;
 using System.Collections.Generic;
+using Edge.SyntaxNodes;
 
 namespace Edge.Tests
 {
@@ -36,8 +37,17 @@ namespace Edge.Tests
                 new SymbolToken('{'),
                 new SymbolToken('}')
             };
+            var expected = new RootNode(
+                new ObjectNode(typeof(System.Windows.Window)),
+                new List<NamespaceNode>()
+                {
+                    new NamespaceNode("System"),
+                    new NamespaceNode("System.Windows")
+                });
 
             var root = parser.Parse("using System;using System.Windows;Window { }");
+
+            Assert.AreEqual(expected, root);
         }
 
     }

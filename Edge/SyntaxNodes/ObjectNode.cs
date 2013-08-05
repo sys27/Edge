@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Edge.SyntaxNodes
 {
@@ -32,7 +33,9 @@ namespace Edge.SyntaxNodes
             if (o == null)
                 return false;
 
-            return typeInfo.Equals(o.typeInfo) && properties.Equals(o.properties); // todo: !!!
+            return typeInfo.Equals(o.typeInfo) &&
+                   ((properties == null && o.properties == null) || 
+                    (properties != null && o.properties != null && properties.SequenceEqual(o.properties)));
         }
 
         public Type Info
