@@ -232,7 +232,15 @@ namespace Edge
                 else if (token is WordToken)
                 {
                     // todo: ...
+                    var e = Enum.Parse(propertyInfo.PropertyType, ((WordToken)token).Word);
+
+                    value = e;
                 }
+            }
+            catch (ArgumentException ae)
+            {
+                // todo: error message
+                throw new EdgeParserException("", ae);
             }
             catch (InvalidCastException ice)
             {

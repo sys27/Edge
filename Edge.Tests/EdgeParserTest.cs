@@ -130,6 +130,32 @@ namespace Edge.Tests
             Assert.AreEqual(expected, root);
         }
 
+        [TestMethod]
+        public void ObjectWithEnumPropertyTest()
+        {
+            lexer.Tokens = new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("WindowState"),
+                new SymbolToken(':'),
+                new WordToken("Maximized"),
+                new SymbolToken('}')
+            };
+            var type = typeof(System.Windows.Window);
+            var expected = new RootNode(
+                new ObjectNode(
+                    type,
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("WindowState"), System.Windows.WindowState.Maximized)
+                    }));
+
+            var root = parser.Parse("Window { WindowState: Maximized }");
+
+            Assert.AreEqual(expected, root);
+        }
+
     }
 
 }
