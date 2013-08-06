@@ -158,6 +158,33 @@ namespace Edge.Tests
                     })));
         }
 
+        [TestMethod]
+        public void ObjectWithPropertiesTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Title"),
+                new SymbolToken(':'),
+                new StringToken("Hello"),
+                new SymbolToken(','),
+                new PropertyToken("Width"),
+                new SymbolToken(':'),
+                new NumberToken(1024.6),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("Title"), "Hello"),
+                        new PropertyNode(type.GetProperty("Width"), 1024.6)
+                    })));
+        }
+
     }
 
 }

@@ -164,11 +164,24 @@ namespace Edge
                     }
 
                     if (token is PropertyToken)
+                    {
                         properties.Add(GetProperty(type));
-                    // todo: comma
+
+                        token = PeekToken();
+                        if (token is SymbolToken && ((SymbolToken)token).Symbol == ',')
+                        {
+                            position++;
+                            token = PeekToken();
+                            if (!(token is PropertyToken))
+                                // todo: error message
+                                throw new EdgeParserException();
+                        }
+                    }
                     else
+                    {
                         // todo: error message
                         throw new EdgeParserException();
+                    }
                 }
 
                 if (properties.Count == 0)
