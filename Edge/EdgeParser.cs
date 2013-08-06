@@ -248,7 +248,25 @@ namespace Edge
                 else if (token is WordToken)
                 {
                     // todo: ...
-                    var e = Enum.Parse(propertyInfo.PropertyType, ((WordToken)token).Word);
+                    var word = token as WordToken;
+                    var propertyType = propertyInfo.PropertyType;
+
+                    if (propertyType.Name == word.Word)
+                    {
+                        token = GetToken();
+                        if (!(token is SymbolToken) || ((SymbolToken)token).Symbol != '.')
+                            // todo: error message
+                            throw new EdgeParserException();
+
+                        token = GetToken();
+                        if(!(token is WordToken))
+                            // todo: error message
+                            throw new EdgeParserException();
+
+                        word = token as WordToken;
+                    }
+
+                    var e = Enum.Parse(propertyType, word.Word);
 
                     value = e;
                 }

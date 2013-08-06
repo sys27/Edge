@@ -159,6 +159,30 @@ namespace Edge.Tests
         }
 
         [TestMethod]
+        public void ObjectWithFullNameEnumPropertyTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("WindowState"),
+                new SymbolToken(':'),
+                new WordToken("WindowState"),
+                new SymbolToken('.'),
+                new WordToken("Maximized"),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("WindowState"), System.Windows.WindowState.Maximized)
+                    })));
+        }
+
+        [TestMethod]
         public void ObjectWithPropertiesTest()
         {
             var type = typeof(System.Windows.Window);
