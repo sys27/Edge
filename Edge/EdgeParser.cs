@@ -18,7 +18,7 @@ namespace Edge
         private int position;
 
         // todo: load from config
-        private HashSet<string> defaultAssemblies;
+        private IEnumerable<string> assemblies;
 
         public EdgeParser()
             : this(new EdgeLexer())
@@ -29,17 +29,6 @@ namespace Edge
         public EdgeParser(ILexer lexer)
         {
             this.lexer = lexer;
-
-            defaultAssemblies = new HashSet<string>()
-            {
-                "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-                "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-                "System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-                "WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
-                "PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
-                "PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
-                "System.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
-            };
         }
 
         private IToken GetToken()
@@ -57,7 +46,7 @@ namespace Edge
 
         private Type SearchType(string type)
         {
-            var types = from lib in defaultAssemblies
+            var types = from lib in assemblies
                         let assembly = Assembly.Load(lib)
                         from t in assembly.GetTypes()
                         where t.Name == type
@@ -259,6 +248,18 @@ namespace Edge
             tokens = lexer.Tokenize(text).ToList();
 
             return Root();
+        }
+
+        public IEnumerable<string> Assemblies
+        {
+            get
+            {
+                return assemblies;
+            }
+            set
+            {
+                assemblies = value;
+            }
         }
 
     }

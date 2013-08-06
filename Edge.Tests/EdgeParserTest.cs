@@ -17,13 +17,34 @@ namespace Edge.Tests
         public EdgeParserTest()
         {
             lexer = new MockEdgeLexer();
-            parser = new EdgeParser(lexer);
+            parser = new EdgeParser(lexer)
+            {
+                Assemblies = new HashSet<string>()
+                {
+                    "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                    "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                    "System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+                    "WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+                    "PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+                    "PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+                    "System.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+                }
+            };
+        }
+
+        private void Test(IEnumerable<IToken> tokens, RootNode expected)
+        {
+            lexer.Tokens = tokens;
+
+            var root = parser.Parse("-- // --");
+
+            Assert.AreEqual(expected, root);
         }
 
         [TestMethod]
         public void NamespaceWithObjectTest()
         {
-            lexer.Tokens = new List<IToken>()
+            Test(new List<IToken>()
             {
                 new UsingToken(),
                 new WordToken("System"),
@@ -36,24 +57,22 @@ namespace Edge.Tests
                 new TypeToken("Window"),
                 new SymbolToken('{'),
                 new SymbolToken('}')
-            };
-            var expected = new RootNode(
-                new ObjectNode(typeof(System.Windows.Window)),
-                new List<NamespaceNode>()
-                {
-                    new NamespaceNode("System"),
-                    new NamespaceNode("System.Windows")
-                });
-
-            var root = parser.Parse("using System;using System.Windows;Window { }");
-
-            Assert.AreEqual(expected, root);
+            },
+            new RootNode(
+                new ObjectNode(
+                    typeof(System.Windows.Window)),
+                    new List<NamespaceNode>()
+                    {
+                        new NamespaceNode("System"),
+                        new NamespaceNode("System.Windows")
+                    }));
         }
 
         [TestMethod]
         public void ObjectWithNumberPropertyTest()
         {
-            lexer.Tokens = new List<IToken>()
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -61,25 +80,21 @@ namespace Edge.Tests
                 new SymbolToken(':'),
                 new NumberToken(1024.6),
                 new SymbolToken('}')
-            };
-            var type = typeof(System.Windows.Window);
-            var expected = new RootNode(
+            },
+            new RootNode(
                 new ObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Width"), 1024.6)
-                    }));
-
-            var root = parser.Parse("Window { Width: 1024.6 }");
-
-            Assert.AreEqual(expected, root);
+                    })));
         }
 
         [TestMethod]
         public void ObjectWithStringPropertyTest()
         {
-            lexer.Tokens = new List<IToken>()
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -87,25 +102,21 @@ namespace Edge.Tests
                 new SymbolToken(':'),
                 new StringToken("Hello"),
                 new SymbolToken('}')
-            };
-            var type = typeof(System.Windows.Window);
-            var expected = new RootNode(
+            },
+            new RootNode(
                 new ObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Title"), "Hello")
-                    }));
-
-            var root = parser.Parse("Window { Title: \"Hello\" }");
-
-            Assert.AreEqual(expected, root);
+                    })));
         }
 
         [TestMethod]
         public void ObjectWithObjectPropertyTest()
         {
-            lexer.Tokens = new List<IToken>()
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -115,25 +126,21 @@ namespace Edge.Tests
                 new SymbolToken('{'),
                 new SymbolToken('}'),
                 new SymbolToken('}')
-            };
-            var type = typeof(System.Windows.Window);
-            var expected = new RootNode(
+            },
+            new RootNode(
                 new ObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid)))
-                    }));
-
-            var root = parser.Parse("Window { Content: Grid { } }");
-
-            Assert.AreEqual(expected, root);
+                    })));
         }
 
         [TestMethod]
         public void ObjectWithEnumPropertyTest()
         {
-            lexer.Tokens = new List<IToken>()
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -141,19 +148,14 @@ namespace Edge.Tests
                 new SymbolToken(':'),
                 new WordToken("Maximized"),
                 new SymbolToken('}')
-            };
-            var type = typeof(System.Windows.Window);
-            var expected = new RootNode(
+            },
+            new RootNode(
                 new ObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("WindowState"), System.Windows.WindowState.Maximized)
-                    }));
-
-            var root = parser.Parse("Window { WindowState: Maximized }");
-
-            Assert.AreEqual(expected, root);
+                    })));
         }
 
     }
