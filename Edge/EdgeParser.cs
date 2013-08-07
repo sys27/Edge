@@ -75,6 +75,25 @@ namespace Edge
             return types.First();
         }
 
+        private bool TrySearchType(string type, out Type outType)
+        {
+            var types = from lib in assemblies
+                        let assembly = Assembly.Load(lib)
+                        from t in assembly.GetTypes()
+                        where t.Name == type
+                        select t;
+
+            // todo: error message
+            if (types.Count() != 1)
+            {
+                outType = null;
+                return false;
+            }
+
+            outType = types.First();
+            return true;
+        }
+
         private RootNode Root()
         {
             var namespaces = Namespaces();
@@ -272,24 +291,32 @@ namespace Edge
                     var word = token as WordToken;
                     var propertyType = propertyInfo.PropertyType;
 
-                    if (propertyType.Name == word.Word)
+                    token = PeekToken();
+                    if (token is SymbolToken && ((SymbolToken)token).Symbol == '.')
                     {
+                        position++;
                         token = GetToken();
-                        if (!(token is SymbolToken) || ((SymbolToken)token).Symbol != '.')
-                            // todo: error message
-                            throw new EdgeParserException();
 
-                        token = GetToken();
                         if (!(token is WordToken))
                             // todo: error message
                             throw new EdgeParserException();
 
                         word = token as WordToken;
+                        value = Enum.Parse(propertyType, word.Word);
                     }
-
-                    var e = Enum.Parse(propertyType, word.Word);
-
-                    value = e;
+                    else
+                    {
+                        Type type;
+                        if (TrySearchType(word.Word, out type))
+                        {
+                            // todo: default id
+                            value = new ObjectNode(type, null);
+                        }
+                        else
+                        {
+                            value = Enum.Parse(propertyType, word.Word);
+                        }
+                    }
                 }
                 else if (token is IdToken)
                 {
