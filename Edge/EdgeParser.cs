@@ -140,10 +140,30 @@ namespace Edge
                 throw new EdgeParserException();
 
             var type = SearchType(((TypeToken)token).Type);
+            var id = ObjectId();
             //var ctor = Constructor();
             var properties = Properties(type);
 
-            return new ObjectNode(type, properties);
+            return new ObjectNode(type, id, properties);
+        }
+
+        private string ObjectId()
+        {
+            var token = PeekToken();
+            if (token is SymbolToken && ((SymbolToken)token).Symbol == '#')
+            {
+                position++;
+
+                token = GetToken();
+                if (!(token is IdToken))
+                    // todo: error message
+                    throw new EdgeParserException();
+
+                return ((IdToken)token).Id;
+            }
+
+            // todo: create default id
+            return null;
         }
 
         private IEnumerable<PropertyNode> Properties(Type type)
@@ -260,7 +280,7 @@ namespace Edge
                             throw new EdgeParserException();
 
                         token = GetToken();
-                        if(!(token is WordToken))
+                        if (!(token is WordToken))
                             // todo: error message
                             throw new EdgeParserException();
 

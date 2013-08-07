@@ -67,12 +67,13 @@ namespace Edge.Tests
             },
             new RootNode(
                 new ObjectNode(
-                    typeof(System.Windows.Window)),
-                    new List<NamespaceNode>()
-                    {
-                        new NamespaceNode("System"),
-                        new NamespaceNode("System.Windows")
-                    }));
+                    typeof(System.Windows.Window),
+                    "window1"),
+                new List<NamespaceNode>()
+                {
+                    new NamespaceNode("System"),
+                    new NamespaceNode("System.Windows")
+                }));
         }
 
         [TestMethod]
@@ -119,6 +120,7 @@ namespace Edge.Tests
             new RootNode(
                 new ObjectNode(
                     type,
+                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Width"), 1024.6)
@@ -141,6 +143,7 @@ namespace Edge.Tests
             new RootNode(
                 new ObjectNode(
                     type,
+                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Title"), "Hello")
@@ -165,9 +168,10 @@ namespace Edge.Tests
             new RootNode(
                 new ObjectNode(
                     type,
+                    "window1",
                     new List<PropertyNode>()
                     {
-                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid)))
+                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
                     })));
         }
 
@@ -187,6 +191,7 @@ namespace Edge.Tests
             new RootNode(
                 new ObjectNode(
                     type,
+                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("WindowState"), System.Windows.WindowState.Maximized)
@@ -211,6 +216,7 @@ namespace Edge.Tests
             new RootNode(
                 new ObjectNode(
                     type,
+                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("WindowState"), System.Windows.WindowState.Maximized)
@@ -237,6 +243,7 @@ namespace Edge.Tests
             new RootNode(
                 new ObjectNode(
                     type,
+                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Title"), "Hello"),
@@ -300,6 +307,24 @@ namespace Edge.Tests
                 new NumberToken(1),
                 new SymbolToken('}')
             });
+        }
+
+        [TestMethod]
+        public void ObjectWithIdTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('#'),
+                new IdToken("mainWindow"),
+                new SymbolToken('{'),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "mainWindow")));
         }
 
     }

@@ -24,17 +24,19 @@ namespace Edge.SyntaxNodes
     {
 
         private Type typeInfo;
+        private string id;
         private IEnumerable<PropertyNode> properties;
 
-        public ObjectNode(Type typeInfo)
-            : this(typeInfo, null)
+        public ObjectNode(Type typeInfo, string id)
+            : this(typeInfo, id, null)
         {
 
         }
 
-        public ObjectNode(Type typeInfo, IEnumerable<PropertyNode> properties)
+        public ObjectNode(Type typeInfo, string id, IEnumerable<PropertyNode> properties)
         {
             this.typeInfo = typeInfo;
+            this.id = id;
             this.properties = properties;
         }
 
@@ -57,6 +59,14 @@ namespace Edge.SyntaxNodes
             get
             {
                 return typeInfo;
+            }
+        }
+
+        public string Id
+        {
+            get
+            {
+                return id;
             }
         }
 
