@@ -41,6 +41,13 @@ namespace Edge.Tests
             Assert.AreEqual(expected, root);
         }
 
+        private void TestFail(IEnumerable<IToken> tokens)
+        {
+            lexer.Tokens = tokens;
+
+            var root = parser.Parse("-- // --");
+        }
+
         [TestMethod]
         public void NamespaceWithObjectTest()
         {
@@ -66,6 +73,34 @@ namespace Edge.Tests
                         new NamespaceNode("System"),
                         new NamespaceNode("System.Windows")
                     }));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void UsingFailTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new UsingToken(),
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new SymbolToken('}')
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void NamespaceWithEmptyWordTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new UsingToken(),
+                new WordToken(""),
+                new SymbolToken(';'),
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new SymbolToken('}')
+            });
         }
 
         [TestMethod]
@@ -207,6 +242,64 @@ namespace Edge.Tests
                         new PropertyNode(type.GetProperty("Title"), "Hello"),
                         new PropertyNode(type.GetProperty("Width"), 1024.6)
                     })));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void ObjectFailTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new WordToken("Window"),
+                new SymbolToken('{'),
+                new SymbolToken('}')
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void PropertyAsWordTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new WordToken("Width"),
+                new SymbolToken(':'),
+                new NumberToken(1024),
+                new SymbolToken('}')
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void PropertyWithCommaTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new WordToken("Width"),
+                new SymbolToken(':'),
+                new NumberToken(1024),
+                new SymbolToken(','),
+                new SymbolToken('}')
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void PropertyIsNotInTypeTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new WordToken("Column"),
+                new SymbolToken(':'),
+                new NumberToken(1),
+                new SymbolToken('}')
+            });
         }
 
     }

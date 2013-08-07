@@ -211,6 +211,7 @@ namespace Edge
 
         private object PropertyValue(PropertyInfo propertyInfo)
         {
+            // todo: test
             var token = GetToken();
             if (!(token is SymbolToken) || ((SymbolToken)token).Symbol != ':')
                 // todo: error message
