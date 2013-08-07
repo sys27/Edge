@@ -25,6 +25,7 @@ namespace Edge.SyntaxNodes
 
         private Type typeInfo;
         private string id;
+        private IEnumerable<object> ctorArguments;
         private IEnumerable<PropertyNode> properties;
 
         public ObjectNode(Type typeInfo, string id)

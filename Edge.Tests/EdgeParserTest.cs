@@ -327,6 +327,29 @@ namespace Edge.Tests
                     "mainWindow")));
         }
 
+        [TestMethod]
+        public void PropertyObjectWithoutPropertiesTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new WordToken("Grid"),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "window1",
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
+                    })));
+        }
+
     }
 
 }

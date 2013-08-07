@@ -291,6 +291,10 @@ namespace Edge
 
                     value = e;
                 }
+                else if (token is IdToken)
+                {
+                    // todo: reference to object
+                }
             }
             catch (ArgumentException ae)
             {
