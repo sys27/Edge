@@ -381,6 +381,49 @@ namespace Edge.Tests
                     })));
         }
 
+        [TestMethod]
+        public void ObjectCtorTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Icon"),
+                new SymbolToken(':'),
+                new TypeToken("BitmapImage"),
+                new SymbolToken('('),
+                new TypeToken("Uri"),
+                new SymbolToken('('),
+                new StringToken("Icon.ico"),
+                new SymbolToken(')'),
+                new SymbolToken(')'),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "window1",
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(
+                            type.GetProperty("Icon"),
+                            new ObjectNode(
+                                typeof(System.Windows.Media.Imaging.BitmapImage), 
+                                "bitmapImage1", 
+                                new List<object>()
+                                {
+                                    new ObjectNode(
+                                        typeof(System.Uri),
+                                        "uri1",
+                                        new List<object>()
+                                        {
+                                            "Icon.ico"
+                                        })
+                                }))
+                    })));
+        }
+
     }
 
 }

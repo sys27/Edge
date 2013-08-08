@@ -245,13 +245,41 @@ namespace Edge
                         break;
                     }
 
-                    //var obj = GetValue();
+                    args.Add(GetValue());
+
+                    token = PeekToken();
+                    if (token is SymbolToken && ((SymbolToken)token).Symbol == ',')
+                    {
+                        position++;
+                        token = GetToken();
+
+                        if (!(token is NumberToken || token is StringToken || token is TypeToken || token is WordToken))
+                            // todo: error message
+                            throw new EdgeParserException();
+                    }
                 }
 
-                if (args.Count == 0)
-                    return null;
+                if (args.Count > 0)
+                {
+                    var types = new Type[args.Count];
+                    for (int i = 0; i < types.Length; i++)
+                    {
+                        var t = args[0];
+                        if (t is ObjectNode)
+                            types[i] = ((ObjectNode)t).Info;
+                        else
+                            types[i] = t.GetType();
+                    }
 
-                return args;
+                    var ctor = objType.GetConstructor(types);
+                    if (ctor == null)
+                        // todo: error message
+                        throw new EdgeParserException();
+
+                    return args;
+                }
+
+                return null;
             }
 
             return null;
@@ -330,9 +358,15 @@ namespace Edge
             return GetValue(propType);
         }
 
+        private object GetValue()
+        {
+            return GetValue(null);
+        }
+
         private object GetValue(Type type)
         {
             object value = null;
+
             try
             {
                 var token = GetToken();
@@ -340,14 +374,16 @@ namespace Edge
                 {
                     var numberToken = token as NumberToken;
 
-                    CastHelper.CheckCast(numberToken.Number, type);
+                    if (type != null)
+                        CastHelper.CheckCast(numberToken.Number, type);
                     value = numberToken.Number;
                 }
                 else if (token is StringToken)
                 {
                     var stringToken = token as StringToken;
 
-                    CastHelper.CheckCast(stringToken.Str, type);
+                    if (type != null)
+                        CastHelper.CheckCast(stringToken.Str, type);
                     value = stringToken.Str;
                 }
                 else if (token is TypeToken)
@@ -355,7 +391,7 @@ namespace Edge
                     position--;
                     var obj = Object();
 
-                    if (!type.IsAssignableFrom(obj.Info))
+                    if (type != null && !type.IsAssignableFrom(obj.Info))
                         // todo: error message
                         throw new InvalidCastException();
 
@@ -363,11 +399,10 @@ namespace Edge
                 }
                 else if (token is WordToken)
                 {
-                    // todo: ...
                     var word = token as WordToken;
 
                     token = PeekToken();
-                    if (token is SymbolToken && ((SymbolToken)token).Symbol == '.')
+                    if (type != null && token is SymbolToken && ((SymbolToken)token).Symbol == '.')
                     {
                         position++;
                         token = GetToken();
@@ -386,7 +421,7 @@ namespace Edge
                         {
                             value = new ObjectNode(outType, GenereteId(outType));
                         }
-                        else
+                        else if (type != null)
                         {
                             value = Enum.Parse(type, word.Word);
                         }
