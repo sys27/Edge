@@ -59,6 +59,7 @@
     <Compile Include="SyntaxNodes\NamespaceNode.cs" />
     <Compile Include="SyntaxNodes\ObjectNode.cs" />
     <Compile Include="SyntaxNodes\PropertyNode.cs" />
+    <Compile Include="SyntaxNodes\ReferenceNode.cs" />
     <Compile Include="SyntaxNodes\RootNode.cs" />
     <Compile Include="Tokens\IdToken.cs" />
     <Compile Include="Tokens\IToken.cs" />

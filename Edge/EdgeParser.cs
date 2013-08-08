@@ -104,8 +104,18 @@ namespace Edge
                 if (token is IdToken)
                 {
                     var id = token as IdToken;
-                    ids.Add(id.Id, null);
+                    ids[id.Id] = null;
                 }
+            }
+        }
+
+        private void CheckIds()
+        {
+            foreach (var id in ids)
+            {
+                if (id.Value == null)
+                    // todo: error message
+                    throw new EdgeParserException();
             }
         }
 
@@ -355,9 +365,17 @@ namespace Edge
                         }
                     }
                 }
-                else if (token is IdToken)
+                else if (token is SymbolToken && ((SymbolToken)token).Symbol == '#')
                 {
-                    // todo: reference to object
+                    token = GetToken();
+
+                    if (!(token is IdToken))
+                        // todo: error message
+                        throw new EdgeParserException();
+
+                    var id = token as IdToken;
+
+                    value = new ReferenceNode(id.Id);
                 }
             }
             catch (ArgumentException ae)
@@ -382,7 +400,11 @@ namespace Edge
             tokens = lexer.Tokenize(text).ToList();
             ReadIds();
 
-            return Root();
+            var root = Root();
+
+            CheckIds();
+
+            return root;
         }
 
         public IEnumerable<string> Assemblies
