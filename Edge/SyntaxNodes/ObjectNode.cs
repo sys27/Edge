@@ -25,19 +25,30 @@ namespace Edge.SyntaxNodes
 
         private Type typeInfo;
         private string id;
-        private IEnumerable<object> ctorArguments;
+        private IEnumerable<object> ctorArgs;
         private IEnumerable<PropertyNode> properties;
 
         public ObjectNode(Type typeInfo, string id)
-            : this(typeInfo, id, null)
+            : this(typeInfo, id, null, null)
         {
 
         }
 
+        public ObjectNode(Type typeInfo, string id, IEnumerable<object> ctorArgs)
+            : this(typeInfo, id, ctorArgs, null)
+        {
+        }
+
         public ObjectNode(Type typeInfo, string id, IEnumerable<PropertyNode> properties)
+            : this(typeInfo, id, null, properties)
+        {
+        }
+
+        public ObjectNode(Type typeInfo, string id, IEnumerable<object> ctorArgs, IEnumerable<PropertyNode> properties)
         {
             this.typeInfo = typeInfo;
             this.id = id;
+            this.ctorArgs = ctorArgs;
             this.properties = properties;
         }
 
@@ -51,7 +62,10 @@ namespace Edge.SyntaxNodes
                 return false;
 
             return typeInfo.Equals(o.typeInfo) &&
-                   ((properties == null && o.properties == null) || 
+                   id == o.id &&
+                   ((ctorArgs == null && o.ctorArgs == null) ||
+                    (ctorArgs != null && o.ctorArgs != null && ctorArgs.SequenceEqual(o.ctorArgs))) &&
+                   ((properties == null && o.properties == null) ||
                     (properties != null && o.properties != null && properties.SequenceEqual(o.properties)));
         }
 
@@ -68,6 +82,14 @@ namespace Edge.SyntaxNodes
             get
             {
                 return id;
+            }
+        }
+
+        public IEnumerable<object> ConstructorArguments
+        {
+            get
+            {
+                return ctorArgs;
             }
         }
 

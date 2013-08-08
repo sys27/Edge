@@ -34,6 +34,8 @@ namespace Edge
         // todo: load from config
         private IEnumerable<string> assemblies;
 
+        private Dictionary<string, ObjectNode> ids;
+
         public EdgeParser()
             : this(new EdgeLexer())
         {
@@ -43,6 +45,7 @@ namespace Edge
         public EdgeParser(ILexer lexer)
         {
             this.lexer = lexer;
+            ids = new Dictionary<string, ObjectNode>();
         }
 
         private IToken GetToken()
@@ -92,6 +95,34 @@ namespace Edge
 
             outType = types.First();
             return true;
+        }
+
+        private void ReadIds()
+        {
+            foreach (var token in tokens)
+            {
+                if (token is IdToken)
+                {
+                    var id = token as IdToken;
+                    ids.Add(id.Id, null);
+                }
+            }
+        }
+
+        private string GenereteId(Type type)
+        {
+            var typeName = type.Name;
+            typeName = char.ToLowerInvariant(typeName[0]) + typeName.Substring(1);
+
+            for (int i = 1; i < int.MaxValue; i++)
+            {
+                var id = typeName + i;
+                if (!ids.ContainsKey(id))
+                    return id;
+            }
+
+            // todo: error message
+            throw new EdgeParserException();
         }
 
         private RootNode Root()
@@ -159,14 +190,17 @@ namespace Edge
                 throw new EdgeParserException();
 
             var type = SearchType(((TypeToken)token).Type);
-            var id = ObjectId();
-            //var ctor = Constructor();
+            var id = ObjectId(type);
+            var ctor = CtorArgs();
             var properties = Properties(type);
 
-            return new ObjectNode(type, id, properties);
+            var obj = new ObjectNode(type, id, ctor, properties);
+            ids[id] = obj;
+
+            return obj;
         }
 
-        private string ObjectId()
+        private string ObjectId(Type type)
         {
             var token = PeekToken();
             if (token is SymbolToken && ((SymbolToken)token).Symbol == '#')
@@ -181,7 +215,11 @@ namespace Edge
                 return ((IdToken)token).Id;
             }
 
-            // todo: create default id
+            return GenereteId(type);
+        }
+
+        private IEnumerable<object> CtorArgs()
+        {
             return null;
         }
 
@@ -309,8 +347,7 @@ namespace Edge
                         Type type;
                         if (TrySearchType(word.Word, out type))
                         {
-                            // todo: default id
-                            value = new ObjectNode(type, null);
+                            value = new ObjectNode(type, GenereteId(type));
                         }
                         else
                         {
@@ -343,6 +380,7 @@ namespace Edge
                 throw new ArgumentNullException("text");
 
             tokens = lexer.Tokenize(text).ToList();
+            ReadIds();
 
             return Root();
         }
