@@ -252,6 +252,37 @@ namespace Edge.Tests
         }
 
         [TestMethod]
+        public void ObjectWithIdPropertyTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Icon"),
+                new SymbolToken(':'),
+                new TypeToken("BitmapImage"),
+                new SymbolToken('#'),
+                new IdToken("bitmap"),
+                new SymbolToken(','),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new SymbolToken('#'),
+                new IdToken("bitmap"),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "window1",
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("Icon"), new ObjectNode(typeof(System.Windows.Media.Imaging.BitmapImage), "bitmap")),
+                        new PropertyNode(type.GetProperty("Content"), new ReferenceNode("bitmap"))
+                    })));
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(EdgeParserException))]
         public void ObjectFailTest()
         {

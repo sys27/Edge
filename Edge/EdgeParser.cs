@@ -201,7 +201,7 @@ namespace Edge
 
             var type = SearchType(((TypeToken)token).Type);
             var id = ObjectId(type);
-            var ctor = CtorArgs();
+            var ctor = CtorArgs(type);
             var properties = Properties(type);
 
             var obj = new ObjectNode(type, id, ctor, properties);
@@ -210,7 +210,7 @@ namespace Edge
             return obj;
         }
 
-        private string ObjectId(Type type)
+        private string ObjectId(Type objType)
         {
             var token = PeekToken();
             if (token is SymbolToken && ((SymbolToken)token).Symbol == '#')
@@ -225,15 +225,39 @@ namespace Edge
                 return ((IdToken)token).Id;
             }
 
-            return GenereteId(type);
+            return GenereteId(objType);
         }
 
-        private IEnumerable<object> CtorArgs()
+        private IEnumerable<object> CtorArgs(Type objType)
         {
+            var token = PeekToken();
+            if (token is SymbolToken && ((SymbolToken)token).Symbol == '(')
+            {
+                position++;
+                var args = new List<object>();
+
+                while (true)
+                {
+                    token = PeekToken();
+                    if (token is SymbolToken && ((SymbolToken)token).Symbol == ')')
+                    {
+                        position++;
+                        break;
+                    }
+
+                    //var obj = GetValue();
+                }
+
+                if (args.Count == 0)
+                    return null;
+
+                return args;
+            }
+
             return null;
         }
 
-        private IEnumerable<PropertyNode> Properties(Type type)
+        private IEnumerable<PropertyNode> Properties(Type objType)
         {
             var token = PeekToken();
             if (token is SymbolToken && ((SymbolToken)token).Symbol == '{')
@@ -252,7 +276,7 @@ namespace Edge
 
                     if (token is PropertyToken)
                     {
-                        properties.Add(GetProperty(type));
+                        properties.Add(GetProperty(objType));
 
                         token = PeekToken();
                         if (token is SymbolToken && ((SymbolToken)token).Symbol == ',')
@@ -280,46 +304,50 @@ namespace Edge
             return null;
         }
 
-        private PropertyNode GetProperty(Type type)
+        private PropertyNode GetProperty(Type objType)
         {
             var token = GetToken();
             if (!(token is PropertyToken))
                 // todo: error message
                 throw new EdgeParserException();
 
-            var propertyInfo = type.GetProperty(((PropertyToken)token).Property);
+            var propertyInfo = objType.GetProperty(((PropertyToken)token).Property);
             if (propertyInfo == null)
                 // todo: error message
                 throw new EdgeParserException();
-            var propertyValue = PropertyValue(propertyInfo);
+            var propertyValue = PropertyValue(propertyInfo.PropertyType);
 
             return new PropertyNode(propertyInfo, propertyValue);
         }
 
-        private object PropertyValue(PropertyInfo propertyInfo)
+        private object PropertyValue(Type propType)
         {
-            // todo: test
             var token = GetToken();
             if (!(token is SymbolToken) || ((SymbolToken)token).Symbol != ':')
                 // todo: error message
                 throw new EdgeParserException();
 
+            return GetValue(propType);
+        }
+
+        private object GetValue(Type type)
+        {
             object value = null;
             try
             {
-                token = GetToken();
+                var token = GetToken();
                 if (token is NumberToken)
                 {
                     var numberToken = token as NumberToken;
 
-                    CastHelper.CheckCast(numberToken.Number, propertyInfo.PropertyType);
+                    CastHelper.CheckCast(numberToken.Number, type);
                     value = numberToken.Number;
                 }
                 else if (token is StringToken)
                 {
                     var stringToken = token as StringToken;
 
-                    CastHelper.CheckCast(stringToken.Str, propertyInfo.PropertyType);
+                    CastHelper.CheckCast(stringToken.Str, type);
                     value = stringToken.Str;
                 }
                 else if (token is TypeToken)
@@ -327,7 +355,7 @@ namespace Edge
                     position--;
                     var obj = Object();
 
-                    if (!propertyInfo.PropertyType.IsAssignableFrom(obj.Info))
+                    if (!type.IsAssignableFrom(obj.Info))
                         // todo: error message
                         throw new InvalidCastException();
 
@@ -337,7 +365,6 @@ namespace Edge
                 {
                     // todo: ...
                     var word = token as WordToken;
-                    var propertyType = propertyInfo.PropertyType;
 
                     token = PeekToken();
                     if (token is SymbolToken && ((SymbolToken)token).Symbol == '.')
@@ -350,18 +377,18 @@ namespace Edge
                             throw new EdgeParserException();
 
                         word = token as WordToken;
-                        value = Enum.Parse(propertyType, word.Word);
+                        value = Enum.Parse(type, word.Word);
                     }
                     else
                     {
-                        Type type;
-                        if (TrySearchType(word.Word, out type))
+                        Type outType;
+                        if (TrySearchType(word.Word, out outType))
                         {
-                            value = new ObjectNode(type, GenereteId(type));
+                            value = new ObjectNode(outType, GenereteId(outType));
                         }
                         else
                         {
-                            value = Enum.Parse(propertyType, word.Word);
+                            value = Enum.Parse(type, word.Word);
                         }
                     }
                 }
