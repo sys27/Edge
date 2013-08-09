@@ -424,6 +424,64 @@ namespace Edge.Tests
                     })));
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void ObjectCtorCommaFailTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Icon"),
+                new SymbolToken(':'),
+                new TypeToken("BitmapImage"),
+                new SymbolToken('('),
+                new TypeToken("Uri"),
+                new SymbolToken('('),
+                new StringToken("Icon.ico"),
+                new SymbolToken(')'),
+                new SymbolToken(','),
+                new SymbolToken(')'),
+                new SymbolToken('}')
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void ObjectCtorWrongTokenTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Icon"),
+                new SymbolToken(':'),
+                new TypeToken("BitmapImage"),
+                new SymbolToken('('),
+                new IdToken("fail"),
+                new SymbolToken(')'),
+                new SymbolToken('}')
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void ObjectCtorWrongArgsTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Icon"),
+                new SymbolToken(':'),
+                new TypeToken("BitmapImage"),
+                new SymbolToken('('),
+                new NumberToken(1024),
+                new SymbolToken(')'),
+                new SymbolToken('}')
+            });
+        }
+
     }
 
 }

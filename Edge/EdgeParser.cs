@@ -439,6 +439,11 @@ namespace Edge
 
                     value = new ReferenceNode(id.Id);
                 }
+                else
+                {
+                    // todo: error message
+                    throw new EdgeParserException();
+                }
             }
             catch (ArgumentException ae)
             {
