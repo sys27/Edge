@@ -234,6 +234,24 @@ namespace Edge.Tests
             });
         }
 
+        [TestMethod]
+        public void CommentTest()
+        {
+            TestTokens("// comment\r\nusing System;", new List<IToken>()
+            {
+                new UsingToken(),
+                new WordToken("System"),
+                new SymbolToken(';')
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeLexerException))]
+        public void CommentFailTest()
+        {
+            TestFail("/ comment\r\nusing System;");
+        }
+
     }
 
 }

@@ -119,6 +119,20 @@ namespace Edge
 
                     continue;
                 }
+                if (peek == '/')
+                {
+                    i++;
+                    if (i < text.Length && text[i] == '/')
+                    {
+                        i++;
+                        for (; i < text.Length && text[i] != '\r' && text[i] != '\n'; i++) ;
+
+                        continue;
+                    }
+
+                    // todo: error message
+                    throw new EdgeLexerException();
+                }
                 if (brackets.Contains(peek) || symbols.Contains(peek))
                 {
                     tokens.Add(new SymbolToken(peek));
@@ -163,7 +177,8 @@ namespace Edge
                     continue;
                 }
 
-                i++;
+                // todo: error message
+                throw new EdgeLexerException();
             }
 
             return tokens;
