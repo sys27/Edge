@@ -32,54 +32,10 @@ namespace Edge
             symbols = new HashSet<char>() { ':', ';', '.', ',', '@' };
         }
 
-        //private bool IsBalanced(string str)
-        //{
-        //    int roundBrackets = 0;
-        //    int squareBrackets = 0;
-        //    int curlyBrackets = 0;
-        //    int quotes = 0;
-
-        //    foreach (var item in str)
-        //    {
-        //        switch (item)
-        //        {
-        //            case '{':
-        //                curlyBrackets++;
-        //                break;
-        //            case '}':
-        //                curlyBrackets--;
-        //                break;
-        //            case '(':
-        //                roundBrackets++;
-        //                break;
-        //            case ')':
-        //                roundBrackets--;
-        //                break;
-        //            case '[':
-        //                squareBrackets++;
-        //                break;
-        //            case ']':
-        //                squareBrackets--;
-        //                break;
-        //            case '"':
-        //                quotes++;
-        //                break;
-        //        }
-
-        //        if (curlyBrackets < 0 || roundBrackets < 0 || squareBrackets < 0)
-        //            return false;
-        //    }
-
-        //    return curlyBrackets == 0 || roundBrackets == 0 || squareBrackets == 0 || quotes % 2 == 0;
-        //}
-
         public IEnumerable<IToken> Tokenize(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
                 throw new ArgumentNullException("text");
-            //if (!IsBalanced(text))
-            //    // todo: error message
-            //    throw new EdgeLexerException();
 
             var tokens = new List<IToken>();
 

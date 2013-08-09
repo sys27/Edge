@@ -19,7 +19,6 @@ using System.Linq;
 namespace Edge.SyntaxNodes
 {
 
-    // todo: using different constructors
     public class ObjectNode : INode
     {
 
