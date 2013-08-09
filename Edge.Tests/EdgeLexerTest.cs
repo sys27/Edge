@@ -223,6 +223,17 @@ namespace Edge.Tests
             TestFail("              ");
         }
 
+        [TestMethod]
+        public void AttachedPropertyTest()
+        {
+            TestTokens("Grid.Column: 0", new List<IToken>()
+            {
+                new PropertyToken("Grid.Column"),
+                new SymbolToken(':'),
+                new NumberToken(0)
+            });
+        }
+
     }
 
 }
