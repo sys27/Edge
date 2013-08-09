@@ -170,9 +170,7 @@ namespace Edge.Tests
             TestTokens("using System.Windows;", new List<IToken>()
             {
                 new UsingToken(),
-                new WordToken("System"),
-                new SymbolToken('.'),
-                new WordToken("Windows"),
+                new WordToken("System.Windows"),
                 new SymbolToken(';')
             });
         }
@@ -200,9 +198,7 @@ namespace Edge.Tests
                 new PropertyToken("Title"),
                 new SymbolToken(':'),
                 new SymbolToken('@'),
-                new WordToken("tb"),
-                new SymbolToken('.'),
-                new WordToken("Text")
+                new WordToken("tb.Text")
             });
         }
 

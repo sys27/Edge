@@ -52,7 +52,7 @@ namespace Edge
                 {
                     int length = 1;
 
-                    for (int j = i + 1; j < text.Length && char.IsLetter(text[j]); j++)
+                    for (int j = i + 1; j < text.Length && (char.IsLetter(text[j]) || text[j] == '.'); j++)
                         length++;
 
                     string word = text.Substring(i, length);
