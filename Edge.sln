@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.20623.1 VSUPREVIEW
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edge", "Edge\Edge.csproj", "{38187707-E13A-4C40-971D-7E4E519F8BCB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edge.Tests", "Edge.Tests\Edge.Tests.csproj", "{514F55FF-1EB2-4077-A1B5-13F03E14512F}"
@@ -9,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		MainView.edge = MainView.edge
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edge.ConsoleApplication", "Edge.ConsoleApplication\Edge.ConsoleApplication.csproj", "{5B1957B9-E2B2-4AF7-9EF3-69A72AD7C321}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +28,10 @@ Global
 		{514F55FF-1EB2-4077-A1B5-13F03E14512F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{514F55FF-1EB2-4077-A1B5-13F03E14512F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{514F55FF-1EB2-4077-A1B5-13F03E14512F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B1957B9-E2B2-4AF7-9EF3-69A72AD7C321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B1957B9-E2B2-4AF7-9EF3-69A72AD7C321}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B1957B9-E2B2-4AF7-9EF3-69A72AD7C321}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B1957B9-E2B2-4AF7-9EF3-69A72AD7C321}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
