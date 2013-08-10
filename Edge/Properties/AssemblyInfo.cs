@@ -2,8 +2,8 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Edge")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Edge.dll")]
+[assembly: AssemblyDescription("Edge.dll")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Edge")]
 [assembly: AssemblyCopyright("Copyright © 2013 Dmitry Kischenko")]

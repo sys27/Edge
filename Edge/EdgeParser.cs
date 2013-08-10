@@ -32,7 +32,8 @@ namespace Edge
         private int position;
 
         // todo: load from config
-        private IEnumerable<string> assemblies;
+        private HashSet<string> assemblies;
+        private HashSet<string> namespaces;
 
         private Dictionary<string, ObjectNode> ids;
 
@@ -45,6 +46,9 @@ namespace Edge
         public EdgeParser(ILexer lexer)
         {
             this.lexer = lexer;
+
+            assemblies = new HashSet<string>();
+            namespaces = new HashSet<string>();
             ids = new Dictionary<string, ObjectNode>();
         }
 
@@ -61,13 +65,19 @@ namespace Edge
             return tokens[position];
         }
 
+        private IEnumerable<Type> GetAppropriateTypes(string type)
+        {
+            return from lib in assemblies
+                   let assembly = Assembly.Load(lib)
+                   from t in assembly.GetTypes()
+                   from ns in namespaces
+                   where t.Namespace == ns && t.Name == type
+                   select t;
+        }
+
         private Type SearchType(string type)
         {
-            var types = from lib in assemblies
-                        let assembly = Assembly.Load(lib)
-                        from t in assembly.GetTypes()
-                        where t.Name == type
-                        select t;
+            var types = GetAppropriateTypes(type);
 
             // todo: error message
             if (types.Count() == 0)
@@ -80,11 +90,7 @@ namespace Edge
 
         private bool TrySearchType(string type, out Type outType)
         {
-            var types = from lib in assemblies
-                        let assembly = Assembly.Load(lib)
-                        from t in assembly.GetTypes()
-                        where t.Name == type
-                        select t;
+            var types = GetAppropriateTypes(type);
 
             // todo: error message
             if (types.Count() != 1)
@@ -137,13 +143,13 @@ namespace Edge
 
         private RootNode Root()
         {
-            var namespaces = Namespaces();
+            var namespaces = Namespace();
             var obj = Object();
 
             return new RootNode(obj, namespaces);
         }
 
-        private IEnumerable<NamespaceNode> Namespaces()
+        private IEnumerable<NamespaceNode> Namespace()
         {
             if (PeekToken() is UsingToken)
             {
@@ -482,7 +488,19 @@ namespace Edge
             }
             set
             {
-                assemblies = value;
+                assemblies = new HashSet<string>(value);
+            }
+        }
+
+        public IEnumerable<string> Namespaces
+        {
+            get
+            {
+                return namespaces;
+            }
+            set
+            {
+                namespaces = new HashSet<string>(value);
             }
         }
 

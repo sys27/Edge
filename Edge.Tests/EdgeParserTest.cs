@@ -28,6 +28,19 @@ namespace Edge.Tests
                     "PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
                     "PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
                     "System.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+                },
+                Namespaces = new HashSet<string>()
+                {
+                    "System",
+                    "System.Windows",
+                    "System.Windows.Controls",
+                    "System.Windows.Data",
+                    "System.Windows.Documents",
+                    "System.Windows.Input",
+                    "System.Windows.Media",
+                    "System.Windows.Media.Imaging",
+                    "System.Windows.Navigation",
+                    "System.Windows.Shapes"
                 }
             };
         }
@@ -476,6 +489,21 @@ namespace Edge.Tests
                 new SymbolToken('('),
                 new NumberToken(1024),
                 new SymbolToken(')'),
+                new SymbolToken('}')
+            });
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void TypeInNotNamespaceTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new TypeToken("ArrayList"),
                 new SymbolToken('}')
             });
         }
