@@ -472,6 +472,11 @@ namespace Edge
                             value = new BindingNode(word.Word);
                         }
                     }
+                    else
+                    {
+                        // todo: error message
+                        throw new EdgeParserException();
+                    }
                 }
                 else
                 {
