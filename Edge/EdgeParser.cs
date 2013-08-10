@@ -153,14 +153,17 @@ namespace Edge
         {
             if (PeekToken() is UsingToken)
             {
-                var namespaces = new List<NamespaceNode>();
+                var localNamespaces = new List<NamespaceNode>();
 
                 while (PeekToken() is UsingToken)
                 {
-                    namespaces.Add(GetNamespace());
+                    var ns = GetNamespace();
+
+                    localNamespaces.Add(ns);
+                    namespaces.Add(ns.Namespace);
                 }
 
-                return namespaces;
+                return localNamespaces;
             }
 
             return null;
