@@ -436,17 +436,42 @@ namespace Edge
                         }
                     }
                 }
-                else if (token is SymbolToken && ((SymbolToken)token).Symbol == '#')
+                else if (token is SymbolToken)
                 {
-                    token = GetToken();
+                    var symbol = token as SymbolToken;
+                    if (symbol.Symbol == '#')
+                    {
+                        token = GetToken();
 
-                    if (!(token is IdToken))
-                        // todo: error message
-                        throw new EdgeParserException();
+                        if (!(token is IdToken))
+                            // todo: error message
+                            throw new EdgeParserException();
 
-                    var id = token as IdToken;
+                        var id = token as IdToken;
 
-                    value = new ReferenceNode(id.Id);
+                        value = new ReferenceNode(id.Id);
+                    }
+                    else if (symbol.Symbol == '@')
+                    {
+                        token = GetToken();
+
+                        if (!(token is WordToken))
+                            // todo: error message
+                            throw new EdgeParserException();
+
+                        var word = token as WordToken;
+
+                        if (word.Word.Contains('.'))
+                        {
+                            var dot = word.Word.IndexOf('.');
+
+                            value = new BindingNode(word.Word.Substring(0, dot), word.Word.Substring(dot + 1));
+                        }
+                        else
+                        {
+                            value = new BindingNode(word.Word);
+                        }
+                    }
                 }
                 else
                 {

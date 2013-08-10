@@ -508,6 +508,61 @@ namespace Edge.Tests
             });
         }
 
+        [TestMethod]
+        public void ShortBindingTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Title"),
+                new SymbolToken(':'),
+                new SymbolToken('@'),
+                new WordToken("tb.Text"),
+                new SymbolToken(','),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new TypeToken("TextBox"),
+                new SymbolToken('#'),
+                new IdToken("tb"),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "window1",
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("Title"), new BindingNode("tb", "Text")),
+                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.TextBox), "tb"))
+                    })));
+        }
+
+        [TestMethod]
+        public void ShortBindingOnlyPathTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Title"),
+                new SymbolToken(':'),
+                new SymbolToken('@'),
+                new WordToken("WindowState"),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "window1",
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("Title"), new BindingNode("WindowState"))
+                    })));
+        }
+
     }
 
 }

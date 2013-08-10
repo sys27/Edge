@@ -55,6 +55,7 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="SyntaxNodes\ArrayNode.cs" />
+    <Compile Include="SyntaxNodes\BindingNode.cs" />
     <Compile Include="SyntaxNodes\INode.cs" />
     <Compile Include="SyntaxNodes\NamespaceNode.cs" />
     <Compile Include="SyntaxNodes\ObjectNode.cs" />
