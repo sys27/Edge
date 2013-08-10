@@ -367,6 +367,85 @@ namespace Edge
             return GetValue(propType);
         }
 
+        private ArrayNode Array()
+        {
+            return Array(null);
+        }
+
+        private ArrayNode Array(Type type)
+        {
+            var token = GetToken();
+            Type arrayType = null;
+            if (token is TypeToken)
+            {
+                arrayType = SearchType(((TypeToken)token).Type);
+
+                token = GetToken();
+            }
+
+            if (token is SymbolToken && ((SymbolToken)token).Symbol == '[')
+            {
+                var arr = new List<object>();
+
+                while (true)
+                {
+                    token = PeekToken();
+                    if (token is SymbolToken && ((SymbolToken)token).Symbol == ']')
+                    {
+                        position++;
+                        break;
+                    }
+
+                    object obj;
+                    if (arrayType != null)
+                    {
+                        obj = GetValue(arrayType);
+                    }
+                    else if (type != null && type.IsArray)
+                    {
+                        arrayType = type;
+                        obj = GetValue(type.GetElementType());
+                    }
+                    else
+                    {
+                        obj = GetValue();
+
+                        if (obj is ObjectNode)
+                        {
+                            arrayType = ((ObjectNode)obj).Info;
+                        }
+                        else if (obj is double || obj is string || obj.GetType().IsEnum)
+                        {
+                            arrayType = obj.GetType();
+                        }
+                        else
+                        {
+                            // todo: error message
+                            throw new EdgeParserException();
+                        }
+                    }
+                    arr.Add(obj);
+
+                    token = PeekToken();
+                    if (token is SymbolToken && ((SymbolToken)token).Symbol == ',')
+                    {
+                        position++;
+                        token = PeekToken();
+                        if (!(token is NumberToken || token is StringToken || token is TypeToken || token is WordToken))
+                            // todo: error message
+                            throw new EdgeParserException();
+                    }
+                }
+
+                if (arr.Count == 0)
+                    return null;
+
+                return new ArrayNode(arrayType, arr.ToArray());
+            }
+
+            return null;
+        }
+
         private object GetValue()
         {
             return GetValue(null);
@@ -397,14 +476,22 @@ namespace Edge
                 }
                 else if (token is TypeToken)
                 {
-                    position--;
-                    var obj = Object();
+                    token = PeekToken();
+                    if (token is SymbolToken && ((SymbolToken)token).Symbol == '[')
+                    {
+                        value = Array();
+                    }
+                    else
+                    {
+                        position--;
+                        var obj = Object();
 
-                    if (type != null && !type.IsAssignableFrom(obj.Info))
-                        // todo: error message
-                        throw new InvalidCastException();
+                        if (type != null && !type.IsAssignableFrom(obj.Info))
+                            // todo: error message
+                            throw new InvalidCastException();
 
-                    value = obj;
+                        value = obj;
+                    }
                 }
                 else if (token is WordToken)
                 {
@@ -428,7 +515,12 @@ namespace Edge
                         Type outType;
                         if (TrySearchType(word.Word, out outType))
                         {
-                            value = new ObjectNode(outType, GenereteId(outType));
+                            var id = GenereteId(outType);
+                            var obj = new ObjectNode(outType, GenereteId(outType));
+
+                            ids[id] = obj;
+
+                            value = obj;
                         }
                         else if (type != null)
                         {
@@ -471,6 +563,12 @@ namespace Edge
                         {
                             value = new BindingNode(word.Word);
                         }
+                    }
+                    else if (symbol.Symbol == '[')
+                    {
+                        position--;
+
+                        value = Array(type);
                     }
                     else
                     {

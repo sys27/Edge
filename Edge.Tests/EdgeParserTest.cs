@@ -563,6 +563,79 @@ namespace Edge.Tests
                     })));
         }
 
+        [TestMethod]
+        public void ArrayTest()
+        {
+            var type = typeof(System.Windows.Window);
+            var textBox = typeof(System.Windows.Controls.TextBox);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new TypeToken("TextBox"),
+                new SymbolToken('['),
+                new WordToken("TextBox"),
+                new SymbolToken(','),
+                new WordToken("TextBox"),
+                new SymbolToken(']'),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "window1",
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(
+                            type.GetProperty("Content"), 
+                            new ArrayNode(
+                                textBox, 
+                                new object[] 
+                                { 
+                                    new ObjectNode(textBox, "textBox1"), 
+                                    new ObjectNode(textBox, "textBox2") 
+                                }))
+                    })));
+        }
+
+        [TestMethod]
+        public void ArrayWithoutTypeTest()
+        {
+            var type = typeof(System.Windows.Window);
+            var textBox = typeof(System.Windows.Controls.TextBox);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new SymbolToken('['),
+                new WordToken("TextBox"),
+                new SymbolToken(','),
+                new WordToken("TextBox"),
+                new SymbolToken(']'),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "window1",
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(
+                            type.GetProperty("Content"), 
+                            new ArrayNode(
+                                textBox, 
+                                new object[] 
+                                { 
+                                    new ObjectNode(textBox, "textBox1"), 
+                                    new ObjectNode(textBox, "textBox2") 
+                                }))
+                    })));
+        }
+
     }
 
 }
