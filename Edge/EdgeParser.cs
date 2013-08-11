@@ -15,6 +15,7 @@
 using Edge.SyntaxNodes;
 using Edge.Tokens;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -101,6 +102,15 @@ namespace Edge
 
             outType = types.First();
             return true;
+        }
+
+        private bool TryCheck(Type type, Type genericDefinition, out Type genericType)
+        {
+            genericType = (from interfaceType in type.GetInterfaces()
+                           where interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == genericDefinition
+                           select interfaceType).FirstOrDefault();
+
+            return genericType != null;
         }
 
         private void ReadIds()
@@ -396,18 +406,29 @@ namespace Edge
                         break;
                     }
 
-                    object obj;
+                    object obj = null;
                     if (arrayType != null)
                     {
-                        if (!arrayType.IsArray)
-                            arrayType = arrayType.MakeArrayType();
-
-                        obj = GetValue(arrayType.GetElementType());
+                        obj = GetValue(arrayType);
                     }
-                    else if (type != null && type.IsArray)
+                    else if (type != null)
                     {
-                        arrayType = type;
-                        obj = GetValue(type.GetElementType());
+                        if (type.IsArray)
+                        {
+                            arrayType = type.GetElementType();
+                        }
+                        else
+                        {
+                            Type genericType;
+                            if (TryCheck(type, typeof(IDictionary<,>), out genericType))
+                                arrayType = genericType.GetGenericArguments()[1];
+                            else if (TryCheck(type, typeof(ICollection<>), out genericType))
+                                arrayType = genericType.GetGenericArguments()[0];
+                            else if (typeof(ICollection).IsAssignableFrom(type))
+                                arrayType = typeof(object);
+                        }
+
+                        obj = GetValue(arrayType);
                     }
                     else
                     {
@@ -427,6 +448,7 @@ namespace Edge
                             throw new EdgeParserException();
                         }
                     }
+
                     arr.Add(obj);
 
                     token = PeekToken();

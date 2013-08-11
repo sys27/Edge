@@ -591,7 +591,7 @@ namespace Edge.Tests
                         new PropertyNode(
                             type.GetProperty("Content"), 
                             new ArrayNode(
-                                textBox.MakeArrayType(), 
+                                textBox, 
                                 new object[] 
                                 { 
                                     new ObjectNode(textBox, "textBox1"), 
@@ -627,7 +627,7 @@ namespace Edge.Tests
                         new PropertyNode(
                             type.GetProperty("Content"), 
                             new ArrayNode(
-                                textBox.MakeArrayType(), 
+                                textBox, 
                                 new object[] 
                                 { 
                                     new ObjectNode(textBox, "textBox1"), 
@@ -669,7 +669,7 @@ namespace Edge.Tests
                         new PropertyNode(
                             type.GetProperty("Resources"), 
                             new ArrayNode(
-                                typeof(object[]), 
+                                typeof(object), 
                                 new object[] 
                                 { 
                                     new ObjectNode(style, "baseStyle"), 
