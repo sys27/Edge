@@ -421,32 +421,45 @@ namespace Edge
                         {
                             Type genericType;
                             if (TryCheck(type, typeof(IDictionary<,>), out genericType))
+                            {
                                 arrayType = genericType.GetGenericArguments()[1];
+                                obj = GetValue(arrayType);
+                            }
                             else if (TryCheck(type, typeof(ICollection<>), out genericType))
+                            {
                                 arrayType = genericType.GetGenericArguments()[0];
+                                obj = GetValue(arrayType);
+                            }
                             else if (typeof(ICollection).IsAssignableFrom(type))
+                            {
                                 arrayType = typeof(object);
-                        }
+                                obj = GetValue(arrayType);
+                            }
+                            else
+                            {
+                                obj = GetValue();
 
-                        obj = GetValue(arrayType);
+                                if (obj is ObjectNode)
+                                    arrayType = ((ObjectNode)obj).Info;
+                                else if (obj is double || obj is string || obj.GetType().IsEnum)
+                                    arrayType = obj.GetType();
+                                else
+                                    // todo: error message
+                                    throw new EdgeParserException();
+                            }
+                        }
                     }
                     else
                     {
                         obj = GetValue();
 
                         if (obj is ObjectNode)
-                        {
                             arrayType = ((ObjectNode)obj).Info;
-                        }
                         else if (obj is double || obj is string || obj.GetType().IsEnum)
-                        {
                             arrayType = obj.GetType();
-                        }
                         else
-                        {
                             // todo: error message
                             throw new EdgeParserException();
-                        }
                     }
 
                     arr.Add(obj);
