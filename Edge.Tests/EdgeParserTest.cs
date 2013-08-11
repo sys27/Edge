@@ -591,7 +591,7 @@ namespace Edge.Tests
                         new PropertyNode(
                             type.GetProperty("Content"), 
                             new ArrayNode(
-                                textBox, 
+                                textBox.MakeArrayType(), 
                                 new object[] 
                                 { 
                                     new ObjectNode(textBox, "textBox1"), 
@@ -627,11 +627,53 @@ namespace Edge.Tests
                         new PropertyNode(
                             type.GetProperty("Content"), 
                             new ArrayNode(
-                                textBox, 
+                                textBox.MakeArrayType(), 
                                 new object[] 
                                 { 
                                     new ObjectNode(textBox, "textBox1"), 
                                     new ObjectNode(textBox, "textBox2") 
+                                }))
+                    })));
+        }
+
+        [TestMethod]
+        public void WindowResourceTest()
+        {
+            var type = typeof(System.Windows.Window);
+            var style = typeof(System.Windows.Style);
+            var brush = typeof(System.Windows.Media.Brush);
+
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Resources"),
+                new SymbolToken(':'),
+                new SymbolToken('['),
+                new TypeToken("Style"),
+                new SymbolToken('#'),
+                new IdToken("baseStyle"),
+                new SymbolToken(','),
+                new TypeToken("Brush"),
+                new SymbolToken('#'),
+                new IdToken("newBrush"),
+                new SymbolToken(']'),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "window1",
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(
+                            type.GetProperty("Resources"), 
+                            new ArrayNode(
+                                typeof(object[]), 
+                                new object[] 
+                                { 
+                                    new ObjectNode(style, "baseStyle"), 
+                                    new ObjectNode(brush, "newBrush") 
                                 }))
                     })));
         }

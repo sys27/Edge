@@ -399,7 +399,10 @@ namespace Edge
                     object obj;
                     if (arrayType != null)
                     {
-                        obj = GetValue(arrayType);
+                        if (!arrayType.IsArray)
+                            arrayType = arrayType.MakeArrayType();
+
+                        obj = GetValue(arrayType.GetElementType());
                     }
                     else if (type != null && type.IsArray)
                     {
