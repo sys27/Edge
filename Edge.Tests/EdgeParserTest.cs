@@ -678,6 +678,43 @@ namespace Edge.Tests
                     })));
         }
 
+        [TestMethod]
+        public void GridColumnDefinitionsTest()
+        {
+            var type = typeof(System.Windows.Controls.Grid);
+            var cd = typeof(System.Windows.Controls.ColumnDefinition);
+
+            Test(new List<IToken>()
+            {
+                new TypeToken("Grid"),
+                new SymbolToken('{'),
+                new PropertyToken("ColumnDefinitions"),
+                new SymbolToken(':'),
+                new SymbolToken('['),
+                new TypeToken("ColumnDefinition"),
+                new SymbolToken(','),
+                new TypeToken("ColumnDefinition"),
+                new SymbolToken(']'),
+                new SymbolToken('}')
+            },
+            new RootNode(
+                new ObjectNode(
+                    type,
+                    "grid1",
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(
+                            type.GetProperty("ColumnDefinitions"), 
+                            new ArrayNode(
+                                cd, 
+                                new object[] 
+                                { 
+                                    new ObjectNode(cd, "columnDefinition1"), 
+                                    new ObjectNode(cd, "columnDefinition2") 
+                                }))
+                    })));
+        }
+
     }
 
 }
