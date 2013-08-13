@@ -104,13 +104,18 @@ namespace Edge
             return true;
         }
 
-        private bool TryCheck(Type type, Type genericDefinition, out Type genericType)
+        private bool TryCheckGenerics(Type type, Type genericDefinition, out Type genericType)
         {
             genericType = (from interfaceType in type.GetInterfaces()
                            where interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == genericDefinition
                            select interfaceType).FirstOrDefault();
 
             return genericType != null;
+        }
+
+        private bool CheckSymbol(IToken token, char symbol)
+        {
+            return token is SymbolToken && ((SymbolToken)token).Symbol == symbol;
         }
 
         private void ReadIds()
@@ -191,12 +196,12 @@ namespace Edge
             while (true)
             {
                 token = GetToken();
-                if (token is SymbolToken && ((SymbolToken)token).Symbol == ';')
+                if (CheckSymbol(token, ';'))
                     break;
 
                 if (token is WordToken)
                     sb.Append(((WordToken)token).Word);
-                else if (token is SymbolToken && ((SymbolToken)token).Symbol == '.')
+                else if (CheckSymbol(token, '.'))
                     sb.Append('.');
                 else
                     // todo: error message 
@@ -232,7 +237,7 @@ namespace Edge
         private string ObjectId(Type objType)
         {
             var token = PeekToken();
-            if (token is SymbolToken && ((SymbolToken)token).Symbol == '#')
+            if (CheckSymbol(token, '#'))
             {
                 position++;
 
@@ -250,7 +255,7 @@ namespace Edge
         private IEnumerable<object> CtorArgs(Type objType)
         {
             var token = PeekToken();
-            if (token is SymbolToken && ((SymbolToken)token).Symbol == '(')
+            if (CheckSymbol(token, '('))
             {
                 position++;
                 var args = new List<object>();
@@ -258,7 +263,7 @@ namespace Edge
                 while (true)
                 {
                     token = PeekToken();
-                    if (token is SymbolToken && ((SymbolToken)token).Symbol == ')')
+                    if (CheckSymbol(token, ')'))
                     {
                         position++;
                         break;
@@ -267,7 +272,7 @@ namespace Edge
                     args.Add(GetValue());
 
                     token = PeekToken();
-                    if (token is SymbolToken && ((SymbolToken)token).Symbol == ',')
+                    if (CheckSymbol(token, ','))
                     {
                         position++;
                         token = GetToken();
@@ -307,7 +312,7 @@ namespace Edge
         private IEnumerable<PropertyNode> Properties(Type objType)
         {
             var token = PeekToken();
-            if (token is SymbolToken && ((SymbolToken)token).Symbol == '{')
+            if (CheckSymbol(token, '{'))
             {
                 position++;
                 var properties = new List<PropertyNode>();
@@ -315,7 +320,7 @@ namespace Edge
                 while (true)
                 {
                     token = PeekToken();
-                    if (token is SymbolToken && ((SymbolToken)token).Symbol == '}')
+                    if (CheckSymbol(token, '}'))
                     {
                         position++;
                         break;
@@ -326,7 +331,7 @@ namespace Edge
                         properties.Add(GetProperty(objType));
 
                         token = PeekToken();
-                        if (token is SymbolToken && ((SymbolToken)token).Symbol == ',')
+                        if (CheckSymbol(token, ','))
                         {
                             position++;
                             token = PeekToken();
@@ -393,14 +398,14 @@ namespace Edge
                 token = GetToken();
             }
 
-            if (token is SymbolToken && ((SymbolToken)token).Symbol == '[')
+            if (CheckSymbol(token, '['))
             {
                 var arr = new List<object>();
 
                 while (true)
                 {
                     token = PeekToken();
-                    if (token is SymbolToken && ((SymbolToken)token).Symbol == ']')
+                    if (CheckSymbol(token, ']'))
                     {
                         position++;
                         break;
@@ -420,12 +425,12 @@ namespace Edge
                         else
                         {
                             Type genericType;
-                            if (TryCheck(type, typeof(IDictionary<,>), out genericType))
+                            if (TryCheckGenerics(type, typeof(IDictionary<,>), out genericType))
                             {
                                 arrayType = genericType.GetGenericArguments()[1];
                                 obj = GetValue(arrayType);
                             }
-                            else if (TryCheck(type, typeof(ICollection<>), out genericType))
+                            else if (TryCheckGenerics(type, typeof(ICollection<>), out genericType))
                             {
                                 arrayType = genericType.GetGenericArguments()[0];
                                 obj = GetValue(arrayType);
@@ -465,7 +470,7 @@ namespace Edge
                     arr.Add(obj);
 
                     token = PeekToken();
-                    if (token is SymbolToken && ((SymbolToken)token).Symbol == ',')
+                    if (CheckSymbol(token, ','))
                     {
                         position++;
                         token = PeekToken();
@@ -515,7 +520,7 @@ namespace Edge
                 else if (token is TypeToken)
                 {
                     token = PeekToken();
-                    if (token is SymbolToken && ((SymbolToken)token).Symbol == '[')
+                    if (CheckSymbol(token, '['))
                     {
                         value = Array();
                     }
@@ -536,7 +541,7 @@ namespace Edge
                     var word = token as WordToken;
 
                     token = PeekToken();
-                    if (type != null && token is SymbolToken && ((SymbolToken)token).Symbol == '.')
+                    if (CheckSymbol(token, '.'))
                     {
                         position++;
                         token = GetToken();
