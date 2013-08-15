@@ -7,7 +7,34 @@ namespace Edge.SyntaxNodes
     {
 
         private Type type;
-        private string value;
+        private object value;
+
+        public EnumNode(Type type, object value)
+        {
+            this.type = type;
+            this.value = value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public Type Info
+        {
+            get
+            {
+                return type;
+            }
+        }
+
+        public object Value
+        {
+            get
+            {
+                return value;
+            }
+        }
 
     }
 
