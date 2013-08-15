@@ -57,12 +57,15 @@
     </Compile>
     <Compile Include="SyntaxNodes\ArrayNode.cs" />
     <Compile Include="SyntaxNodes\BindingNode.cs" />
+    <Compile Include="SyntaxNodes\EnumNode.cs" />
     <Compile Include="SyntaxNodes\INode.cs" />
     <Compile Include="SyntaxNodes\NamespaceNode.cs" />
+    <Compile Include="SyntaxNodes\NumberNode.cs" />
     <Compile Include="SyntaxNodes\ObjectNode.cs" />
     <Compile Include="SyntaxNodes\PropertyNode.cs" />
     <Compile Include="SyntaxNodes\ReferenceNode.cs" />
     <Compile Include="SyntaxNodes\RootNode.cs" />
+    <Compile Include="SyntaxNodes\StringNode.cs" />
     <Compile Include="Tokens\IdToken.cs" />
     <Compile Include="Tokens\IToken.cs" />
     <Compile Include="Tokens\NumberToken.cs" />
