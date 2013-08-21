@@ -39,8 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builders\CSharpBuilder.cs" />
+    <Compile Include="Builders\CSharp\CSharpBuilder.cs" />
     <Compile Include="Builders\IBuilder.cs" />
+    <Compile Include="Builders\ISourceCode.cs" />
+    <Compile Include="Builders\ISourceCodeItem.cs" />
     <Compile Include="CastHelper.cs" />
     <Compile Include="EdgeLexer.cs" />
     <Compile Include="EdgeLexerException.cs" />

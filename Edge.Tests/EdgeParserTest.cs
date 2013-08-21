@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Edge.SyntaxNodes;
 using Edge.Tokens;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
-using Edge.SyntaxNodes;
 
 namespace Edge.Tests
 {

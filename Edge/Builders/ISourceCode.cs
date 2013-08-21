@@ -12,19 +12,13 @@
 // express or implied. 
 // See the License for the specific language governing permissions and 
 // limitations under the License.
-using Edge.SyntaxNodes;
 using System;
 
-namespace Edge.Builders.CSharp
+namespace Edge.Builders
 {
-    
-    public class CSharpBuilder : IBuilder
-    {
 
-        public string Build(RootNode root)
-        {
-            throw new NotImplementedException();
-        }
+    public interface ISourceCode
+    {
 
     }
 

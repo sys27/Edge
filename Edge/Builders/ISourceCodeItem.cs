@@ -14,10 +14,10 @@
 // limitations under the License.
 using System;
 
-namespace Edge.SyntaxNodes
+namespace Edge.Builders
 {
-    
-    public interface IValueNode : INode
+
+    public interface ISourceCodeItem
     {
 
     }
