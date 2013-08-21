@@ -3,7 +3,7 @@
 namespace Edge.SyntaxNodes
 {
 
-    public class NumberNode : INode
+    public class NumberNode : IValueNode
     {
 
         private double number;

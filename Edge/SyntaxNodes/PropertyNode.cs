@@ -22,9 +22,9 @@ namespace Edge.SyntaxNodes
     {
 
         private PropertyInfo propertyInfo;
-        private object value;
+        private IValueNode value;
 
-        public PropertyNode(PropertyInfo propertyInfo, object value)
+        public PropertyNode(PropertyInfo propertyInfo, IValueNode value)
         {
             this.propertyInfo = propertyInfo;
             this.value = value;
@@ -50,7 +50,7 @@ namespace Edge.SyntaxNodes
             }
         }
 
-        public object Value
+        public IValueNode Value
         {
             get
             {

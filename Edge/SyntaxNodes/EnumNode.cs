@@ -3,7 +3,7 @@
 namespace Edge.SyntaxNodes
 {
 
-    public class EnumNode : INode
+    public class EnumNode : IValueNode
     {
 
         private Type type;
@@ -17,7 +17,14 @@ namespace Edge.SyntaxNodes
 
         public override bool Equals(object obj)
         {
-            return base.Equals(obj);
+            if (this == obj)
+                return true;
+
+            var e = obj as EnumNode;
+            if (e == null)
+                return false;
+
+            return type.Equals(e.type) && value.Equals(e.value);
         }
 
         public Type Info

@@ -252,13 +252,13 @@ namespace Edge
             return GenereteId(objType);
         }
 
-        private IEnumerable<object> CtorArgs(Type objType)
+        private IEnumerable<IValueNode> CtorArgs(Type objType)
         {
             var token = PeekToken();
             if (CheckSymbol(token, '('))
             {
                 position++;
-                var args = new List<object>();
+                var args = new List<IValueNode>();
 
                 while (true)
                 {
@@ -286,13 +286,23 @@ namespace Edge
                 if (args.Count > 0)
                 {
                     var types = new Type[args.Count];
+                    var strType = typeof(string);
+                    var doubleType = typeof(double);
+
                     for (int i = 0; i < types.Length; i++)
                     {
                         var t = args[0];
                         if (t is ObjectNode)
                             types[i] = ((ObjectNode)t).Info;
+                        else if (t is StringNode)
+                            types[i] = strType;
+                        else if (t is NumberNode)
+                            types[i] = doubleType;
+                        else if (t is EnumNode)
+                            types[i] = ((EnumNode)t).Info;
                         else
-                            types[i] = t.GetType();
+                            // todo: error message
+                            throw new EdgeParserException();
                     }
 
                     var ctor = objType.GetConstructor(types);
@@ -372,7 +382,7 @@ namespace Edge
             return new PropertyNode(propertyInfo, propertyValue);
         }
 
-        private object PropertyValue(Type propType)
+        private IValueNode PropertyValue(Type propType)
         {
             var token = GetToken();
             if (!(token is SymbolToken) || ((SymbolToken)token).Symbol != ':')
@@ -489,54 +499,55 @@ namespace Edge
             return null;
         }
 
-        private object GetValue()
+        private IValueNode GetValue()
         {
             return GetValue(null);
         }
 
-        private object GetValue(Type type)
+        private IValueNode GetValue(Type type)
         {
-            object value = null;
-
             try
             {
                 var token = GetToken();
+
                 if (token is NumberToken)
                 {
                     var numberToken = token as NumberToken;
+                    var number = numberToken.Number;
 
                     if (type != null)
-                        CastHelper.CheckCast(numberToken.Number, type);
-                    value = numberToken.Number;
+                        CastHelper.CheckCast(number, type);
+
+                    return new NumberNode(number);
                 }
-                else if (token is StringToken)
+                if (token is StringToken)
                 {
                     var stringToken = token as StringToken;
+                    var str = stringToken.Str;
 
                     if (type != null)
-                        CastHelper.CheckCast(stringToken.Str, type);
-                    value = stringToken.Str;
+                        CastHelper.CheckCast(str, type);
+
+                    return new StringNode(str);
                 }
-                else if (token is TypeToken)
+                if (token is TypeToken)
                 {
                     token = PeekToken();
                     if (CheckSymbol(token, '['))
                     {
-                        value = Array();
+                        return Array();
                     }
-                    else
-                    {
-                        position--;
-                        var obj = Object();
 
-                        if (type != null && !type.IsAssignableFrom(obj.Info))
-                            // todo: error message
-                            throw new InvalidCastException();
+                    position--;
+                    var obj = Object();
 
-                        value = obj;
-                    }
+                    if (type != null && !type.IsAssignableFrom(obj.Info))
+                        // todo: error message
+                        throw new InvalidCastException();
+
+                    return obj;
                 }
-                else if (token is WordToken)
+                if (token is WordToken)
                 {
                     var word = token as WordToken;
 
@@ -551,27 +562,23 @@ namespace Edge
                             throw new EdgeParserException();
 
                         word = token as WordToken;
-                        value = Enum.Parse(type, word.Word);
+                        return new EnumNode(type, Enum.Parse(type, word.Word));
                     }
-                    else
+
+                    Type outType;
+                    if (TrySearchType(word.Word, out outType))
                     {
-                        Type outType;
-                        if (TrySearchType(word.Word, out outType))
-                        {
-                            var id = GenereteId(outType);
-                            var obj = new ObjectNode(outType, GenereteId(outType));
+                        var id = GenereteId(outType);
+                        var obj = new ObjectNode(outType, GenereteId(outType));
 
-                            ids[id] = obj;
+                        ids[id] = obj;
 
-                            value = obj;
-                        }
-                        else if (type != null)
-                        {
-                            value = Enum.Parse(type, word.Word);
-                        }
+                        return obj;
                     }
+
+                    return new EnumNode(type, Enum.Parse(type, word.Word));
                 }
-                else if (token is SymbolToken)
+                if (token is SymbolToken)
                 {
                     var symbol = token as SymbolToken;
                     if (symbol.Symbol == '#')
@@ -584,9 +591,9 @@ namespace Edge
 
                         var id = token as IdToken;
 
-                        value = new ReferenceNode(id.Id);
+                        return new ReferenceNode(id.Id);
                     }
-                    else if (symbol.Symbol == '@')
+                    if (symbol.Symbol == '@')
                     {
                         token = GetToken();
 
@@ -600,18 +607,16 @@ namespace Edge
                         {
                             var dot = word.Word.IndexOf('.');
 
-                            value = new BindingNode(word.Word.Substring(0, dot), word.Word.Substring(dot + 1));
+                            return new BindingNode(word.Word.Substring(0, dot), word.Word.Substring(dot + 1));
                         }
-                        else
-                        {
-                            value = new BindingNode(word.Word);
-                        }
+
+                        return new BindingNode(word.Word);
                     }
-                    else if (symbol.Symbol == '[')
+                    if (symbol.Symbol == '[')
                     {
                         position--;
 
-                        value = Array(type);
+                        return Array(type);
                     }
                     else
                     {
@@ -635,8 +640,6 @@ namespace Edge
                 // todo: error message
                 throw new EdgeParserException("", ice);
             }
-
-            return value;
         }
 
         public RootNode Parse(string text)

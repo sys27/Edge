@@ -3,7 +3,7 @@
 namespace Edge.SyntaxNodes
 {
     
-    public class StringNode : INode
+    public class StringNode : IValueNode
     {
 
         private string str;

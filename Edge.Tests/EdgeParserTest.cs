@@ -134,7 +134,7 @@ namespace Edge.Tests
                     "window1",
                     new List<PropertyNode>()
                     {
-                        new PropertyNode(type.GetProperty("Width"), 1024.6)
+                        new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
                     })));
         }
 
@@ -157,7 +157,7 @@ namespace Edge.Tests
                     "window1",
                     new List<PropertyNode>()
                     {
-                        new PropertyNode(type.GetProperty("Title"), "Hello")
+                        new PropertyNode(type.GetProperty("Title"), new StringNode("Hello"))
                     })));
         }
 
@@ -205,7 +205,7 @@ namespace Edge.Tests
                     "window1",
                     new List<PropertyNode>()
                     {
-                        new PropertyNode(type.GetProperty("WindowState"), System.Windows.WindowState.Maximized)
+                        new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
                     })));
         }
 
@@ -230,7 +230,7 @@ namespace Edge.Tests
                     "window1",
                     new List<PropertyNode>()
                     {
-                        new PropertyNode(type.GetProperty("WindowState"), System.Windows.WindowState.Maximized)
+                        new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
                     })));
         }
 
@@ -257,8 +257,8 @@ namespace Edge.Tests
                     "window1",
                     new List<PropertyNode>()
                     {
-                        new PropertyNode(type.GetProperty("Title"), "Hello"),
-                        new PropertyNode(type.GetProperty("Width"), 1024.6)
+                        new PropertyNode(type.GetProperty("Title"), new StringNode("Hello")),
+                        new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
                     })));
         }
 
@@ -422,14 +422,14 @@ namespace Edge.Tests
                             new ObjectNode(
                                 typeof(System.Windows.Media.Imaging.BitmapImage), 
                                 "bitmapImage1", 
-                                new List<object>()
+                                new List<IValueNode>()
                                 {
                                     new ObjectNode(
                                         typeof(System.Uri),
                                         "uri1",
-                                        new List<object>()
+                                        new List<IValueNode>()
                                         {
-                                            "Icon.ico"
+                                            new StringNode("Icon.ico")
                                         })
                                 }))
                     })));

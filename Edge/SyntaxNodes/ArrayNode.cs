@@ -18,8 +18,7 @@ using System.Linq;
 namespace Edge.SyntaxNodes
 {
 
-    // todo: array or collection
-    public class ArrayNode : INode
+    public class ArrayNode : IValueNode
     {
 
         private Type arrayType;

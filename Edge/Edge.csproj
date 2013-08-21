@@ -46,7 +46,6 @@
     <Compile Include="EdgeLexerException.cs" />
     <Compile Include="EdgeParser.cs" />
     <Compile Include="EdgeParserException.cs" />
-    <Compile Include="IAnalyzer.cs" />
     <Compile Include="ILexer.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -59,6 +58,7 @@
     <Compile Include="SyntaxNodes\BindingNode.cs" />
     <Compile Include="SyntaxNodes\EnumNode.cs" />
     <Compile Include="SyntaxNodes\INode.cs" />
+    <Compile Include="SyntaxNodes\IValueNode.cs" />
     <Compile Include="SyntaxNodes\NamespaceNode.cs" />
     <Compile Include="SyntaxNodes\NumberNode.cs" />
     <Compile Include="SyntaxNodes\ObjectNode.cs" />

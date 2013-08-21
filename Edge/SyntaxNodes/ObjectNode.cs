@@ -19,12 +19,12 @@ using System.Linq;
 namespace Edge.SyntaxNodes
 {
 
-    public class ObjectNode : INode
+    public class ObjectNode : IValueNode
     {
 
         private Type typeInfo;
         private string id;
-        private IEnumerable<object> ctorArgs;
+        private IEnumerable<IValueNode> ctorArgs;
         private IEnumerable<PropertyNode> properties;
 
         public ObjectNode(Type typeInfo, string id)
@@ -33,7 +33,7 @@ namespace Edge.SyntaxNodes
 
         }
 
-        public ObjectNode(Type typeInfo, string id, IEnumerable<object> ctorArgs)
+        public ObjectNode(Type typeInfo, string id, IEnumerable<IValueNode> ctorArgs)
             : this(typeInfo, id, ctorArgs, null)
         {
         }
@@ -43,7 +43,7 @@ namespace Edge.SyntaxNodes
         {
         }
 
-        public ObjectNode(Type typeInfo, string id, IEnumerable<object> ctorArgs, IEnumerable<PropertyNode> properties)
+        public ObjectNode(Type typeInfo, string id, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
         {
             this.typeInfo = typeInfo;
             this.id = id;
@@ -84,7 +84,7 @@ namespace Edge.SyntaxNodes
             }
         }
 
-        public IEnumerable<object> ConstructorArguments
+        public IEnumerable<IValueNode> ConstructorArguments
         {
             get
             {
