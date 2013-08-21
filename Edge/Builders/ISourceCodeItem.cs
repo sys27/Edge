@@ -20,6 +20,8 @@ namespace Edge.Builders
     public interface ISourceCodeItem
     {
 
+        string Convert();
+
     }
 
 }

@@ -39,7 +39,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\CSharp\Class.cs" />
     <Compile Include="Builders\CSharp\CSharpBuilder.cs" />
+    <Compile Include="Builders\CSharp\Member.cs" />
+    <Compile Include="Builders\CSharp\Method.cs" />
+    <Compile Include="Builders\CSharp\Namespace.cs" />
+    <Compile Include="Builders\CSharp\Object.cs" />
+    <Compile Include="Builders\CSharp\SourceCode.cs" />
     <Compile Include="Builders\IBuilder.cs" />
     <Compile Include="Builders\ISourceCode.cs" />
     <Compile Include="Builders\ISourceCodeItem.cs" />
