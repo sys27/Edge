@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and 
 // limitations under the License.
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Edge.Builders.CSharp
 {
@@ -20,10 +22,56 @@ namespace Edge.Builders.CSharp
     public class Method : ISourceCodeItem
     {
 
+        private AccessModifier access;
+        private string name;
+        private IEnumerable<ISourceCodeItem> body;
+
+        public Method(string name)
+            : this(AccessModifier.Private, name, null)
+        {
+        }
+
+        public Method(string name, IEnumerable<ISourceCodeItem> body)
+            : this(AccessModifier.Private, name, body)
+        {
+        }
+
+        public Method(AccessModifier access, string name, IEnumerable<ISourceCodeItem> body)
+        {
+            this.access = access;
+            this.name = name;
+        }
+
         public string Convert()
         {
-            throw new NotImplementedException();
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var item in body)
+                sb.Append(item.Convert());
+
+            return access.GetModifier() + ' ' + name + "()" + Environment.NewLine +
+                   '{' + Environment.NewLine +
+                   sb.ToString() + Environment.NewLine +
+                   '}';
         }
+
+        public AccessModifier Access
+        {
+            get
+            {
+                return access;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+        }
+
+        public IEnumerable<ISourceCodeItem> Body { get; }
 
     }
 

@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\CSharp\AccessModifier.cs" />
     <Compile Include="Builders\CSharp\Class.cs" />
     <Compile Include="Builders\CSharp\CSharpBuilder.cs" />
     <Compile Include="Builders\CSharp\Member.cs" />

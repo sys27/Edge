@@ -13,40 +13,28 @@
 // See the License for the specific language governing permissions and 
 // limitations under the License.
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Edge.Builders.CSharp
 {
-
-    public class SourceCode : ISourceCode
+    
+    public enum AccessModifier
     {
 
-        private IEnumerable<ISourceCodeItem> items;
+        Private,
+        Protected,
+        Internal,
+        ProtectedInternal,
+        Public
 
-        public SourceCode(IEnumerable<ISourceCodeItem> items)
+    }
+
+    public static class AccessModifierExt
+    {
+
+        public static string GetModifier(this AccessModifier access)
         {
-            this.items = items;
+            return access.ToString().ToLower();
         }
-
-        public string ToText()
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var item in items)
-                sb.Append(item.Convert());
-
-            return sb.ToString();
-        }
-
-        public IEnumerable<ISourceCodeItem> Items
-        {
-            get
-            {
-                return items;
-            }
-        }
-
 
     }
 

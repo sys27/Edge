@@ -16,13 +16,53 @@ using System;
 
 namespace Edge.Builders.CSharp
 {
-    
+
     public class Member : ISourceCodeItem
     {
 
+        private AccessModifier access;
+        private Type type;
+        private string name;
+
+        public Member(Type type, string name)
+            : this(AccessModifier.Protected, type, name)
+        {
+        }
+
+        public Member(AccessModifier access, Type type, string name)
+        {
+            this.access = access;
+            this.type = type;
+            this.name = name;
+        }
+
         public string Convert()
         {
-            throw new NotImplementedException();
+            return access.GetModifier() + ' ' + type.Name + ' ' + name + ';';
+        }
+
+        public AccessModifier Access
+        {
+            get
+            {
+                return access;
+            }
+        }
+
+        public Type Type
+        {
+            get
+            {
+                return type;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
         }
 
     }
