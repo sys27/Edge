@@ -344,7 +344,7 @@ namespace Edge.Tests
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
-                new WordToken("Column"),
+                new PropertyToken("Column"),
                 new SymbolToken(':'),
                 new NumberToken(1),
                 new SymbolToken('}')
@@ -390,6 +390,25 @@ namespace Edge.Tests
                     {
                         new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
                     })));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeParserException))]
+        public void SamePropertiesTest()
+        {
+            TestFail(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Title"),
+                new SymbolToken(':'),
+                new StringToken("Hello"),
+                new SymbolToken(','),
+                new PropertyToken("Title"),
+                new SymbolToken(':'),
+                new StringToken("Hello!!!"),
+                new SymbolToken('}')
+            });
         }
 
         [TestMethod]

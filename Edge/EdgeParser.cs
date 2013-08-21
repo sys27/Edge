@@ -338,7 +338,14 @@ namespace Edge
 
                     if (token is PropertyToken)
                     {
-                        properties.Add(GetProperty(objType));
+                        var prop = GetProperty(objType);
+                        if ((from property in properties
+                             where property.Info.Equals(prop.Info)
+                             select property).Count() > 0)
+                            // todo: error message ...
+                            throw new EdgeParserException();
+
+                        properties.Add(prop);
 
                         token = PeekToken();
                         if (CheckSymbol(token, ','))
