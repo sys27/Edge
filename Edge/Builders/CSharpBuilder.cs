@@ -12,45 +12,18 @@
 // express or implied. 
 // See the License for the specific language governing permissions and 
 // limitations under the License.
-using Edge.Builders;
+using Edge.SyntaxNodes;
 using System;
 
-namespace Edge.SyntaxNodes
+namespace Edge.Builders
 {
-    
-    public class StringNode : IValueNode
+
+    public class CSharpBuilder : IBuilder
     {
 
-        private string str;
-
-        public StringNode(string str)
-        {
-            this.str = str;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (this == obj)
-                return true;
-
-            var sn = obj as StringNode;
-            if (sn == null)
-                return false;
-
-            return str == sn.str;
-        }
-
-        public string Convert(IBuilder builder)
+        public string Build(RootNode root)
         {
             throw new NotImplementedException();
-        }
-
-        public string Str
-        {
-            get
-            {
-                return str;
-            }
         }
 
     }

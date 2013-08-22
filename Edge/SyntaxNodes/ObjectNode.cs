@@ -12,6 +12,7 @@
 // express or implied. 
 // See the License for the specific language governing permissions and 
 // limitations under the License.
+using Edge.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,11 @@ namespace Edge.SyntaxNodes
                     (ctorArgs != null && o.ctorArgs != null && ctorArgs.SequenceEqual(o.ctorArgs))) &&
                    ((properties == null && o.properties == null) ||
                     (properties != null && o.properties != null && properties.SequenceEqual(o.properties)));
+        }
+
+        public string Convert(IBuilder builder)
+        {
+            throw new NotImplementedException();
         }
 
         public Type Info

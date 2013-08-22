@@ -12,6 +12,7 @@
 // express or implied. 
 // See the License for the specific language governing permissions and 
 // limitations under the License.
+using Edge.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,11 @@ namespace Edge.SyntaxNodes
             return rootObject.Equals(root.rootObject) && 
                    ((namespaces == null && root.namespaces == null) ||
                     (namespaces != null && root.namespaces != null && namespaces.SequenceEqual(root.namespaces)));
+        }
+
+        public string Convert(IBuilder builder)
+        {
+            throw new NotImplementedException();
         }
 
         public ObjectNode Root

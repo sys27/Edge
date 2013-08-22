@@ -12,6 +12,7 @@
 // express or implied. 
 // See the License for the specific language governing permissions and 
 // limitations under the License.
+using Edge.Builders;
 using System;
 using System.Linq;
 
@@ -43,6 +44,11 @@ namespace Edge.SyntaxNodes
                 return false;
 
             return arrayType.Equals(arr.arrayType) && array.SequenceEqual(arr.array);
+        }
+
+        public string Convert(IBuilder builder)
+        {
+            throw new NotImplementedException();
         }
 
         public Type ArrayType

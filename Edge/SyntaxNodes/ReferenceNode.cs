@@ -12,6 +12,7 @@
 // express or implied. 
 // See the License for the specific language governing permissions and 
 // limitations under the License.
+using Edge.Builders;
 using System;
 
 namespace Edge.SyntaxNodes
@@ -37,6 +38,11 @@ namespace Edge.SyntaxNodes
                 return false;
 
             return id == reference.id;
+        }
+
+        public string Convert(IBuilder builder)
+        {
+            throw new NotImplementedException();
         }
 
         public string Id
