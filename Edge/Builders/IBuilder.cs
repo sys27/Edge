@@ -21,7 +21,7 @@ namespace Edge.Builders
     public interface IBuilder
     {
 
-        ISourceCode Build(RootNode root);
+        string Build(RootNode root);
 
     }
 
