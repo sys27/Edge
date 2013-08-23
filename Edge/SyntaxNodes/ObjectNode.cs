@@ -27,29 +27,50 @@ namespace Edge.SyntaxNodes
         private string id;
         private IEnumerable<IValueNode> ctorArgs;
         private IEnumerable<PropertyNode> properties;
+        private bool isRoot;
 
         public ObjectNode(Type typeInfo, string id)
-            : this(typeInfo, id, null, null)
+            : this(typeInfo, id, null, null, false)
         {
+        }
 
+        public ObjectNode(Type typeInfo, string id, bool isRoot)
+            : this(typeInfo, id, null, null, isRoot)
+        {
         }
 
         public ObjectNode(Type typeInfo, string id, IEnumerable<IValueNode> ctorArgs)
-            : this(typeInfo, id, ctorArgs, null)
+            : this(typeInfo, id, ctorArgs, null, false)
+        {
+        }
+
+        public ObjectNode(Type typeInfo, string id, IEnumerable<IValueNode> ctorArgs, bool isRoot)
+            : this(typeInfo, id, ctorArgs, null, isRoot)
         {
         }
 
         public ObjectNode(Type typeInfo, string id, IEnumerable<PropertyNode> properties)
-            : this(typeInfo, id, null, properties)
+            : this(typeInfo, id, null, properties, false)
+        {
+        }
+
+        public ObjectNode(Type typeInfo, string id, IEnumerable<PropertyNode> properties, bool isRoot)
+            : this(typeInfo, id, null, properties, isRoot)
         {
         }
 
         public ObjectNode(Type typeInfo, string id, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
+            : this(typeInfo, id, null, properties, false)
+        {
+        }
+
+        public ObjectNode(Type typeInfo, string id, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties, bool isRoot)
         {
             this.typeInfo = typeInfo;
             this.id = id;
             this.ctorArgs = ctorArgs;
             this.properties = properties;
+            this.isRoot = isRoot;
         }
 
         public override bool Equals(object obj)
@@ -63,6 +84,7 @@ namespace Edge.SyntaxNodes
 
             return typeInfo.Equals(o.typeInfo) &&
                    id == o.id &&
+                   isRoot == o.isRoot &&
                    ((ctorArgs == null && o.ctorArgs == null) ||
                     (ctorArgs != null && o.ctorArgs != null && ctorArgs.SequenceEqual(o.ctorArgs))) &&
                    ((properties == null && o.properties == null) ||
@@ -103,6 +125,18 @@ namespace Edge.SyntaxNodes
             get
             {
                 return properties;
+            }
+        }
+
+        public bool IsRoot
+        {
+            get
+            {
+                return isRoot;
+            }
+            set
+            {
+                isRoot = value;
             }
         }
 

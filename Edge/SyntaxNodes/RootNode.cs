@@ -34,6 +34,12 @@ namespace Edge.SyntaxNodes
 
         public RootNode(ObjectNode rootObject, IEnumerable<NamespaceNode> namespaces)
         {
+            if (rootObject == null)
+                throw new ArgumentNullException("rootObject");
+            if (!rootObject.IsRoot)
+                // todo: error message
+                throw new ArgumentException();
+
             this.rootObject = rootObject;
             this.namespaces = namespaces;
         }
@@ -47,7 +53,7 @@ namespace Edge.SyntaxNodes
             if (root == null)
                 return false;
 
-            return rootObject.Equals(root.rootObject) && 
+            return rootObject.Equals(root.rootObject) &&
                    ((namespaces == null && root.namespaces == null) ||
                     (namespaces != null && root.namespaces != null && namespaces.SequenceEqual(root.namespaces)));
         }

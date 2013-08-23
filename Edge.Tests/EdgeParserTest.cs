@@ -79,7 +79,8 @@ namespace Edge.Tests
             new RootNode(
                 new ObjectNode(
                     typeof(System.Windows.Window),
-                    "window1"),
+                    "window1",
+                    true),
                 new List<NamespaceNode>()
                 {
                     new NamespaceNode("System"),
@@ -135,7 +136,8 @@ namespace Edge.Tests
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -158,7 +160,8 @@ namespace Edge.Tests
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Title"), new StringNode("Hello"))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -183,7 +186,8 @@ namespace Edge.Tests
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -206,7 +210,8 @@ namespace Edge.Tests
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -231,7 +236,8 @@ namespace Edge.Tests
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -259,7 +265,8 @@ namespace Edge.Tests
                     {
                         new PropertyNode(type.GetProperty("Title"), new StringNode("Hello")),
                         new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -290,7 +297,8 @@ namespace Edge.Tests
                     {
                         new PropertyNode(type.GetProperty("Icon"), new ObjectNode(typeof(System.Windows.Media.Imaging.BitmapImage), "bitmap")),
                         new PropertyNode(type.GetProperty("Content"), new ReferenceNode("bitmap"))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -366,7 +374,8 @@ namespace Edge.Tests
             new RootNode(
                 new ObjectNode(
                     type,
-                    "mainWindow")));
+                    "mainWindow",
+                    true)));
         }
 
         [TestMethod]
@@ -389,7 +398,8 @@ namespace Edge.Tests
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -451,7 +461,8 @@ namespace Edge.Tests
                                             new StringNode("Icon.ico")
                                         })
                                 }))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -555,7 +566,8 @@ namespace Edge.Tests
                     {
                         new PropertyNode(type.GetProperty("Title"), new BindingNode("tb", "Text")),
                         new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.TextBox), "tb"))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -579,7 +591,8 @@ namespace Edge.Tests
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Title"), new BindingNode("WindowState"))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -616,7 +629,8 @@ namespace Edge.Tests
                                     new ObjectNode(textBox, "textBox1"), 
                                     new ObjectNode(textBox, "textBox2") 
                                 }))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -652,7 +666,8 @@ namespace Edge.Tests
                                     new ObjectNode(textBox, "textBox1"), 
                                     new ObjectNode(textBox, "textBox2") 
                                 }))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -694,7 +709,8 @@ namespace Edge.Tests
                                     new ObjectNode(style, "baseStyle"), 
                                     new ObjectNode(brush, "newBrush") 
                                 }))
-                    })));
+                    },
+                    true)));
         }
 
         [TestMethod]
@@ -731,7 +747,8 @@ namespace Edge.Tests
                                     new ObjectNode(cd, "columnDefinition1"), 
                                     new ObjectNode(cd, "columnDefinition2") 
                                 }))
-                    })));
+                    },
+                    true)));
         }
 
     }

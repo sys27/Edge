@@ -159,7 +159,7 @@ namespace Edge
         private RootNode Root()
         {
             var namespaces = Namespace();
-            var obj = Object();
+            var obj = Object(true);
 
             return new RootNode(obj, namespaces);
         }
@@ -218,6 +218,11 @@ namespace Edge
 
         private ObjectNode Object()
         {
+            return Object(false);
+        }
+
+        private ObjectNode Object(bool isRoot)
+        {
             var token = GetToken();
             if (!(token is TypeToken))
                 // todo: error message
@@ -228,7 +233,7 @@ namespace Edge
             var ctor = CtorArgs(type);
             var properties = Properties(type);
 
-            var obj = new ObjectNode(type, id, ctor, properties);
+            var obj = new ObjectNode(type, id, ctor, properties, isRoot);
             ids[id] = obj;
 
             return obj;
