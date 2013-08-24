@@ -11,6 +11,7 @@ using SomeNamespace;
 Window {
     Title: "kjgkhj",
     Icon: BitmapImage("Icon.ico"),
+    
     Grid {
         ColumnDefinitions: [
             ColumnDefinition { Width: 100 },
