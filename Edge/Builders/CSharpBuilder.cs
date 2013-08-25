@@ -42,14 +42,14 @@ namespace Edge.Builders
             if (root.Namespaces != null)
                 result += CreateNamespaces(root.Namespaces);
 
-            throw new NotImplementedException();
+            result += nl;
+            result += CreateObject(root.Root);
+
+            return result;
         }
 
-        public string CreateNamespaces(IEnumerable<NamespaceNode> namespaces)
+        private string CreateNamespaces(IEnumerable<NamespaceNode> namespaces)
         {
-            if (namespaces == null)
-                throw new ArgumentNullException("namespaces");
-
             StringBuilder sb = new StringBuilder();
 
             foreach (var ns in namespaces)
@@ -58,16 +58,24 @@ namespace Edge.Builders
             return sb.ToString();
         }
 
-        public string CreateNamespace(NamespaceNode ns)
+        private string CreateNamespace(NamespaceNode ns)
         {
             return "using" + ns.Namespace + ';';
         }
 
-        public string CreateObject(ObjectNode obj)
+        private string CreateObject(ObjectNode obj)
         {
+            if (obj.IsRoot)
+                return CreateRootObject(obj);
+
             string result = string.Empty;
 
+            throw new NotImplementedException();
+        }
 
+        private string CreateRootObject(ObjectNode obj)
+        {
+            StringBuilder sb = new StringBuilder();
 
             throw new NotImplementedException();
         }

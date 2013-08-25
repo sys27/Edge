@@ -23,9 +23,6 @@ namespace Edge.Builders
     {
 
         string CreateRoot(RootNode root);
-        string CreateNamespaces(IEnumerable<NamespaceNode> namespaces);
-        string CreateNamespace(NamespaceNode ns);
-        string CreateObject(ObjectNode obj);
 
     }
 
