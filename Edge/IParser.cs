@@ -22,7 +22,7 @@ namespace Edge
     public interface IParser
     {
 
-        RootNode Parse(string text);
+        SyntaxTree Parse(string text);
 
     }
 

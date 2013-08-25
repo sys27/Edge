@@ -1,7 +1,7 @@
 ﻿// Copyright 2013 Dmitry Kischenko
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
-// you may not use this file except in compliance with the License.
+// you may not use base file except in compliance with the License.
 // You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
@@ -20,65 +20,29 @@ using System.Linq;
 namespace Edge.SyntaxNodes
 {
 
-    public class RootNode : INode
+    public class RootNode : ObjectNode
     {
 
-        private ObjectNode rootObject;
-        private IEnumerable<NamespaceNode> namespaces;
-
-        public RootNode(ObjectNode rootObject)
-            : this(rootObject, null)
+        public RootNode(Type typeInfo)
+            : base(typeInfo, "this", null, null)
         {
-
         }
 
-        public RootNode(ObjectNode rootObject, IEnumerable<NamespaceNode> namespaces)
+        public RootNode(Type typeInfo, IEnumerable<IValueNode> ctorArgs)
+            : base(typeInfo, "this", ctorArgs, null)
         {
-            if (rootObject == null)
-                throw new ArgumentNullException("rootObject");
-            if (!rootObject.IsRoot)
-                // todo: error message
-                throw new ArgumentException();
-
-            this.rootObject = rootObject;
-            this.namespaces = namespaces;
         }
 
-        public override bool Equals(object obj)
+        public RootNode(Type typeInfo, IEnumerable<PropertyNode> properties)
+            : base(typeInfo, "this", null, properties)
         {
-            if (this == obj)
-                return true;
-
-            var root = obj as RootNode;
-            if (root == null)
-                return false;
-
-            return rootObject.Equals(root.rootObject) &&
-                   ((namespaces == null && root.namespaces == null) ||
-                    (namespaces != null && root.namespaces != null && namespaces.SequenceEqual(root.namespaces)));
         }
 
-        public string Build(IBuilder builder)
+        public RootNode(Type typeInfo, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
+            : base(typeInfo, "this", ctorArgs, properties)
         {
-            return builder.CreateRoot(this);
         }
-
-        public ObjectNode Root
-        {
-            get
-            {
-                return rootObject;
-            }
-        }
-
-        public IEnumerable<NamespaceNode> Namespaces
-        {
-            get
-            {
-                return namespaces;
-            }
-        }
-
+        
     }
 
 }

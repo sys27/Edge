@@ -156,15 +156,37 @@ namespace Edge
             throw new EdgeParserException();
         }
 
-        private RootNode Root()
+        private SyntaxTree Tree()
         {
-            var namespaces = Namespace();
-            var obj = Object(true);
+            var namespaces = GetNamespaces();
+            var root = Root();
 
-            return new RootNode(obj, namespaces);
+            return new SyntaxTree(root, namespaces, ids.Count == 0 ? null : ids);
         }
 
-        private IEnumerable<NamespaceNode> Namespace()
+        private RootNode Root()
+        {
+            var token = GetToken();
+            if (!(token is TypeToken))
+                // todo: error message
+                throw new EdgeParserException();
+
+            var type = SearchType(((TypeToken)token).Type);
+
+
+            if (CheckSymbol(PeekToken(), '#'))
+                // todo: error message
+                throw new EdgeParserException();
+
+            var ctor = CtorArgs(type);
+            var properties = Properties(type);
+
+            var obj = new RootNode(type, ctor, properties);
+
+            return obj;
+        }
+
+        private IEnumerable<NamespaceNode> GetNamespaces()
         {
             if (PeekToken() is UsingToken)
             {
@@ -218,11 +240,6 @@ namespace Edge
 
         private ObjectNode Object()
         {
-            return Object(false);
-        }
-
-        private ObjectNode Object(bool isRoot)
-        {
             var token = GetToken();
             if (!(token is TypeToken))
                 // todo: error message
@@ -233,7 +250,7 @@ namespace Edge
             var ctor = CtorArgs(type);
             var properties = Properties(type);
 
-            var obj = new ObjectNode(type, id, ctor, properties, isRoot);
+            var obj = new ObjectNode(type, id, ctor, properties);
             ids[id] = obj;
 
             return obj;
@@ -654,7 +671,7 @@ namespace Edge
             }
         }
 
-        public RootNode Parse(string text)
+        public SyntaxTree Parse(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
                 throw new ArgumentNullException("text");
@@ -662,7 +679,7 @@ namespace Edge
             tokens = lexer.Tokenize(text).ToList();
             ReadIds();
 
-            var root = Root();
+            var root = Tree();
 
             CheckIds();
 

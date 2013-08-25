@@ -3,6 +3,7 @@ using Edge.Tokens;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Edge.Tests
 {
@@ -45,13 +46,14 @@ namespace Edge.Tests
             };
         }
 
-        private void Test(IEnumerable<IToken> tokens, RootNode expected)
+        private void Test(IEnumerable<IToken> tokens, SyntaxTree expected)
         {
             lexer.Tokens = tokens;
 
-            var root = parser.Parse("-- // --");
+            var tree = parser.Parse("-- // --");
 
-            Assert.AreEqual(expected, root);
+            Assert.AreEqual(expected.Root, tree.Root);
+            CollectionAssert.AreEqual(expected.Namespaces == null ? null : expected.Namespaces.ToList(), tree.Namespaces == null ? null : tree.Namespaces.ToList());
         }
 
         private void TestFail(IEnumerable<IToken> tokens)
@@ -76,11 +78,8 @@ namespace Edge.Tests
                 new SymbolToken('{'),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
-                    typeof(System.Windows.Window),
-                    "window1",
-                    true),
+            new SyntaxTree(
+                new RootNode(typeof(System.Windows.Window)),
                 new List<NamespaceNode>()
                 {
                     new NamespaceNode("System"),
@@ -129,15 +128,13 @@ namespace Edge.Tests
                 new NumberToken(1024.6),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -153,15 +150,13 @@ namespace Edge.Tests
                 new StringToken("Hello"),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Title"), new StringNode("Hello"))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -179,15 +174,13 @@ namespace Edge.Tests
                 new SymbolToken('}'),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -203,15 +196,13 @@ namespace Edge.Tests
                 new WordToken("Maximized"),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -229,15 +220,13 @@ namespace Edge.Tests
                 new WordToken("Maximized"),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -257,16 +246,14 @@ namespace Edge.Tests
                 new NumberToken(1024.6),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Title"), new StringNode("Hello")),
                         new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -289,16 +276,14 @@ namespace Edge.Tests
                 new IdToken("bitmap"),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Icon"), new ObjectNode(typeof(System.Windows.Media.Imaging.BitmapImage), "bitmap")),
                         new PropertyNode(type.GetProperty("Content"), new ReferenceNode("bitmap"))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -360,22 +345,41 @@ namespace Edge.Tests
         }
 
         [TestMethod]
-        public void ObjectWithIdTest()
+        [ExpectedException(typeof(EdgeParserException))]
+        public void RootObjectWithIdTest()
         {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
+            TestFail(new List<IToken>()
             {
                 new TypeToken("Window"),
                 new SymbolToken('#'),
                 new IdToken("mainWindow"),
                 new SymbolToken('{'),
                 new SymbolToken('}')
+            });
+        }
+
+        [TestMethod]
+        public void ObjectWithIdTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new TypeToken("Grid"),
+                new SymbolToken('#'),
+                new IdToken("grid"),
+                new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "mainWindow",
-                    true)));
+                    new List<PropertyNode>()
+                    {
+                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid"))
+                    })));
         }
 
         [TestMethod]
@@ -391,15 +395,13 @@ namespace Edge.Tests
                 new WordToken("Grid"),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -440,10 +442,9 @@ namespace Edge.Tests
                 new SymbolToken(')'),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(
@@ -461,8 +462,7 @@ namespace Edge.Tests
                                             new StringNode("Icon.ico")
                                         })
                                 }))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -558,16 +558,14 @@ namespace Edge.Tests
                 new IdToken("tb"),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Title"), new BindingNode("tb", "Text")),
                         new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.TextBox), "tb"))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -584,15 +582,13 @@ namespace Edge.Tests
                 new WordToken("WindowState"),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(type.GetProperty("Title"), new BindingNode("WindowState"))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -614,10 +610,9 @@ namespace Edge.Tests
                 new SymbolToken(']'),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(
@@ -629,8 +624,7 @@ namespace Edge.Tests
                                     new ObjectNode(textBox, "textBox1"), 
                                     new ObjectNode(textBox, "textBox2") 
                                 }))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -651,10 +645,9 @@ namespace Edge.Tests
                 new SymbolToken(']'),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(
@@ -666,8 +659,7 @@ namespace Edge.Tests
                                     new ObjectNode(textBox, "textBox1"), 
                                     new ObjectNode(textBox, "textBox2") 
                                 }))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -694,10 +686,9 @@ namespace Edge.Tests
                 new SymbolToken(']'),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "window1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(
@@ -709,8 +700,7 @@ namespace Edge.Tests
                                     new ObjectNode(style, "baseStyle"), 
                                     new ObjectNode(brush, "newBrush") 
                                 }))
-                    },
-                    true)));
+                    })));
         }
 
         [TestMethod]
@@ -732,10 +722,9 @@ namespace Edge.Tests
                 new SymbolToken(']'),
                 new SymbolToken('}')
             },
-            new RootNode(
-                new ObjectNode(
+            new SyntaxTree(
+                new RootNode(
                     type,
-                    "grid1",
                     new List<PropertyNode>()
                     {
                         new PropertyNode(
@@ -747,8 +736,7 @@ namespace Edge.Tests
                                     new ObjectNode(cd, "columnDefinition1"), 
                                     new ObjectNode(cd, "columnDefinition2") 
                                 }))
-                    },
-                    true)));
+                    })));
         }
 
     }

@@ -35,15 +35,15 @@ namespace Edge.Builders
             this.nl = nl;
         }
 
-        public string CreateRoot(RootNode root)
+        public string Build(SyntaxTree tree)
         {
             string result = string.Empty;
 
-            if (root.Namespaces != null)
-                result += CreateNamespaces(root.Namespaces);
+            if (tree.Namespaces != null)
+                result += CreateNamespaces(tree.Namespaces);
 
             result += nl;
-            result += CreateObject(root.Root);
+            result += CreateRootObject(tree.Root);
 
             return result;
         }
@@ -65,15 +65,10 @@ namespace Edge.Builders
 
         private string CreateObject(ObjectNode obj)
         {
-            if (obj.IsRoot)
-                return CreateRootObject(obj);
-
-            string result = string.Empty;
-
             throw new NotImplementedException();
         }
 
-        private string CreateRootObject(ObjectNode obj)
+        private string CreateRootObject(RootNode root)
         {
             StringBuilder sb = new StringBuilder();
 
