@@ -60,7 +60,7 @@ namespace Edge.SyntaxNodes
 
         public string Convert(IBuilder builder)
         {
-            throw new NotImplementedException();
+            return builder.CreateRoot(this);
         }
 
         public ObjectNode Root

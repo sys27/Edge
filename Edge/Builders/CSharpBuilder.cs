@@ -14,6 +14,8 @@
 // limitations under the License.
 using Edge.SyntaxNodes;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Edge.Builders
 {
@@ -21,8 +23,51 @@ namespace Edge.Builders
     public class CSharpBuilder : IBuilder
     {
 
-        public string Build(RootNode root)
+        private readonly string nl;
+
+        public CSharpBuilder()
+            : this(Environment.NewLine)
         {
+        }
+
+        public CSharpBuilder(string nl)
+        {
+            this.nl = nl;
+        }
+
+        public string CreateRoot(RootNode root)
+        {
+            string result = string.Empty;
+
+            if (root.Namespaces != null)
+                result += CreateNamespaces(root.Namespaces);
+
+            throw new NotImplementedException();
+        }
+
+        public string CreateNamespaces(IEnumerable<NamespaceNode> namespaces)
+        {
+            if (namespaces == null)
+                throw new ArgumentNullException("namespaces");
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var ns in namespaces)
+                sb.Append(CreateNamespace(ns)).Append(nl);
+
+            return sb.ToString();
+        }
+
+        public string CreateNamespace(NamespaceNode ns)
+        {
+            return "using" + ns.Namespace + ';';
+        }
+
+        public string CreateObject(ObjectNode obj)
+        {
+            string result = string.Empty;
+
+
             throw new NotImplementedException();
         }
 

@@ -14,6 +14,7 @@
 // limitations under the License.
 using Edge.SyntaxNodes;
 using System;
+using System.Collections.Generic;
 
 namespace Edge.Builders
 {
@@ -21,7 +22,10 @@ namespace Edge.Builders
     public interface IBuilder
     {
 
-        string Build(RootNode root);
+        string CreateRoot(RootNode root);
+        string CreateNamespaces(IEnumerable<NamespaceNode> namespaces);
+        string CreateNamespace(NamespaceNode ns);
+        string CreateObject(ObjectNode obj);
 
     }
 
