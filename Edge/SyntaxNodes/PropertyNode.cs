@@ -43,11 +43,6 @@ namespace Edge.SyntaxNodes
             return propertyInfo.Equals(prop.propertyInfo) && value.Equals(prop.value);
         }
 
-        public string Convert(IBuilder builder)
-        {
-            throw new NotImplementedException();
-        }
-
         public PropertyInfo Info
         {
             get

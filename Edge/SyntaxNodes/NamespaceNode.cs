@@ -40,11 +40,6 @@ namespace Edge.SyntaxNodes
             return ns == namespaceNode.ns;
         }
 
-        public string Convert(IBuilder builder)
-        {
-            throw new NotImplementedException();
-        }
-
         public string Namespace
         {
             get

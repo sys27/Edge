@@ -40,11 +40,6 @@ namespace Edge.SyntaxNodes
             return id == reference.id;
         }
 
-        public string Convert(IBuilder builder)
-        {
-            throw new NotImplementedException();
-        }
-
         public string Id
         {
             get

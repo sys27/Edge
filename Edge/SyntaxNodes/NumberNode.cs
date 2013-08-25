@@ -40,11 +40,6 @@ namespace Edge.SyntaxNodes
             return number == num.number;
         }
 
-        public string Convert(IBuilder builder)
-        {
-            throw new NotImplementedException();
-        }
-
         public double Number
         {
             get

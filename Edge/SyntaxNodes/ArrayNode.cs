@@ -46,11 +46,6 @@ namespace Edge.SyntaxNodes
             return arrayType.Equals(arr.arrayType) && array.SequenceEqual(arr.array);
         }
 
-        public string Convert(IBuilder builder)
-        {
-            throw new NotImplementedException();
-        }
-
         public Type ArrayType
         {
             get

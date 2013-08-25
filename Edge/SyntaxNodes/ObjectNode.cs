@@ -91,11 +91,6 @@ namespace Edge.SyntaxNodes
                     (properties != null && o.properties != null && properties.SequenceEqual(o.properties)));
         }
 
-        public string Convert(IBuilder builder)
-        {
-            throw new NotImplementedException();
-        }
-
         public Type Info
         {
             get

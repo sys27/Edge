@@ -58,7 +58,7 @@ namespace Edge.SyntaxNodes
                     (namespaces != null && root.namespaces != null && namespaces.SequenceEqual(root.namespaces)));
         }
 
-        public string Convert(IBuilder builder)
+        public string Build(IBuilder builder)
         {
             return builder.CreateRoot(this);
         }

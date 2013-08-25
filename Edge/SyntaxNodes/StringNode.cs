@@ -40,11 +40,6 @@ namespace Edge.SyntaxNodes
             return str == sn.str;
         }
 
-        public string Convert(IBuilder builder)
-        {
-            throw new NotImplementedException();
-        }
-
         public string Str
         {
             get

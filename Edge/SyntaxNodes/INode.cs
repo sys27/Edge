@@ -21,8 +21,6 @@ namespace Edge.SyntaxNodes
     public interface INode
     {
 
-        string Convert(IBuilder builder);
-
     }
 
 }

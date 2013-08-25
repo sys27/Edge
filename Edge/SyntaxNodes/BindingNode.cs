@@ -48,11 +48,6 @@ namespace Edge.SyntaxNodes
             return elementName == binding.elementName && path == binding.path;
         }
 
-        public string Convert(IBuilder builder)
-        {
-            throw new NotImplementedException();
-        }
-
         public string ElementName
         {
             get
