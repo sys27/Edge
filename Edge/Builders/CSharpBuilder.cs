@@ -38,7 +38,77 @@ namespace Edge.Builders
 
         public string Build(SyntaxTree tree)
         {
-            throw new NotImplementedException();
+            string result = string.Empty;
+
+            if (tree.Namespaces != null)
+                result = CreateNamespaces(tree.Namespaces) + nl;
+
+            result += CreateRootObject(tree.Root, tree.IDs);
+
+            return result;
+        }
+
+        private string CreateNamespaces(IEnumerable<NamespaceNode> namespaces)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var ns in namespaces)
+                sb.Append("using ").Append(ns.Namespace).Append(';').Append(nl);
+
+            return sb.ToString();
+        }
+
+        private string CreateRootObject(RootObjectNode root, IEnumerable<ObjectNode> ids)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("namespace ").Append(nl)
+              .Append('{').Append(nl)
+              .Append("public partial class ").Append(nl)
+              .Append('{').Append(nl);
+
+            if (ids != null)
+                sb.Append(CreateMembers(ids)).Append(nl);
+
+            sb.Append(CreateInitMethod(root, ids));
+
+            sb.Append('}').Append(nl)
+              .Append('}');
+
+            return sb.ToString();
+        }
+
+        private string CreateMembers(IEnumerable<ObjectNode> ids)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var obj in ids)
+                sb.Append("internal ").Append(obj.Info.Name).Append(' ').Append(obj.Id).Append(';').Append(nl);
+
+            return sb.ToString();
+        }
+
+        private string CreateInitMethod(RootObjectNode root, IEnumerable<ObjectNode> ids)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("public void InitializeComponent()").Append(nl)
+              .Append('{').Append(nl);
+
+            if (ids != null)
+                sb.Append(InitMembers(ids)).Append(nl);
+
+            return sb.ToString();
+        }
+
+        private string InitMembers(IEnumerable<ObjectNode> ids)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var obj in ids)
+                sb.Append(obj.Id).Append(" = new ").Append(obj.Info.Name).Append("();").Append(nl);
+
+            return sb.ToString();
         }
 
     }

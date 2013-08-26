@@ -161,7 +161,7 @@ namespace Edge
             var namespaces = GetNamespaces();
             var root = Root();
 
-            return new SyntaxTree(root, namespaces, ids.Count == 0 ? null : ids);
+            return new SyntaxTree(root, namespaces, from obj in ids select obj.Value);
         }
 
         private RootObjectNode Root()

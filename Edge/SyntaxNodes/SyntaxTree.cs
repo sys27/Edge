@@ -26,7 +26,7 @@ namespace Edge.SyntaxNodes
         private IEnumerable<NamespaceNode> namespaces;
         private RootObjectNode root;
 
-        private IDictionary<string, ObjectNode> ids;
+        private IEnumerable<ObjectNode> ids;
 
         public SyntaxTree(RootObjectNode root)
             : this(root, null, null)
@@ -38,12 +38,12 @@ namespace Edge.SyntaxNodes
         {
         }
 
-        public SyntaxTree(RootObjectNode root, IDictionary<string, ObjectNode> ids)
+        public SyntaxTree(RootObjectNode root, IEnumerable<ObjectNode> ids)
             : this(root, null, ids)
         {
         }
 
-        public SyntaxTree(RootObjectNode root, IEnumerable<NamespaceNode> namespaces, IDictionary<string, ObjectNode> ids)
+        public SyntaxTree(RootObjectNode root, IEnumerable<NamespaceNode> namespaces, IEnumerable<ObjectNode> ids)
         {
             this.root = root;
             this.namespaces = namespaces;
@@ -87,7 +87,7 @@ namespace Edge.SyntaxNodes
             }
         }
 
-        public IDictionary<string, ObjectNode> IDs
+        public IEnumerable<ObjectNode> IDs
         {
             get
             {
