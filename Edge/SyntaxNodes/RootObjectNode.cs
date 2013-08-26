@@ -20,25 +20,25 @@ using System.Linq;
 namespace Edge.SyntaxNodes
 {
 
-    public class RootNode : ObjectNode
+    public class RootObjectNode : ObjectNode
     {
 
-        public RootNode(Type typeInfo)
+        public RootObjectNode(Type typeInfo)
             : base(typeInfo, "this", null, null)
         {
         }
 
-        public RootNode(Type typeInfo, IEnumerable<IValueNode> ctorArgs)
+        public RootObjectNode(Type typeInfo, IEnumerable<IValueNode> ctorArgs)
             : base(typeInfo, "this", ctorArgs, null)
         {
         }
 
-        public RootNode(Type typeInfo, IEnumerable<PropertyNode> properties)
+        public RootObjectNode(Type typeInfo, IEnumerable<PropertyNode> properties)
             : base(typeInfo, "this", null, properties)
         {
         }
 
-        public RootNode(Type typeInfo, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
+        public RootObjectNode(Type typeInfo, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
             : base(typeInfo, "this", ctorArgs, properties)
         {
         }

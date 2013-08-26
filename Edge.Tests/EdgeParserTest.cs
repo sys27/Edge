@@ -79,7 +79,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(typeof(System.Windows.Window)),
+                new RootObjectNode(typeof(System.Windows.Window)),
                 new List<NamespaceNode>()
                 {
                     new NamespaceNode("System"),
@@ -129,7 +129,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -151,7 +151,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -175,7 +175,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -197,7 +197,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -221,7 +221,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -247,7 +247,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -277,7 +277,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -374,7 +374,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -396,7 +396,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -443,7 +443,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -559,7 +559,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -583,7 +583,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -611,7 +611,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -646,7 +646,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -687,7 +687,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {
@@ -723,7 +723,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new RootNode(
+                new RootObjectNode(
                     type,
                     new List<PropertyNode>()
                     {

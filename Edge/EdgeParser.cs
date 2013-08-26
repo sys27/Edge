@@ -164,7 +164,7 @@ namespace Edge
             return new SyntaxTree(root, namespaces, ids.Count == 0 ? null : ids);
         }
 
-        private RootNode Root()
+        private RootObjectNode Root()
         {
             var token = GetToken();
             if (!(token is TypeToken))
@@ -181,7 +181,7 @@ namespace Edge
             var ctor = CtorArgs(type);
             var properties = Properties(type);
 
-            var obj = new RootNode(type, ctor, properties);
+            var obj = new RootObjectNode(type, ctor, properties);
 
             return obj;
         }

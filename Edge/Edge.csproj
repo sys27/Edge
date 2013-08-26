@@ -64,7 +64,7 @@
     <Compile Include="SyntaxNodes\ObjectNode.cs" />
     <Compile Include="SyntaxNodes\PropertyNode.cs" />
     <Compile Include="SyntaxNodes\ReferenceNode.cs" />
-    <Compile Include="SyntaxNodes\RootNode.cs" />
+    <Compile Include="SyntaxNodes\RootObjectNode.cs" />
     <Compile Include="SyntaxNodes\StringNode.cs" />
     <Compile Include="SyntaxNodes\SyntaxTree.cs" />
     <Compile Include="Tokens\IdToken.cs" />

@@ -27,6 +27,11 @@ namespace Edge.SyntaxNodes
 
         public PropertyNode(PropertyInfo propertyInfo, IValueNode value)
         {
+            if (propertyInfo == null)
+                throw new ArgumentNullException("propertyInfo");
+            if (value == null)
+                throw new ArgumentNullException("value");
+
             this.propertyInfo = propertyInfo;
             this.value = value;
         }

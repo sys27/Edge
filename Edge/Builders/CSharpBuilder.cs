@@ -15,6 +15,7 @@
 using Edge.SyntaxNodes;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Edge.Builders
@@ -37,41 +38,6 @@ namespace Edge.Builders
 
         public string Build(SyntaxTree tree)
         {
-            string result = string.Empty;
-
-            if (tree.Namespaces != null)
-                result += CreateNamespaces(tree.Namespaces);
-
-            result += nl;
-            result += CreateRootObject(tree.Root);
-
-            return result;
-        }
-
-        private string CreateNamespaces(IEnumerable<NamespaceNode> namespaces)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var ns in namespaces)
-                sb.Append(CreateNamespace(ns)).Append(nl);
-
-            return sb.ToString();
-        }
-
-        private string CreateNamespace(NamespaceNode ns)
-        {
-            return "using" + ns.Namespace + ';';
-        }
-
-        private string CreateObject(ObjectNode obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private string CreateRootObject(RootNode root)
-        {
-            StringBuilder sb = new StringBuilder();
-
             throw new NotImplementedException();
         }
 
