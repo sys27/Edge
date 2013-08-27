@@ -173,6 +173,7 @@ namespace Edge
 
             var type = SearchType(((TypeToken)token).Type);
 
+            objects["this"] = null;
 
             if (CheckSymbol(PeekToken(), '#'))
                 // todo: error message
@@ -182,7 +183,7 @@ namespace Edge
             var properties = Properties(type);
 
             var obj = new RootObjectNode(type, ctor, properties);
-            objects[obj.Id] = obj;
+            objects["this"] = obj;
         }
 
         private IEnumerable<NamespaceNode> GetNamespaces()
@@ -246,6 +247,7 @@ namespace Edge
 
             var type = SearchType(((TypeToken)token).Type);
             var id = ObjectId(type);
+            objects[id] = null;
             var ctor = CtorArgs(type);
             var properties = Properties(type);
 

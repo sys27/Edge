@@ -168,51 +168,58 @@ namespace Edge.Tests
                 }));
         }
 
-        //[TestMethod]
-        //public void ObjectWithObjectPropertyTest()
-        //{
-        //    var type = typeof(System.Windows.Window);
-        //    Test(new List<IToken>()
-        //    {
-        //        new TypeToken("Window"),
-        //        new SymbolToken('{'),
-        //        new PropertyToken("Content"),
-        //        new SymbolToken(':'),
-        //        new TypeToken("Grid"),
-        //        new SymbolToken('{'),
-        //        new SymbolToken('}'),
-        //        new SymbolToken('}')
-        //    },
-        //    new SyntaxTree(
-        //        new RootObjectNode(
-        //            type,
-        //            new List<PropertyNode>()
-        //            {
-        //                new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
-        //            })));
-        //}
+        [TestMethod]
+        public void ObjectWithObjectPropertyTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new TypeToken("Grid"),
+                new SymbolToken('{'),
+                new SymbolToken('}'),
+                new SymbolToken('}')
+            },
+            new SyntaxTree(
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode(
+                        type,
+                        new List<PropertyNode>()
+                        {
+                            new PropertyNode(type.GetProperty("Content"), new ReferenceNode("grid1"))
+                        }),
+                    new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1")
+                }));
+        }
 
-        //[TestMethod]
-        //public void ObjectWithEnumPropertyTest()
-        //{
-        //    var type = typeof(System.Windows.Window);
-        //    Test(new List<IToken>()
-        //    {
-        //        new TypeToken("Window"),
-        //        new SymbolToken('{'),
-        //        new PropertyToken("WindowState"),
-        //        new SymbolToken(':'),
-        //        new WordToken("Maximized"),
-        //        new SymbolToken('}')
-        //    },
-        //    new SyntaxTree(
-        //        new RootObjectNode(
-        //            type,
-        //            new List<PropertyNode>()
-        //            {
-        //                new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
-        //            })));
-        //}
+        [TestMethod]
+        public void ObjectWithEnumPropertyTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("WindowState"),
+                new SymbolToken(':'),
+                new WordToken("Maximized"),
+                new SymbolToken('}')
+            },
+            new SyntaxTree(
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode(
+                        type,
+                        new List<PropertyNode>()
+                        {
+                            new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
+                        })
+                }));
+        }
 
         //[TestMethod]
         //public void ObjectWithFullNameEnumPropertyTest()
