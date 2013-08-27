@@ -440,7 +440,9 @@ namespace Edge
 
             if (CheckSymbol(token, '['))
             {
-                var arr = new List<object>();
+                var arr = new List<IValueNode>();
+                var strType = typeof(string);
+                var doubleType = typeof(double);
 
                 while (true)
                 {
@@ -451,7 +453,7 @@ namespace Edge
                         break;
                     }
 
-                    object obj = null;
+                    IValueNode obj = null;
                     if (arrayType != null)
                     {
                         obj = GetValue(arrayType);
@@ -484,10 +486,14 @@ namespace Edge
                             {
                                 obj = GetValue();
 
-                                if (obj is ObjectNode)
-                                    arrayType = ((ObjectNode)obj).Info;
-                                else if (obj is double || obj is string || obj.GetType().IsEnum)
-                                    arrayType = obj.GetType();
+                                if (obj is ReferenceNode)
+                                    arrayType = objects[((ReferenceNode)obj).Id].Info;
+                                else if (obj is StringNode)
+                                    arrayType = strType;
+                                else if (obj is NumberNode)
+                                    arrayType = doubleType;
+                                else if (obj is EnumNode)
+                                    arrayType = ((EnumNode)obj).Info;
                                 else
                                     // todo: error message
                                     throw new EdgeParserException();
@@ -498,10 +504,14 @@ namespace Edge
                     {
                         obj = GetValue();
 
-                        if (obj is ObjectNode)
-                            arrayType = ((ObjectNode)obj).Info;
-                        else if (obj is double || obj is string || obj.GetType().IsEnum)
-                            arrayType = obj.GetType();
+                        if (obj is ReferenceNode)
+                            arrayType = objects[((ReferenceNode)obj).Id].Info;
+                        else if (obj is StringNode)
+                            arrayType = strType;
+                        else if (obj is NumberNode)
+                            arrayType = doubleType;
+                        else if (obj is EnumNode)
+                            arrayType = ((EnumNode)obj).Info;
                         else
                             // todo: error message
                             throw new EdgeParserException();

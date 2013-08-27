@@ -23,9 +23,9 @@ namespace Edge.SyntaxNodes
     {
 
         private Type arrayType;
-        private object[] array;
+        private IValueNode[] array;
 
-        public ArrayNode(Type arrayType, object[] array)
+        public ArrayNode(Type arrayType, IValueNode[] array)
         {
             if (array == null)
                 throw new ArgumentNullException("array");
@@ -54,7 +54,7 @@ namespace Edge.SyntaxNodes
             }
         }
 
-        public object[] Array
+        public IValueNode[] Array
         {
             get
             {
