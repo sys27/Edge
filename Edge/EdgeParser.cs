@@ -315,8 +315,8 @@ namespace Edge
                     for (int i = 0; i < types.Length; i++)
                     {
                         var t = args[0];
-                        if (t is ObjectNode)
-                            types[i] = ((ObjectNode)t).Info;
+                        if (t is ReferenceNode)
+                            types[i] = objects[((ReferenceNode)t).Id].Info;
                         else if (t is StringNode)
                             types[i] = strType;
                         else if (t is NumberNode)
