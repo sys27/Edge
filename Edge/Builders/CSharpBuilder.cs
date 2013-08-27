@@ -38,14 +38,15 @@ namespace Edge.Builders
 
         public string Build(SyntaxTree tree)
         {
-            string result = string.Empty;
+            //string result = string.Empty;
 
-            if (tree.Namespaces != null)
-                result = CreateNamespaces(tree.Namespaces) + nl;
+            //if (tree.Namespaces != null)
+            //    result = CreateNamespaces(tree.Namespaces) + nl;
 
-            result += CreateRootObject(tree.Root, tree.Objects);
+            //result += CreateRootObject(tree.Root, tree.Objects);
 
-            return result;
+            //return result;
+            throw new NotImplementedException();
         }
 
         private string CreateNamespaces(IEnumerable<NamespaceNode> namespaces)
