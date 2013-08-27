@@ -63,681 +63,681 @@ namespace Edge.Tests
             var root = parser.Parse("-- // --");
         }
 
-        [TestMethod]
-        public void NamespaceWithObjectTest()
-        {
-            Test(new List<IToken>()
-            {
-                new UsingToken(),
-                new WordToken("System"),
-                new SymbolToken(';'),
-                new UsingToken(),
-                new WordToken("System.Windows"),
-                new SymbolToken(';'),
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(typeof(System.Windows.Window)),
-                new List<NamespaceNode>()
-                {
-                    new NamespaceNode("System"),
-                    new NamespaceNode("System.Windows")
-                }));
-        }
+        //[TestMethod]
+        //public void NamespaceWithObjectTest()
+        //{
+        //    Test(new List<IToken>()
+        //    {
+        //        new UsingToken(),
+        //        new WordToken("System"),
+        //        new SymbolToken(';'),
+        //        new UsingToken(),
+        //        new WordToken("System.Windows"),
+        //        new SymbolToken(';'),
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(typeof(System.Windows.Window)),
+        //        new List<NamespaceNode>()
+        //        {
+        //            new NamespaceNode("System"),
+        //            new NamespaceNode("System.Windows")
+        //        }));
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void UsingFailTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new UsingToken(),
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void UsingFailTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new UsingToken(),
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void NamespaceWithEmptyWordTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new UsingToken(),
-                new WordToken(""),
-                new SymbolToken(';'),
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void NamespaceWithEmptyWordTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new UsingToken(),
+        //        new WordToken(""),
+        //        new SymbolToken(';'),
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        public void ObjectWithNumberPropertyTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Width"),
-                new SymbolToken(':'),
-                new NumberToken(1024.6),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
-                    })));
-        }
+        //[TestMethod]
+        //public void ObjectWithNumberPropertyTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Width"),
+        //        new SymbolToken(':'),
+        //        new NumberToken(1024.6),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void ObjectWithStringPropertyTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Title"),
-                new SymbolToken(':'),
-                new StringToken("Hello"),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("Title"), new StringNode("Hello"))
-                    })));
-        }
+        //[TestMethod]
+        //public void ObjectWithStringPropertyTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Title"),
+        //        new SymbolToken(':'),
+        //        new StringToken("Hello"),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("Title"), new StringNode("Hello"))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void ObjectWithObjectPropertyTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Content"),
-                new SymbolToken(':'),
-                new TypeToken("Grid"),
-                new SymbolToken('{'),
-                new SymbolToken('}'),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
-                    })));
-        }
+        //[TestMethod]
+        //public void ObjectWithObjectPropertyTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Content"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("Grid"),
+        //        new SymbolToken('{'),
+        //        new SymbolToken('}'),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void ObjectWithEnumPropertyTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("WindowState"),
-                new SymbolToken(':'),
-                new WordToken("Maximized"),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
-                    })));
-        }
+        //[TestMethod]
+        //public void ObjectWithEnumPropertyTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("WindowState"),
+        //        new SymbolToken(':'),
+        //        new WordToken("Maximized"),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void ObjectWithFullNameEnumPropertyTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("WindowState"),
-                new SymbolToken(':'),
-                new WordToken("WindowState"),
-                new SymbolToken('.'),
-                new WordToken("Maximized"),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
-                    })));
-        }
+        //[TestMethod]
+        //public void ObjectWithFullNameEnumPropertyTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("WindowState"),
+        //        new SymbolToken(':'),
+        //        new WordToken("WindowState"),
+        //        new SymbolToken('.'),
+        //        new WordToken("Maximized"),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void ObjectWithPropertiesTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Title"),
-                new SymbolToken(':'),
-                new StringToken("Hello"),
-                new SymbolToken(','),
-                new PropertyToken("Width"),
-                new SymbolToken(':'),
-                new NumberToken(1024.6),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("Title"), new StringNode("Hello")),
-                        new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
-                    })));
-        }
+        //[TestMethod]
+        //public void ObjectWithPropertiesTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Title"),
+        //        new SymbolToken(':'),
+        //        new StringToken("Hello"),
+        //        new SymbolToken(','),
+        //        new PropertyToken("Width"),
+        //        new SymbolToken(':'),
+        //        new NumberToken(1024.6),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("Title"), new StringNode("Hello")),
+        //                new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void ObjectWithIdPropertyTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Icon"),
-                new SymbolToken(':'),
-                new TypeToken("BitmapImage"),
-                new SymbolToken('#'),
-                new IdToken("bitmap"),
-                new SymbolToken(','),
-                new PropertyToken("Content"),
-                new SymbolToken(':'),
-                new SymbolToken('#'),
-                new IdToken("bitmap"),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("Icon"), new ObjectNode(typeof(System.Windows.Media.Imaging.BitmapImage), "bitmap")),
-                        new PropertyNode(type.GetProperty("Content"), new ReferenceNode("bitmap"))
-                    })));
-        }
+        //[TestMethod]
+        //public void ObjectWithIdPropertyTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Icon"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("BitmapImage"),
+        //        new SymbolToken('#'),
+        //        new IdToken("bitmap"),
+        //        new SymbolToken(','),
+        //        new PropertyToken("Content"),
+        //        new SymbolToken(':'),
+        //        new SymbolToken('#'),
+        //        new IdToken("bitmap"),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("Icon"), new ObjectNode(typeof(System.Windows.Media.Imaging.BitmapImage), "bitmap")),
+        //                new PropertyNode(type.GetProperty("Content"), new ReferenceNode("bitmap"))
+        //            })));
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void ObjectFailTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new WordToken("Window"),
-                new SymbolToken('{'),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void ObjectFailTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new WordToken("Window"),
+        //        new SymbolToken('{'),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void PropertyAsWordTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new WordToken("Width"),
-                new SymbolToken(':'),
-                new NumberToken(1024),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void PropertyAsWordTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new WordToken("Width"),
+        //        new SymbolToken(':'),
+        //        new NumberToken(1024),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void PropertyWithCommaTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new WordToken("Width"),
-                new SymbolToken(':'),
-                new NumberToken(1024),
-                new SymbolToken(','),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void PropertyWithCommaTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new WordToken("Width"),
+        //        new SymbolToken(':'),
+        //        new NumberToken(1024),
+        //        new SymbolToken(','),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void PropertyIsNotInTypeTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Column"),
-                new SymbolToken(':'),
-                new NumberToken(1),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void PropertyIsNotInTypeTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Column"),
+        //        new SymbolToken(':'),
+        //        new NumberToken(1),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void RootObjectWithIdTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('#'),
-                new IdToken("mainWindow"),
-                new SymbolToken('{'),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void RootObjectWithIdTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('#'),
+        //        new IdToken("mainWindow"),
+        //        new SymbolToken('{'),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        public void ObjectWithIdTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Content"),
-                new SymbolToken(':'),
-                new TypeToken("Grid"),
-                new SymbolToken('#'),
-                new IdToken("grid"),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid"))
-                    })));
-        }
+        //[TestMethod]
+        //public void ObjectWithIdTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Content"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("Grid"),
+        //        new SymbolToken('#'),
+        //        new IdToken("grid"),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid"))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void PropertyObjectWithoutPropertiesTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Content"),
-                new SymbolToken(':'),
-                new WordToken("Grid"),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
-                    })));
-        }
+        //[TestMethod]
+        //public void PropertyObjectWithoutPropertiesTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Content"),
+        //        new SymbolToken(':'),
+        //        new WordToken("Grid"),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1"))
+        //            })));
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void SamePropertiesTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Title"),
-                new SymbolToken(':'),
-                new StringToken("Hello"),
-                new SymbolToken(','),
-                new PropertyToken("Title"),
-                new SymbolToken(':'),
-                new StringToken("Hello!!!"),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void SamePropertiesTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Title"),
+        //        new SymbolToken(':'),
+        //        new StringToken("Hello"),
+        //        new SymbolToken(','),
+        //        new PropertyToken("Title"),
+        //        new SymbolToken(':'),
+        //        new StringToken("Hello!!!"),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        public void ObjectCtorTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Icon"),
-                new SymbolToken(':'),
-                new TypeToken("BitmapImage"),
-                new SymbolToken('('),
-                new TypeToken("Uri"),
-                new SymbolToken('('),
-                new StringToken("Icon.ico"),
-                new SymbolToken(')'),
-                new SymbolToken(')'),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(
-                            type.GetProperty("Icon"),
-                            new ObjectNode(
-                                typeof(System.Windows.Media.Imaging.BitmapImage), 
-                                "bitmapImage1", 
-                                new List<IValueNode>()
-                                {
-                                    new ObjectNode(
-                                        typeof(System.Uri),
-                                        "uri1",
-                                        new List<IValueNode>()
-                                        {
-                                            new StringNode("Icon.ico")
-                                        })
-                                }))
-                    })));
-        }
+        //[TestMethod]
+        //public void ObjectCtorTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Icon"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("BitmapImage"),
+        //        new SymbolToken('('),
+        //        new TypeToken("Uri"),
+        //        new SymbolToken('('),
+        //        new StringToken("Icon.ico"),
+        //        new SymbolToken(')'),
+        //        new SymbolToken(')'),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(
+        //                    type.GetProperty("Icon"),
+        //                    new ReferenceNode(
+        //                        typeof(System.Windows.Media.Imaging.BitmapImage), 
+        //                        "bitmapImage1", 
+        //                        new List<IValueNode>()
+        //                        {
+        //                            new ObjectNode(
+        //                                typeof(System.Uri),
+        //                                "uri1",
+        //                                new List<IValueNode>()
+        //                                {
+        //                                    new StringNode("Icon.ico")
+        //                                })
+        //                        }))
+        //            })));
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void ObjectCtorCommaFailTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Icon"),
-                new SymbolToken(':'),
-                new TypeToken("BitmapImage"),
-                new SymbolToken('('),
-                new TypeToken("Uri"),
-                new SymbolToken('('),
-                new StringToken("Icon.ico"),
-                new SymbolToken(')'),
-                new SymbolToken(','),
-                new SymbolToken(')'),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void ObjectCtorCommaFailTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Icon"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("BitmapImage"),
+        //        new SymbolToken('('),
+        //        new TypeToken("Uri"),
+        //        new SymbolToken('('),
+        //        new StringToken("Icon.ico"),
+        //        new SymbolToken(')'),
+        //        new SymbolToken(','),
+        //        new SymbolToken(')'),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void ObjectCtorWrongTokenTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Icon"),
-                new SymbolToken(':'),
-                new TypeToken("BitmapImage"),
-                new SymbolToken('('),
-                new IdToken("fail"),
-                new SymbolToken(')'),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void ObjectCtorWrongTokenTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Icon"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("BitmapImage"),
+        //        new SymbolToken('('),
+        //        new IdToken("fail"),
+        //        new SymbolToken(')'),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void ObjectCtorWrongArgsTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Icon"),
-                new SymbolToken(':'),
-                new TypeToken("BitmapImage"),
-                new SymbolToken('('),
-                new NumberToken(1024),
-                new SymbolToken(')'),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void ObjectCtorWrongArgsTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Icon"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("BitmapImage"),
+        //        new SymbolToken('('),
+        //        new NumberToken(1024),
+        //        new SymbolToken(')'),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void TypeInNotNamespaceTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Content"),
-                new SymbolToken(':'),
-                new TypeToken("ArrayList"),
-                new SymbolToken('}')
-            });
-        }
+        //[TestMethod]
+        //[ExpectedException(typeof(EdgeParserException))]
+        //public void TypeInNotNamespaceTest()
+        //{
+        //    TestFail(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Content"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("ArrayList"),
+        //        new SymbolToken('}')
+        //    });
+        //}
 
-        [TestMethod]
-        public void ShortBindingTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Title"),
-                new SymbolToken(':'),
-                new SymbolToken('@'),
-                new WordToken("tb.Text"),
-                new SymbolToken(','),
-                new PropertyToken("Content"),
-                new SymbolToken(':'),
-                new TypeToken("TextBox"),
-                new SymbolToken('#'),
-                new IdToken("tb"),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("Title"), new BindingNode("tb", "Text")),
-                        new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.TextBox), "tb"))
-                    })));
-        }
+        //[TestMethod]
+        //public void ShortBindingTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Title"),
+        //        new SymbolToken(':'),
+        //        new SymbolToken('@'),
+        //        new WordToken("tb.Text"),
+        //        new SymbolToken(','),
+        //        new PropertyToken("Content"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("TextBox"),
+        //        new SymbolToken('#'),
+        //        new IdToken("tb"),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("Title"), new BindingNode("tb", "Text")),
+        //                new PropertyNode(type.GetProperty("Content"), new ObjectNode(typeof(System.Windows.Controls.TextBox), "tb"))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void ShortBindingOnlyPathTest()
-        {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Title"),
-                new SymbolToken(':'),
-                new SymbolToken('@'),
-                new WordToken("WindowState"),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(type.GetProperty("Title"), new BindingNode("WindowState"))
-                    })));
-        }
+        //[TestMethod]
+        //public void ShortBindingOnlyPathTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Title"),
+        //        new SymbolToken(':'),
+        //        new SymbolToken('@'),
+        //        new WordToken("WindowState"),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(type.GetProperty("Title"), new BindingNode("WindowState"))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void ArrayTest()
-        {
-            var type = typeof(System.Windows.Window);
-            var textBox = typeof(System.Windows.Controls.TextBox);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Content"),
-                new SymbolToken(':'),
-                new TypeToken("TextBox"),
-                new SymbolToken('['),
-                new WordToken("TextBox"),
-                new SymbolToken(','),
-                new WordToken("TextBox"),
-                new SymbolToken(']'),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(
-                            type.GetProperty("Content"), 
-                            new ArrayNode(
-                                textBox, 
-                                new object[] 
-                                { 
-                                    new ObjectNode(textBox, "textBox1"), 
-                                    new ObjectNode(textBox, "textBox2") 
-                                }))
-                    })));
-        }
+        //[TestMethod]
+        //public void ArrayTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    var textBox = typeof(System.Windows.Controls.TextBox);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Content"),
+        //        new SymbolToken(':'),
+        //        new TypeToken("TextBox"),
+        //        new SymbolToken('['),
+        //        new WordToken("TextBox"),
+        //        new SymbolToken(','),
+        //        new WordToken("TextBox"),
+        //        new SymbolToken(']'),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(
+        //                    type.GetProperty("Content"), 
+        //                    new ArrayNode(
+        //                        textBox, 
+        //                        new object[] 
+        //                        { 
+        //                            new ObjectNode(textBox, "textBox1"), 
+        //                            new ObjectNode(textBox, "textBox2") 
+        //                        }))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void ArrayWithoutTypeTest()
-        {
-            var type = typeof(System.Windows.Window);
-            var textBox = typeof(System.Windows.Controls.TextBox);
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Content"),
-                new SymbolToken(':'),
-                new SymbolToken('['),
-                new WordToken("TextBox"),
-                new SymbolToken(','),
-                new WordToken("TextBox"),
-                new SymbolToken(']'),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(
-                            type.GetProperty("Content"), 
-                            new ArrayNode(
-                                textBox, 
-                                new object[] 
-                                { 
-                                    new ObjectNode(textBox, "textBox1"), 
-                                    new ObjectNode(textBox, "textBox2") 
-                                }))
-                    })));
-        }
+        //[TestMethod]
+        //public void ArrayWithoutTypeTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    var textBox = typeof(System.Windows.Controls.TextBox);
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Content"),
+        //        new SymbolToken(':'),
+        //        new SymbolToken('['),
+        //        new WordToken("TextBox"),
+        //        new SymbolToken(','),
+        //        new WordToken("TextBox"),
+        //        new SymbolToken(']'),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(
+        //                    type.GetProperty("Content"), 
+        //                    new ArrayNode(
+        //                        textBox, 
+        //                        new object[] 
+        //                        { 
+        //                            new ObjectNode(textBox, "textBox1"), 
+        //                            new ObjectNode(textBox, "textBox2") 
+        //                        }))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void WindowResourceTest()
-        {
-            var type = typeof(System.Windows.Window);
-            var style = typeof(System.Windows.Style);
-            var brush = typeof(System.Windows.Media.Brush);
+        //[TestMethod]
+        //public void WindowResourceTest()
+        //{
+        //    var type = typeof(System.Windows.Window);
+        //    var style = typeof(System.Windows.Style);
+        //    var brush = typeof(System.Windows.Media.Brush);
 
-            Test(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Resources"),
-                new SymbolToken(':'),
-                new SymbolToken('['),
-                new TypeToken("Style"),
-                new SymbolToken('#'),
-                new IdToken("baseStyle"),
-                new SymbolToken(','),
-                new TypeToken("Brush"),
-                new SymbolToken('#'),
-                new IdToken("newBrush"),
-                new SymbolToken(']'),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(
-                            type.GetProperty("Resources"), 
-                            new ArrayNode(
-                                typeof(object), 
-                                new object[] 
-                                { 
-                                    new ObjectNode(style, "baseStyle"), 
-                                    new ObjectNode(brush, "newBrush") 
-                                }))
-                    })));
-        }
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Window"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("Resources"),
+        //        new SymbolToken(':'),
+        //        new SymbolToken('['),
+        //        new TypeToken("Style"),
+        //        new SymbolToken('#'),
+        //        new IdToken("baseStyle"),
+        //        new SymbolToken(','),
+        //        new TypeToken("Brush"),
+        //        new SymbolToken('#'),
+        //        new IdToken("newBrush"),
+        //        new SymbolToken(']'),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(
+        //                    type.GetProperty("Resources"), 
+        //                    new ArrayNode(
+        //                        typeof(object), 
+        //                        new object[] 
+        //                        { 
+        //                            new ObjectNode(style, "baseStyle"), 
+        //                            new ObjectNode(brush, "newBrush") 
+        //                        }))
+        //            })));
+        //}
 
-        [TestMethod]
-        public void GridColumnDefinitionsTest()
-        {
-            var type = typeof(System.Windows.Controls.Grid);
-            var cd = typeof(System.Windows.Controls.ColumnDefinition);
+        //[TestMethod]
+        //public void GridColumnDefinitionsTest()
+        //{
+        //    var type = typeof(System.Windows.Controls.Grid);
+        //    var cd = typeof(System.Windows.Controls.ColumnDefinition);
 
-            Test(new List<IToken>()
-            {
-                new TypeToken("Grid"),
-                new SymbolToken('{'),
-                new PropertyToken("ColumnDefinitions"),
-                new SymbolToken(':'),
-                new SymbolToken('['),
-                new TypeToken("ColumnDefinition"),
-                new SymbolToken(','),
-                new TypeToken("ColumnDefinition"),
-                new SymbolToken(']'),
-                new SymbolToken('}')
-            },
-            new SyntaxTree(
-                new RootObjectNode(
-                    type,
-                    new List<PropertyNode>()
-                    {
-                        new PropertyNode(
-                            type.GetProperty("ColumnDefinitions"), 
-                            new ArrayNode(
-                                cd, 
-                                new object[] 
-                                { 
-                                    new ObjectNode(cd, "columnDefinition1"), 
-                                    new ObjectNode(cd, "columnDefinition2") 
-                                }))
-                    })));
-        }
+        //    Test(new List<IToken>()
+        //    {
+        //        new TypeToken("Grid"),
+        //        new SymbolToken('{'),
+        //        new PropertyToken("ColumnDefinitions"),
+        //        new SymbolToken(':'),
+        //        new SymbolToken('['),
+        //        new TypeToken("ColumnDefinition"),
+        //        new SymbolToken(','),
+        //        new TypeToken("ColumnDefinition"),
+        //        new SymbolToken(']'),
+        //        new SymbolToken('}')
+        //    },
+        //    new SyntaxTree(
+        //        new RootObjectNode(
+        //            type,
+        //            new List<PropertyNode>()
+        //            {
+        //                new PropertyNode(
+        //                    type.GetProperty("ColumnDefinitions"), 
+        //                    new ArrayNode(
+        //                        cd, 
+        //                        new object[] 
+        //                        { 
+        //                            new ReferenceNode("columnDefinition1"), 
+        //                            new ReferenceNode("columnDefinition2") 
+        //                        }))
+        //            })));
+        //}
 
     }
 

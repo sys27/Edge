@@ -238,7 +238,7 @@ namespace Edge
             return new NamespaceNode(ns);
         }
 
-        private ObjectNode Object()
+        private ReferenceNode Object()
         {
             var token = GetToken();
             if (!(token is TypeToken))
@@ -253,7 +253,7 @@ namespace Edge
             var obj = new ObjectNode(type, id, ctor, properties);
             ids[id] = obj;
 
-            return obj;
+            return new ReferenceNode(id);
         }
 
         private string ObjectId(Type objType)
@@ -568,13 +568,13 @@ namespace Edge
                     }
 
                     position--;
-                    var obj = Object();
+                    var reference = Object();
 
-                    if (type != null && !type.IsAssignableFrom(obj.Info))
+                    if (type != null && !type.IsAssignableFrom(ids[reference.Id].Info))
                         // todo: error message
                         throw new InvalidCastException();
 
-                    return obj;
+                    return reference;
                 }
                 if (token is WordToken)
                 {
@@ -602,7 +602,7 @@ namespace Edge
 
                         ids[id] = obj;
 
-                        return obj;
+                        return new ReferenceNode(id);
                     }
 
                     return new EnumNode(type, Enum.Parse(type, word.Word));

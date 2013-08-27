@@ -20,7 +20,7 @@ using System.Linq;
 namespace Edge.SyntaxNodes
 {
 
-    public class ObjectNode : IValueNode
+    public class ObjectNode : INode
     {
 
         private Type typeInfo;
