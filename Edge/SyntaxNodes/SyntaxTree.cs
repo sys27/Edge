@@ -24,30 +24,17 @@ namespace Edge.SyntaxNodes
     {
 
         private IEnumerable<NamespaceNode> namespaces;
-        private RootObjectNode root;
+        private IEnumerable<ObjectNode> objects;
 
-        private IEnumerable<ObjectNode> ids;
-
-        public SyntaxTree(RootObjectNode root)
-            : this(root, null, null)
+        public SyntaxTree(IEnumerable<ObjectNode> objects)
+            : this(null, objects)
         {
         }
 
-        public SyntaxTree(RootObjectNode root, IEnumerable<NamespaceNode> namespaces)
-            : this(root, namespaces, null)
+        public SyntaxTree(IEnumerable<NamespaceNode> namespaces, IEnumerable<ObjectNode> objects)
         {
-        }
-
-        public SyntaxTree(RootObjectNode root, IEnumerable<ObjectNode> ids)
-            : this(root, null, ids)
-        {
-        }
-
-        public SyntaxTree(RootObjectNode root, IEnumerable<NamespaceNode> namespaces, IEnumerable<ObjectNode> ids)
-        {
-            this.root = root;
             this.namespaces = namespaces;
-            this.ids = ids;
+            this.objects = objects;
         }
 
         public override bool Equals(object obj)
@@ -59,11 +46,10 @@ namespace Edge.SyntaxNodes
             if (tree == null)
                 return false;
 
-            return root.Equals(tree.root) &&
-                   ((namespaces == null && tree.namespaces == null) ||
+            return ((namespaces == null && tree.namespaces == null) ||
                     (namespaces != null && tree.namespaces != null && namespaces.SequenceEqual(tree.namespaces))) &&
-                   ((ids == null && tree.ids == null) ||
-                    (ids != null && tree.ids != null && ids.SequenceEqual(tree.ids)));
+                   ((objects == null && tree.objects == null) ||
+                    (objects != null && tree.objects != null && objects.SequenceEqual(tree.objects)));
         }
 
         public string Build(IBuilder builder)
@@ -79,19 +65,11 @@ namespace Edge.SyntaxNodes
             }
         }
 
-        public RootObjectNode Root
+        public IEnumerable<ObjectNode> Objects
         {
             get
             {
-                return root;
-            }
-        }
-
-        public IEnumerable<ObjectNode> IDs
-        {
-            get
-            {
-                return ids;
+                return objects;
             }
         }
 

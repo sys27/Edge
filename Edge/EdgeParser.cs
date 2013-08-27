@@ -36,7 +36,7 @@ namespace Edge
         private HashSet<string> assemblies;
         private HashSet<string> namespaces;
 
-        private Dictionary<string, ObjectNode> ids;
+        private Dictionary<string, ObjectNode> objects;
 
         public EdgeParser()
             : this(new EdgeLexer())
@@ -50,7 +50,7 @@ namespace Edge
 
             assemblies = new HashSet<string>();
             namespaces = new HashSet<string>();
-            ids = new Dictionary<string, ObjectNode>();
+            objects = new Dictionary<string, ObjectNode>();
         }
 
         private IToken GetToken()
@@ -125,14 +125,14 @@ namespace Edge
                 if (token is IdToken)
                 {
                     var id = token as IdToken;
-                    ids[id.Id] = null;
+                    objects[id.Id] = null;
                 }
             }
         }
 
         private void CheckIds()
         {
-            foreach (var id in ids)
+            foreach (var id in objects)
             {
                 if (id.Value == null)
                     // todo: error message
@@ -148,7 +148,7 @@ namespace Edge
             for (int i = 1; i < int.MaxValue; i++)
             {
                 var id = typeName + i;
-                if (!ids.ContainsKey(id))
+                if (!objects.ContainsKey(id))
                     return id;
             }
 
@@ -159,12 +159,12 @@ namespace Edge
         private SyntaxTree Tree()
         {
             var namespaces = GetNamespaces();
-            var root = Root();
+            Root();
 
-            return new SyntaxTree(root, namespaces, from obj in ids select obj.Value);
+            return new SyntaxTree(namespaces, from obj in objects select obj.Value);
         }
 
-        private RootObjectNode Root()
+        private void Root()
         {
             var token = GetToken();
             if (!(token is TypeToken))
@@ -182,8 +182,7 @@ namespace Edge
             var properties = Properties(type);
 
             var obj = new RootObjectNode(type, ctor, properties);
-
-            return obj;
+            objects[obj.Id] = obj;
         }
 
         private IEnumerable<NamespaceNode> GetNamespaces()
@@ -251,7 +250,7 @@ namespace Edge
             var properties = Properties(type);
 
             var obj = new ObjectNode(type, id, ctor, properties);
-            ids[id] = obj;
+            objects[id] = obj;
 
             return new ReferenceNode(id);
         }
@@ -570,7 +569,7 @@ namespace Edge
                     position--;
                     var reference = Object();
 
-                    if (type != null && !type.IsAssignableFrom(ids[reference.Id].Info))
+                    if (type != null && !type.IsAssignableFrom(objects[reference.Id].Info))
                         // todo: error message
                         throw new InvalidCastException();
 
@@ -600,7 +599,7 @@ namespace Edge
                         var id = GenereteId(outType);
                         var obj = new ObjectNode(outType, GenereteId(outType));
 
-                        ids[id] = obj;
+                        objects[id] = obj;
 
                         return new ReferenceNode(id);
                     }

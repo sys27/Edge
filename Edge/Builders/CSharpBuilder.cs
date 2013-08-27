@@ -43,7 +43,7 @@ namespace Edge.Builders
             if (tree.Namespaces != null)
                 result = CreateNamespaces(tree.Namespaces) + nl;
 
-            result += CreateRootObject(tree.Root, tree.IDs);
+            result += CreateRootObject(tree.Root, tree.Objects);
 
             return result;
         }
