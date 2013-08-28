@@ -145,6 +145,8 @@ namespace Edge.Builders
                 return CreateEnum((EnumNode)value);
             if (value is BindingNode)
                 return CreateBinding((BindingNode)value);
+            if (value is ArrayNode)
+                return CreateArray((ArrayNode)value);
             else
                 // todo: ...!
                 throw new Exception();
@@ -184,6 +186,11 @@ namespace Edge.Builders
               .Append('}').Append(nl);
 
             return sb.ToString();
+        }
+
+        private string CreateArray(ArrayNode array)
+        {
+            throw new NotImplementedException();
         }
 
     }
