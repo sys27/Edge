@@ -32,6 +32,9 @@ namespace Edge.SyntaxNodes
 
         public BindingNode(string elementName, string path)
         {
+            if (string.IsNullOrWhiteSpace(path))
+                throw new ArgumentNullException("path");
+
             this.elementName = elementName;
             this.path = path;
         }

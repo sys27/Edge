@@ -16,6 +16,7 @@ using Edge.SyntaxNodes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace Edge.Builders
@@ -38,28 +39,27 @@ namespace Edge.Builders
 
         public string Build(SyntaxTree tree)
         {
-            //string result = string.Empty;
+            string result = string.Empty;
 
-            //if (tree.Namespaces != null)
-            //    result = CreateNamespaces(tree.Namespaces) + nl;
+            if (tree.Namespaces != null)
+                result = CreateNamespaces(tree.Namespaces) + nl;
 
-            //result += CreateRootObject(tree.Root, tree.Objects);
+            result += CreateRootObject(tree.Objects);
 
-            //return result;
-            throw new NotImplementedException();
+            return result;
         }
 
-        private string CreateNamespaces(IEnumerable<NamespaceNode> namespaces)
+        private string CreateNamespaces(IEnumerable<string> namespaces)
         {
             StringBuilder sb = new StringBuilder();
 
             foreach (var ns in namespaces)
-                sb.Append("using ").Append(ns.Namespace).Append(';').Append(nl);
+                sb.Append("using ").Append(ns).Append(';').Append(nl);
 
             return sb.ToString();
         }
 
-        private string CreateRootObject(RootObjectNode root, IEnumerable<ObjectNode> ids)
+        private string CreateRootObject(IEnumerable<ObjectNode> objects)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -68,10 +68,10 @@ namespace Edge.Builders
               .Append("public partial class ").Append(nl)
               .Append('{').Append(nl);
 
-            if (ids != null)
-                sb.Append(CreateMembers(ids)).Append(nl);
+            if (objects != null)
+                sb.Append(CreateMembers(objects)).Append(nl);
 
-            sb.Append(CreateInitMethod(root, ids));
+            sb.Append(CreateInitMethod(objects));
 
             sb.Append('}').Append(nl)
               .Append('}');
@@ -84,20 +84,21 @@ namespace Edge.Builders
             StringBuilder sb = new StringBuilder();
 
             foreach (var obj in ids)
-                sb.Append("internal ").Append(obj.Info.Name).Append(' ').Append(obj.Id).Append(';').Append(nl);
+                if (obj.Id != "this")
+                    sb.Append("internal ").Append(obj.Info.Name).Append(' ').Append(obj.Id).Append(';').Append(nl);
 
             return sb.ToString();
         }
 
-        private string CreateInitMethod(RootObjectNode root, IEnumerable<ObjectNode> ids)
+        private string CreateInitMethod(IEnumerable<ObjectNode> objects)
         {
             StringBuilder sb = new StringBuilder();
 
             sb.Append("public void InitializeComponent()").Append(nl)
               .Append('{').Append(nl);
 
-            if (ids != null)
-                sb.Append(InitMembers(ids)).Append(nl);
+            if (objects != null)
+                sb.Append(InitMembers(objects)).Append(nl).Append(CreateProperties(objects)).Append(nl);
 
             return sb.ToString();
         }
@@ -107,7 +108,80 @@ namespace Edge.Builders
             StringBuilder sb = new StringBuilder();
 
             foreach (var obj in ids)
-                sb.Append(obj.Id).Append(" = new ").Append(obj.Info.Name).Append("();").Append(nl);
+                if (obj.Id != "this")
+                    sb.Append(obj.Id).Append(" = new ").Append(obj.Info.Name).Append("();").Append(nl);
+
+            return sb.ToString();
+        }
+
+        private string CreateProperties(IEnumerable<ObjectNode> objects)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var objs = new List<ObjectNode>(objects);
+            var thisObj = (from obj in objs
+                           where obj.Id == "this"
+                           select obj).First();
+            objs.Remove(thisObj);
+            objs.Add(thisObj);
+
+            foreach (var obj in objs)
+                if (obj.Properties != null)
+                    foreach (var prop in obj.Properties)
+                        sb.Append(obj.Id).Append('.').Append(prop.Info.Name).Append(" = ").Append(CreateValue(prop.Value)).Append(';').Append(nl);
+
+            return sb.ToString();
+        }
+
+        private string CreateValue(IValueNode value)
+        {
+            if (value is ReferenceNode)
+                return CreateReference((ReferenceNode)value);
+            if (value is NumberNode)
+                return CreateNumber((NumberNode)value);
+            if (value is StringNode)
+                return CreateString((StringNode)value);
+            if (value is EnumNode)
+                return CreateEnum((EnumNode)value);
+            if (value is BindingNode)
+                return CreateBinding((BindingNode)value);
+            else
+                // todo: ...!
+                throw new Exception();
+        }
+
+        private string CreateReference(ReferenceNode reference)
+        {
+            return reference.Id;
+        }
+
+        private string CreateNumber(NumberNode number)
+        {
+            return number.Number.ToString();
+        }
+
+        private string CreateString(StringNode str)
+        {
+            return "\"" + str.Str + "\"";
+        }
+
+        private string CreateEnum(EnumNode e)
+        {
+            return e.Info.Name + '.' + e.Value;
+        }
+
+        private string CreateBinding(BindingNode binding)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("new Binding()").Append(nl)
+              .Append('{').Append(nl);
+
+            if (!string.IsNullOrWhiteSpace(binding.ElementName))
+                sb.Append("ElementName = ").Append(binding.ElementName).Append(',').Append(nl);
+
+            sb.Append("Path = ").Append(binding.Path).Append(nl)
+              .Append('}').Append(nl);
 
             return sb.ToString();
         }

@@ -59,7 +59,6 @@
     <Compile Include="SyntaxNodes\EnumNode.cs" />
     <Compile Include="SyntaxNodes\INode.cs" />
     <Compile Include="SyntaxNodes\IValueNode.cs" />
-    <Compile Include="SyntaxNodes\NamespaceNode.cs" />
     <Compile Include="SyntaxNodes\NumberNode.cs" />
     <Compile Include="SyntaxNodes\ObjectNode.cs" />
     <Compile Include="SyntaxNodes\PropertyNode.cs" />

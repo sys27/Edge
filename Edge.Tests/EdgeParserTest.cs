@@ -13,7 +13,7 @@ namespace Edge.Tests
     {
 
         private MockEdgeLexer lexer;
-        private IParser parser;
+        private EdgeParser parser;
 
         public EdgeParserTest()
         {
@@ -79,11 +79,13 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
-                new List<NamespaceNode>()
-                {
-                    new NamespaceNode("System"),
-                    new NamespaceNode("System.Windows")
-                },
+                parser.Namespaces.Union(
+                    new List<string>()
+                    {
+                        "System",
+                        "System.Windows"
+                    }
+                ),
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(type)
@@ -132,6 +134,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -157,6 +160,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -184,6 +188,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -210,6 +215,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -237,6 +243,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -266,6 +273,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -299,6 +307,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new ObjectNode(typeof(System.Windows.Media.Imaging.BitmapImage), "bitmap"),
@@ -400,6 +409,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new ObjectNode(typeof(System.Windows.Controls.Grid), "grid"),
@@ -426,6 +436,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -477,6 +488,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -596,6 +608,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new ObjectNode(typeof(System.Windows.Controls.TextBox), "tb"),
@@ -624,6 +637,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -655,6 +669,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -695,6 +710,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
@@ -741,6 +757,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new ObjectNode(style, "baseStyle"),
@@ -782,6 +799,7 @@ namespace Edge.Tests
                 new SymbolToken('}')
             },
             new SyntaxTree(
+                parser.Namespaces,
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(

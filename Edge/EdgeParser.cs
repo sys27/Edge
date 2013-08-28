@@ -158,7 +158,7 @@ namespace Edge
 
         private SyntaxTree Tree()
         {
-            var namespaces = GetNamespaces();
+            GetNamespaces();
             Root();
 
             return new SyntaxTree(namespaces, from obj in objects select obj.Value);
@@ -186,27 +186,14 @@ namespace Edge
             objects["this"] = obj;
         }
 
-        private IEnumerable<NamespaceNode> GetNamespaces()
+        private void GetNamespaces()
         {
             if (PeekToken() is UsingToken)
-            {
-                var localNamespaces = new List<NamespaceNode>();
-
                 while (PeekToken() is UsingToken)
-                {
-                    var ns = GetNamespace();
-
-                    localNamespaces.Add(ns);
-                    namespaces.Add(ns.Namespace);
-                }
-
-                return localNamespaces;
-            }
-
-            return null;
+                    namespaces.Add(GetNamespace());
         }
 
-        private NamespaceNode GetNamespace()
+        private string GetNamespace()
         {
             var token = GetToken();
             if (!(token is UsingToken))
@@ -235,7 +222,7 @@ namespace Edge
                 // todo: error message
                 throw new EdgeParserException();
 
-            return new NamespaceNode(ns);
+            return ns;
         }
 
         private ReferenceNode Object()

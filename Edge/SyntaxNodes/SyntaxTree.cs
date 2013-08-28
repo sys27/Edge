@@ -23,7 +23,7 @@ namespace Edge.SyntaxNodes
     public class SyntaxTree
     {
 
-        private IEnumerable<NamespaceNode> namespaces;
+        private IEnumerable<string> namespaces;
         private IEnumerable<ObjectNode> objects;
 
         public SyntaxTree(IEnumerable<ObjectNode> objects)
@@ -31,7 +31,7 @@ namespace Edge.SyntaxNodes
         {
         }
 
-        public SyntaxTree(IEnumerable<NamespaceNode> namespaces, IEnumerable<ObjectNode> objects)
+        public SyntaxTree(IEnumerable<string> namespaces, IEnumerable<ObjectNode> objects)
         {
             this.namespaces = namespaces;
             this.objects = objects;
@@ -57,7 +57,7 @@ namespace Edge.SyntaxNodes
             return builder.Build(this);
         }
 
-        public IEnumerable<NamespaceNode> Namespaces
+        public IEnumerable<string> Namespaces
         {
             get
             {
