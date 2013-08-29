@@ -52,9 +52,9 @@ namespace Edge.SyntaxNodes
                     (objects != null && tree.objects != null && objects.SequenceEqual(tree.objects)));
         }
 
-        public string Build(IBuilder builder)
+        public string Build(IBuilder builder, string @class, string @namespace)
         {
-            return builder.Build(this);
+            return builder.Build(this, @class, @namespace);
         }
 
         public IEnumerable<string> Namespaces

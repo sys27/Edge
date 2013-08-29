@@ -22,7 +22,7 @@ namespace Edge.Builders
     public interface IBuilder
     {
 
-        string Build(SyntaxTree tree);
+        string Build(SyntaxTree tree, string @class, string @namespace);
 
     }
 

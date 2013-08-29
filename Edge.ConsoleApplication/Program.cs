@@ -39,7 +39,7 @@ namespace Edge.ConsoleApplication
                 }
             };
             var st = parser.Parse(text);
-            string file = st.Build(new CSharpBuilder());
+            string file = st.Build(new CSharpBuilder(), "MainView", "WPF.Views");
             File.WriteAllText("MainView.cs", file);
         }
 

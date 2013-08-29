@@ -37,14 +37,14 @@ namespace Edge.Builders
             this.nl = nl;
         }
 
-        public string Build(SyntaxTree tree)
+        public string Build(SyntaxTree tree, string @class, string @namespace)
         {
             string result = string.Empty;
 
             if (tree.Namespaces != null)
                 result = CreateNamespaces(tree.Namespaces) + nl;
 
-            result += CreateRootObject(tree.Objects);
+            result += CreateRootObject(tree.Objects, @class, @namespace);
 
             return result;
         }
@@ -59,13 +59,13 @@ namespace Edge.Builders
             return sb.ToString();
         }
 
-        private string CreateRootObject(IEnumerable<ObjectNode> objects)
+        private string CreateRootObject(IEnumerable<ObjectNode> objects, string @class, string @namespace)
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("namespace ").Append(nl)
+            sb.Append("namespace ").Append(@namespace).Append(nl)
               .Append('{').Append(nl)
-              .Append("public partial class ").Append(nl)
+              .Append("public partial class ").Append(@class).Append(nl)
               .Append('{').Append(nl);
 
             if (objects != null)
