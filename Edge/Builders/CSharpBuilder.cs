@@ -145,6 +145,8 @@ namespace Edge.Builders
                 return CreateEnum((EnumNode)value);
             if (value is BindingNode)
                 return CreateBinding((BindingNode)value);
+            if (value is CollectionNode)
+                return CreateCollection((CollectionNode)value);
             if (value is ArrayNode)
                 return CreateArray((ArrayNode)value);
             else
@@ -190,7 +192,36 @@ namespace Edge.Builders
 
         private string CreateArray(ArrayNode array)
         {
-            throw new NotImplementedException();
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("new ").Append(array.ElementType.Name).Append("[] ").Append(nl)
+              .Append('{').Append(nl);
+
+            foreach (var item in array.Array)
+                sb.Append(CreateValue(item)).Append(',').Append(nl);
+
+            sb.Remove(sb.Length - 3, 2);
+
+            sb.Append('}');
+
+            return sb.ToString();
+        }
+
+        private string CreateCollection(CollectionNode collection)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("new ").Append(collection.CollectionType.Name).Append(' ').Append(nl)
+              .Append('{').Append(nl);
+
+            foreach (var item in collection.Array)
+                sb.Append(CreateValue(item)).Append(',').Append(nl);
+
+            sb.Remove(sb.Length - 3, 2);
+
+            sb.Append('}');
+
+            return sb.ToString();
         }
 
     }

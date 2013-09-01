@@ -417,10 +417,12 @@ namespace Edge
         private ArrayNode Array(Type type)
         {
             var token = GetToken();
-            Type arrayType = null;
+            Type elementType = null;
+            bool isArray = true;
+
             if (token is TypeToken)
             {
-                arrayType = SearchType(((TypeToken)token).Type);
+                elementType = SearchType(((TypeToken)token).Type);
 
                 token = GetToken();
             }
@@ -441,67 +443,77 @@ namespace Edge
                     }
 
                     IValueNode obj = null;
-                    if (arrayType != null)
-                    {
-                        obj = GetValue(arrayType);
-                    }
-                    else if (type != null)
+
+                    if (type != null)
                     {
                         if (type.IsArray)
                         {
-                            arrayType = type.GetElementType();
+                            elementType = type.GetElementType();
+                            isArray = true;
                         }
                         else
                         {
                             Type genericType;
                             if (TryCheckGenerics(type, typeof(IDictionary<,>), out genericType))
                             {
-                                arrayType = genericType.GetGenericArguments()[1];
-                                obj = GetValue(arrayType);
+                                elementType = genericType.GetGenericArguments()[1];
+                                obj = GetValue(elementType);
+                                isArray = false;
                             }
                             else if (TryCheckGenerics(type, typeof(ICollection<>), out genericType))
                             {
-                                arrayType = genericType.GetGenericArguments()[0];
-                                obj = GetValue(arrayType);
+                                elementType = genericType.GetGenericArguments()[0];
+                                obj = GetValue(elementType);
+                                isArray = false;
                             }
                             else if (typeof(ICollection).IsAssignableFrom(type))
                             {
-                                arrayType = typeof(object);
-                                obj = GetValue(arrayType);
+                                elementType = typeof(object);
+                                obj = GetValue(elementType);
+                                isArray = false;
                             }
                             else
                             {
                                 obj = GetValue();
 
                                 if (obj is ReferenceNode)
-                                    arrayType = objects[((ReferenceNode)obj).Id].Info;
+                                    elementType = objects[((ReferenceNode)obj).Id].Info;
                                 else if (obj is StringNode)
-                                    arrayType = strType;
+                                    elementType = strType;
                                 else if (obj is NumberNode)
-                                    arrayType = doubleType;
+                                    elementType = doubleType;
                                 else if (obj is EnumNode)
-                                    arrayType = ((EnumNode)obj).Info;
+                                    elementType = ((EnumNode)obj).Info;
                                 else
                                     // todo: error message
                                     throw new EdgeParserException();
+
+                                isArray = true;
                             }
                         }
+                    }
+                    else if (elementType != null)
+                    {
+                        obj = GetValue(elementType);
+                        isArray = true;
                     }
                     else
                     {
                         obj = GetValue();
 
                         if (obj is ReferenceNode)
-                            arrayType = objects[((ReferenceNode)obj).Id].Info;
+                            elementType = objects[((ReferenceNode)obj).Id].Info;
                         else if (obj is StringNode)
-                            arrayType = strType;
+                            elementType = strType;
                         else if (obj is NumberNode)
-                            arrayType = doubleType;
+                            elementType = doubleType;
                         else if (obj is EnumNode)
-                            arrayType = ((EnumNode)obj).Info;
+                            elementType = ((EnumNode)obj).Info;
                         else
                             // todo: error message
                             throw new EdgeParserException();
+
+                        isArray = true;
                     }
 
                     arr.Add(obj);
@@ -520,7 +532,10 @@ namespace Edge
                 if (arr.Count == 0)
                     return null;
 
-                return new ArrayNode(arrayType, arr.ToArray());
+                if (isArray)
+                    return new ArrayNode(elementType, arr.ToArray());
+                else
+                    return new CollectionNode(type, elementType, arr.ToArray());
             }
 
             return null;

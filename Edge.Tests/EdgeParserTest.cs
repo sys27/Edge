@@ -808,7 +808,8 @@ namespace Edge.Tests
                         {
                             new PropertyNode(
                                 type.GetProperty("ColumnDefinitions"), 
-                                new ArrayNode(
+                                new CollectionNode(
+                                    typeof(System.Windows.Controls.ColumnDefinitionCollection),
                                     cd, 
                                     new IValueNode[] 
                                     { 

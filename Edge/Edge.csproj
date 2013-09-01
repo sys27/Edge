@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="SyntaxNodes\ArrayNode.cs" />
     <Compile Include="SyntaxNodes\BindingNode.cs" />
+    <Compile Include="SyntaxNodes\CollectionNode.cs" />
     <Compile Include="SyntaxNodes\EnumNode.cs" />
     <Compile Include="SyntaxNodes\INode.cs" />
     <Compile Include="SyntaxNodes\IValueNode.cs" />

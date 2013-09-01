@@ -22,15 +22,15 @@ namespace Edge.SyntaxNodes
     public class ArrayNode : IValueNode
     {
 
-        private Type arrayType;
+        private Type elementType;
         private IValueNode[] array;
 
-        public ArrayNode(Type arrayType, IValueNode[] array)
+        public ArrayNode(Type elementType, IValueNode[] array)
         {
             if (array == null)
                 throw new ArgumentNullException("array");
 
-            this.arrayType = arrayType;
+            this.elementType = elementType;
             this.array = array;
         }
 
@@ -43,14 +43,14 @@ namespace Edge.SyntaxNodes
             if (arr == null)
                 return false;
 
-            return arrayType.Equals(arr.arrayType) && array.SequenceEqual(arr.array);
+            return elementType.Equals(arr.elementType) && array.SequenceEqual(arr.array);
         }
 
-        public Type ArrayType
+        public Type ElementType
         {
             get
             {
-                return arrayType;
+                return elementType;
             }
         }
 
