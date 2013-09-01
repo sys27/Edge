@@ -588,7 +588,7 @@ namespace Edge.Tests
         }
 
         [TestMethod]
-        public void ShortBindingTest()
+        public void BindingShortTest()
         {
             var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
@@ -617,6 +617,53 @@ namespace Edge.Tests
                         new List<PropertyNode>()
                         {
                             new PropertyNode(type.GetProperty("Title"), new BindingNode("tb", "Text")),
+                            new PropertyNode(type.GetProperty("Content"), new ReferenceNode("tb"))
+                        })
+                }));
+        }
+
+        [TestMethod]
+        public void BindingFullTest()
+        {
+            var type = typeof(System.Windows.Window);
+            Test(new List<IToken>()
+            {
+                new TypeToken("Window"),
+                new SymbolToken('{'),
+                new PropertyToken("Title"),
+                new SymbolToken(':'),
+                new SymbolToken('@'),
+                new SymbolToken('('),
+                new WordToken("Path"),
+                new SymbolToken('='),
+                new WordToken("Text"),
+                new SymbolToken(','),
+                new WordToken("ElementName"),
+                new SymbolToken('='),
+                new WordToken("tb"),
+                new SymbolToken(','),
+                new WordToken("Mode"),
+                new SymbolToken('='),
+                new WordToken("OneTime"),
+                new SymbolToken(')'),
+                new SymbolToken(','),
+                new PropertyToken("Content"),
+                new SymbolToken(':'),
+                new TypeToken("TextBox"),
+                new SymbolToken('#'),
+                new IdToken("tb"),
+                new SymbolToken('}')
+            },
+            new SyntaxTree(
+                parser.Namespaces,
+                new List<ObjectNode>()
+                {
+                    new ObjectNode(typeof(System.Windows.Controls.TextBox), "tb"),
+                    new RootObjectNode(
+                        type,
+                        new List<PropertyNode>()
+                        {
+                            new PropertyNode(type.GetProperty("Title"), new BindingNode("tb", "Text", BindingMode.OneTime)),
                             new PropertyNode(type.GetProperty("Content"), new ReferenceNode("tb"))
                         })
                 }));

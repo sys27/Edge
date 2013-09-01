@@ -637,22 +637,7 @@ namespace Edge
                     }
                     if (symbol.Symbol == '@')
                     {
-                        token = GetToken();
-
-                        if (!(token is WordToken))
-                            // todo: error message
-                            throw new EdgeParserException();
-
-                        var word = token as WordToken;
-
-                        if (word.Word.Contains('.'))
-                        {
-                            var dot = word.Word.IndexOf('.');
-
-                            return new BindingNode(word.Word.Substring(0, dot), word.Word.Substring(dot + 1));
-                        }
-
-                        return new BindingNode(word.Word);
+                        return GetBinding();
                     }
                     if (symbol.Symbol == '[')
                     {
@@ -682,6 +667,51 @@ namespace Edge
                 // todo: error message
                 throw new EdgeParserException("", ice);
             }
+        }
+
+        private BindingNode GetBinding()
+        {
+            var token = GetToken();
+
+            if (CheckSymbol(token, '('))
+            {
+                var values = GetBindingValues();
+
+                string elementName;
+                string path;
+                string strMode;
+                BindingMode mode = BindingMode.Default;
+
+                values.TryGetValue("ElementName", out elementName);
+                values.TryGetValue("Path", out path);
+                if (values.TryGetValue("Mode", out strMode))
+                    mode = (BindingMode)Enum.Parse(typeof(BindingMode), strMode);
+
+                return new BindingNode(elementName, path, mode);
+            }
+            else if (token is WordToken)
+            {
+                var word = token as WordToken;
+
+                if (word.Word.Contains('.'))
+                {
+                    var dot = word.Word.IndexOf('.');
+
+                    return new BindingNode(word.Word.Substring(0, dot), word.Word.Substring(dot + 1));
+                }
+
+                return new BindingNode(word.Word);
+            }
+            else
+            {
+                // todo: error message
+                throw new EdgeParserException();
+            }
+        }
+
+        private IDictionary<string, string> GetBindingValues()
+        {
+            throw new NotImplementedException();
         }
 
         public SyntaxTree Parse(string text)

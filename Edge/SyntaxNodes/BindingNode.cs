@@ -23,6 +23,7 @@ namespace Edge.SyntaxNodes
 
         private string elementName;
         private string path;
+        private BindingMode mode;
 
         public BindingNode(string path)
             : this(null, path)
@@ -31,12 +32,18 @@ namespace Edge.SyntaxNodes
         }
 
         public BindingNode(string elementName, string path)
+            : this(elementName, path, BindingMode.Default)
+        {
+        }
+
+        public BindingNode(string elementName, string path, BindingMode mode)
         {
             if (string.IsNullOrWhiteSpace(path))
                 throw new ArgumentNullException("path");
 
             this.elementName = elementName;
             this.path = path;
+            this.mode = mode;
         }
 
         public override bool Equals(object obj)
@@ -64,6 +71,14 @@ namespace Edge.SyntaxNodes
             get
             {
                 return path;
+            }
+        }
+
+        public BindingMode Mode
+        {
+            get
+            {
+                return mode;
             }
         }
 

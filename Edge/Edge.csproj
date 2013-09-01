@@ -64,6 +64,7 @@
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
     <Compile Include="SyntaxNodes\ArrayNode.cs" />
+    <Compile Include="SyntaxNodes\BindingMode.cs" />
     <Compile Include="SyntaxNodes\BindingNode.cs" />
     <Compile Include="SyntaxNodes\CollectionNode.cs" />
     <Compile Include="SyntaxNodes\EnumNode.cs" />
