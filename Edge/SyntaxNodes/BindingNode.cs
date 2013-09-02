@@ -51,9 +51,10 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            var binding = obj as BindingNode;
-            if (binding == null)
+            if (typeof(BindingNode) != obj.GetType())
                 return false;
+
+            var binding = obj as BindingNode;
 
             return elementName == binding.elementName && path == binding.path;
         }

@@ -23,24 +23,42 @@ namespace Edge.SyntaxNodes
     public class RootObjectNode : ObjectNode
     {
 
-        public RootObjectNode(Type typeInfo)
+        public RootObjectNode(string typeInfo)
             : base(typeInfo, "this", null, null)
         {
         }
 
-        public RootObjectNode(Type typeInfo, IEnumerable<IValueNode> ctorArgs)
+        public RootObjectNode(string typeInfo, IEnumerable<IValueNode> ctorArgs)
             : base(typeInfo, "this", ctorArgs, null)
         {
         }
 
-        public RootObjectNode(Type typeInfo, IEnumerable<PropertyNode> properties)
+        public RootObjectNode(string typeInfo, IEnumerable<PropertyNode> properties)
             : base(typeInfo, "this", null, properties)
         {
         }
 
-        public RootObjectNode(Type typeInfo, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
+        public RootObjectNode(string typeInfo, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
             : base(typeInfo, "this", ctorArgs, properties)
         {
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (this == obj)
+                return true;
+
+            if (typeof(RootObjectNode) != obj.GetType())
+                return false;
+
+            var o = obj as RootObjectNode;
+
+            return Type.Equals(o.Type) &&
+                   Id == o.Id &&
+                   ((ConstructorArguments == null && o.ConstructorArguments == null) ||
+                    (ConstructorArguments != null && o.ConstructorArguments != null && ConstructorArguments.SequenceEqual(o.ConstructorArguments))) &&
+                   ((Properties == null && o.Properties == null) ||
+                    (Properties != null && o.Properties != null && Properties.SequenceEqual(o.Properties)));
         }
         
     }

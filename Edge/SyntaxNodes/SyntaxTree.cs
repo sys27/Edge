@@ -42,9 +42,10 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            var tree = obj as SyntaxTree;
-            if (tree == null)
+            if (typeof(SyntaxTree) != obj.GetType())
                 return false;
+
+            var tree = obj as SyntaxTree;
 
             return ((namespaces == null && tree.namespaces == null) ||
                     (namespaces != null && tree.namespaces != null && namespaces.SequenceEqual(tree.namespaces))) &&

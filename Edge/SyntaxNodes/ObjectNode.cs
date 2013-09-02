@@ -23,34 +23,34 @@ namespace Edge.SyntaxNodes
     public class ObjectNode : INode
     {
 
-        private Type typeInfo;
+        private string type;
         private string id;
         private IEnumerable<IValueNode> ctorArgs;
         private IEnumerable<PropertyNode> properties;
 
-        public ObjectNode(Type typeInfo, string id)
-            : this(typeInfo, id, null, null)
+        public ObjectNode(string type, string id)
+            : this(type, id, null, null)
         {
         }
 
-        public ObjectNode(Type typeInfo, string id, IEnumerable<IValueNode> ctorArgs)
-            : this(typeInfo, id, ctorArgs, null)
+        public ObjectNode(string type, string id, IEnumerable<IValueNode> ctorArgs)
+            : this(type, id, ctorArgs, null)
         {
         }
 
-        public ObjectNode(Type typeInfo, string id, IEnumerable<PropertyNode> properties)
-            : this(typeInfo, id, null, properties)
+        public ObjectNode(string type, string id, IEnumerable<PropertyNode> properties)
+            : this(type, id, null, properties)
         {
         }
 
-        public ObjectNode(Type typeInfo, string id, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
+        public ObjectNode(string type, string id, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
         {
-            if (typeInfo == null)
+            if (type == null)
                 throw new ArgumentNullException("typeInfo");
             if (string.IsNullOrWhiteSpace(id))
                 throw new ArgumentNullException("id");
 
-            this.typeInfo = typeInfo;
+            this.type = type;
             this.id = id;
             this.ctorArgs = ctorArgs;
             this.properties = properties;
@@ -61,11 +61,12 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            var o = obj as ObjectNode;
-            if (o == null)
+            if (typeof(ObjectNode) != obj.GetType())
                 return false;
 
-            return typeInfo.Equals(o.typeInfo) &&
+            var o = obj as ObjectNode;
+
+            return type.Equals(o.type) &&
                    id == o.id &&
                    ((ctorArgs == null && o.ctorArgs == null) ||
                     (ctorArgs != null && o.ctorArgs != null && ctorArgs.SequenceEqual(o.ctorArgs))) &&
@@ -73,11 +74,11 @@ namespace Edge.SyntaxNodes
                     (properties != null && o.properties != null && properties.SequenceEqual(o.properties)));
         }
 
-        public Type Info
+        public string Type
         {
             get
             {
-                return typeInfo;
+                return type;
             }
         }
 

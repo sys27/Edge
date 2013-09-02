@@ -65,7 +65,6 @@ namespace Edge.Tests
         [TestMethod]
         public void NamespaceWithObjectTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new UsingToken(),
@@ -88,7 +87,7 @@ namespace Edge.Tests
                 ),
                 new List<ObjectNode>()
                 {
-                    new RootObjectNode(type)
+                    new RootObjectNode("Window")
                 }));
         }
 
@@ -123,7 +122,6 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectWithNumberPropertyTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -138,10 +136,10 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
+                            new PropertyNode("Width", new NumberNode(1024.6))
                         })
                 }));
         }
@@ -149,7 +147,6 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectWithStringPropertyTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -164,10 +161,10 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Title"), new StringNode("Hello"))
+                            new PropertyNode("Title", new StringNode("Hello"))
                         })
                 }));
         }
@@ -175,7 +172,6 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectWithObjectPropertyTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -192,19 +188,18 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Content"), new ReferenceNode("grid1"))
+                            new PropertyNode("Content", new ReferenceNode("grid1"))
                         }),
-                    new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1")
+                    new ObjectNode("Grid", "grid1")
                 }));
         }
 
         [TestMethod]
         public void ObjectWithEnumPropertyTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -219,10 +214,10 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
+                            new PropertyNode("WindowState", new EnumNode("WindowState", System.Windows.WindowState.Maximized))
                         })
                 }));
         }
@@ -230,7 +225,6 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectWithFullNameEnumPropertyTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -247,10 +241,10 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("WindowState"), new EnumNode(typeof(System.Windows.WindowState), System.Windows.WindowState.Maximized))
+                            new PropertyNode("WindowState", new EnumNode("WindowState", System.Windows.WindowState.Maximized))
                         })
                 }));
         }
@@ -277,11 +271,11 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Title"), new StringNode("Hello")),
-                            new PropertyNode(type.GetProperty("Width"), new NumberNode(1024.6))
+                            new PropertyNode("Title", new StringNode("Hello")),
+                            new PropertyNode("Width", new NumberNode(1024.6))
                         })
                 }));
         }
@@ -289,7 +283,6 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectWithIdPropertyTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -310,13 +303,13 @@ namespace Edge.Tests
                 parser.Namespaces,
                 new List<ObjectNode>()
                 {
-                    new ObjectNode(typeof(System.Windows.Media.Imaging.BitmapImage), "bitmap"),
+                    new ObjectNode("BitmapImage", "bitmap"),
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Icon"), new ReferenceNode("bitmap")),
-                            new PropertyNode(type.GetProperty("Content"), new ReferenceNode("bitmap"))
+                            new PropertyNode("Icon", new ReferenceNode("bitmap")),
+                            new PropertyNode("Content", new ReferenceNode("bitmap"))
                         })
                 }));
         }
@@ -396,7 +389,6 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectWithIdTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -412,12 +404,12 @@ namespace Edge.Tests
                 parser.Namespaces,
                 new List<ObjectNode>()
                 {
-                    new ObjectNode(typeof(System.Windows.Controls.Grid), "grid"),
+                    new ObjectNode("Grid", "grid"),
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Content"), new ReferenceNode("grid"))
+                            new PropertyNode("Content", new ReferenceNode("grid"))
                         })
                 }));
         }
@@ -425,7 +417,6 @@ namespace Edge.Tests
         [TestMethod]
         public void PropertyObjectWithoutPropertiesTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -440,12 +431,12 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Content"), new ReferenceNode("grid1"))
+                            new PropertyNode("Content", new ReferenceNode("grid1"))
                         }),
-                    new ObjectNode(typeof(System.Windows.Controls.Grid), "grid1")
+                    new ObjectNode("Grid", "grid1")
                 }));
         }
 
@@ -492,20 +483,20 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Icon"), new ReferenceNode("bitmapImage1"))
+                            new PropertyNode("Icon", new ReferenceNode("bitmapImage1"))
                         }),
                     new ObjectNode(
-                        typeof(System.Windows.Media.Imaging.BitmapImage),
+                        "BitmapImage",
                         "bitmapImage1",
                         new List<IValueNode>()
                         {
                             new ReferenceNode("uri1")
                         }),
                     new ObjectNode(
-                        typeof(System.Uri),
+                        "Uri",
                         "uri1",
                         new List<IValueNode>()
                         {
@@ -590,7 +581,6 @@ namespace Edge.Tests
         [TestMethod]
         public void BindingShortTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -611,13 +601,13 @@ namespace Edge.Tests
                 parser.Namespaces,
                 new List<ObjectNode>()
                 {
-                    new ObjectNode(typeof(System.Windows.Controls.TextBox), "tb"),
+                    new ObjectNode("TextBox", "tb"),
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Title"), new BindingNode("tb", "Text")),
-                            new PropertyNode(type.GetProperty("Content"), new ReferenceNode("tb"))
+                            new PropertyNode("Title", new BindingNode("tb", "Text")),
+                            new PropertyNode("Content", new ReferenceNode("tb"))
                         })
                 }));
         }
@@ -625,7 +615,6 @@ namespace Edge.Tests
         [TestMethod]
         public void BindingFullTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -658,13 +647,13 @@ namespace Edge.Tests
                 parser.Namespaces,
                 new List<ObjectNode>()
                 {
-                    new ObjectNode(typeof(System.Windows.Controls.TextBox), "tb"),
+                    new ObjectNode("TextBox", "tb"),
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Title"), new BindingNode("tb", "Text", BindingMode.OneTime)),
-                            new PropertyNode(type.GetProperty("Content"), new ReferenceNode("tb"))
+                            new PropertyNode("Title", new BindingNode("tb", "Text", BindingMode.OneTime)),
+                            new PropertyNode("Content", new ReferenceNode("tb"))
                         })
                 }));
         }
@@ -672,7 +661,6 @@ namespace Edge.Tests
         [TestMethod]
         public void ShortBindingOnlyPathTest()
         {
-            var type = typeof(System.Windows.Window);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -688,10 +676,10 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode(type.GetProperty("Title"), new BindingNode("WindowState"))
+                            new PropertyNode("Title", new BindingNode("WindowState"))
                         })
                 }));
         }
@@ -699,8 +687,6 @@ namespace Edge.Tests
         [TestMethod]
         public void ArrayTest()
         {
-            var type = typeof(System.Windows.Window);
-            var textBox = typeof(System.Windows.Controls.TextBox);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -720,29 +706,27 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
                             new PropertyNode(
-                                type.GetProperty("Content"), 
+                                "Content", 
                                 new ArrayNode(
-                                    textBox, 
+                                    "TextBox", 
                                     new IValueNode[] 
                                     { 
                                         new ReferenceNode("textBox1"),
                                         new ReferenceNode("textBox2")
                                     }))
                         }),
-                    new ObjectNode(textBox, "textBox1"), 
-                    new ObjectNode(textBox, "textBox2") 
+                    new ObjectNode("TextBox", "textBox1"), 
+                    new ObjectNode("TextBox", "textBox2") 
                 }));
         }
 
         [TestMethod]
         public void ArrayWithoutTypeTest()
         {
-            var type = typeof(System.Windows.Window);
-            var textBox = typeof(System.Windows.Controls.TextBox);
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -761,31 +745,27 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
                             new PropertyNode(
-                                type.GetProperty("Content"), 
+                                "Content", 
                                 new ArrayNode(
-                                    textBox, 
+                                    "TextBox", 
                                     new IValueNode[] 
                                     { 
                                         new ReferenceNode("textBox1"),
                                         new ReferenceNode("textBox2")
                                     }))
                         }),
-                    new ObjectNode(textBox, "textBox1"),
-                    new ObjectNode(textBox, "textBox2")
+                    new ObjectNode("TextBox", "textBox1"),
+                    new ObjectNode("TextBox", "textBox2")
                 }));
         }
 
         [TestMethod]
         public void WindowResourceTest()
         {
-            var type = typeof(System.Windows.Window);
-            var style = typeof(System.Windows.Style);
-            var brush = typeof(System.Windows.Media.Brush);
-
             Test(new List<IToken>()
             {
                 new TypeToken("Window"),
@@ -807,16 +787,17 @@ namespace Edge.Tests
                 parser.Namespaces,
                 new List<ObjectNode>()
                 {
-                    new ObjectNode(style, "baseStyle"),
-                    new ObjectNode(brush, "newBrush"),
+                    new ObjectNode("Style", "baseStyle"),
+                    new ObjectNode("Brush", "newBrush"),
                     new RootObjectNode(
-                        type,
+                        "Window",
                         new List<PropertyNode>()
                         {
                             new PropertyNode(
-                                type.GetProperty("Resources"), 
-                                new ArrayNode(
-                                    typeof(object), 
+                                "Resources", 
+                                new CollectionNode(
+                                    "ResourceDictionary",
+                                    "Object", 
                                     new IValueNode[] 
                                     { 
                                         new ReferenceNode("baseStyle"),
@@ -829,9 +810,6 @@ namespace Edge.Tests
         [TestMethod]
         public void GridColumnDefinitionsTest()
         {
-            var type = typeof(System.Windows.Controls.Grid);
-            var cd = typeof(System.Windows.Controls.ColumnDefinition);
-
             Test(new List<IToken>()
             {
                 new TypeToken("Grid"),
@@ -850,22 +828,22 @@ namespace Edge.Tests
                 new List<ObjectNode>()
                 {
                     new RootObjectNode(
-                        type,
+                        "Grid",
                         new List<PropertyNode>()
                         {
                             new PropertyNode(
-                                type.GetProperty("ColumnDefinitions"), 
+                                "ColumnDefinitions", 
                                 new CollectionNode(
-                                    typeof(System.Windows.Controls.ColumnDefinitionCollection),
-                                    cd, 
+                                    "ColumnDefinitionCollection",
+                                    "ColumnDefinition", 
                                     new IValueNode[] 
                                     { 
                                         new ReferenceNode("columnDefinition1"), 
                                         new ReferenceNode("columnDefinition2") 
                                     }))
                         }),
-                    new ObjectNode(cd,"columnDefinition1"),
-                    new ObjectNode(cd,"columnDefinition2")
+                    new ObjectNode("ColumnDefinition","columnDefinition1"),
+                    new ObjectNode("ColumnDefinition","columnDefinition2")
                 }));
         }
 

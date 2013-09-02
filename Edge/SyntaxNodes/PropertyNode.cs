@@ -14,7 +14,6 @@
 // limitations under the License.
 using Edge.Builders;
 using System;
-using System.Reflection;
 
 namespace Edge.SyntaxNodes
 {
@@ -22,17 +21,17 @@ namespace Edge.SyntaxNodes
     public class PropertyNode : INode
     {
 
-        private PropertyInfo propertyInfo;
+        private string property;
         private IValueNode value;
 
-        public PropertyNode(PropertyInfo propertyInfo, IValueNode value)
+        public PropertyNode(string property, IValueNode value)
         {
-            if (propertyInfo == null)
+            if (property == null)
                 throw new ArgumentNullException("propertyInfo");
             if (value == null)
                 throw new ArgumentNullException("value");
 
-            this.propertyInfo = propertyInfo;
+            this.property = property;
             this.value = value;
         }
 
@@ -41,18 +40,19 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            var prop = obj as PropertyNode;
-            if (prop == null)
+            if (typeof(PropertyNode) != obj.GetType())
                 return false;
 
-            return propertyInfo.Equals(prop.propertyInfo) && value.Equals(prop.value);
+            var prop = obj as PropertyNode;
+
+            return property.Equals(prop.property) && value.Equals(prop.value);
         }
 
-        public PropertyInfo Info
+        public string Property
         {
             get
             {
-                return propertyInfo;
+                return property;
             }
         }
 

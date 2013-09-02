@@ -85,7 +85,7 @@ namespace Edge.Builders
 
             foreach (var obj in ids)
                 if (obj.Id != "this")
-                    sb.Append("internal ").Append(obj.Info.Name).Append(' ').Append(obj.Id).Append(';').Append(nl);
+                    sb.Append("internal ").Append(obj.Type).Append(' ').Append(obj.Id).Append(';').Append(nl);
 
             return sb.ToString();
         }
@@ -109,7 +109,7 @@ namespace Edge.Builders
 
             foreach (var obj in ids)
                 if (obj.Id != "this")
-                    sb.Append(obj.Id).Append(" = new ").Append(obj.Info.Name).Append("();").Append(nl);
+                    sb.Append(obj.Id).Append(" = new ").Append(obj.Type).Append("();").Append(nl);
 
             return sb.ToString();
         }
@@ -128,7 +128,7 @@ namespace Edge.Builders
             foreach (var obj in objs)
                 if (obj.Properties != null)
                     foreach (var prop in obj.Properties)
-                        sb.Append(obj.Id).Append('.').Append(prop.Info.Name).Append(" = ").Append(CreateValue(prop.Value)).Append(';').Append(nl);
+                        sb.Append(obj.Id).Append('.').Append(prop.Property).Append(" = ").Append(CreateValue(prop.Value)).Append(';').Append(nl);
 
             return sb.ToString();
         }
@@ -171,7 +171,7 @@ namespace Edge.Builders
 
         private string CreateEnum(EnumNode e)
         {
-            return e.Info.Name + '.' + e.Value;
+            return e.Type + '.' + e.Value;
         }
 
         private string CreateBinding(BindingNode binding)
@@ -201,7 +201,7 @@ namespace Edge.Builders
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("new ").Append(array.ElementType.Name).Append("[] ").Append(nl)
+            sb.Append("new ").Append(array.ElementType).Append("[] ").Append(nl)
               .Append('{').Append(nl);
 
             foreach (var item in array.Array)
@@ -218,7 +218,7 @@ namespace Edge.Builders
         {
             StringBuilder sb = new StringBuilder();
 
-            sb.Append("new ").Append(collection.CollectionType.Name).Append(' ').Append(nl)
+            sb.Append("new ").Append(collection.CollectionType).Append(' ').Append(nl)
               .Append('{').Append(nl);
 
             foreach (var item in collection.Array)

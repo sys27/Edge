@@ -9,9 +9,9 @@ namespace Edge.SyntaxNodes
     public class CollectionNode : ArrayNode
     {
 
-        private Type collectionType;
+        private string collectionType;
 
-        public CollectionNode(Type collectionType, Type elementType, IValueNode[] array)
+        public CollectionNode(string collectionType, string elementType, IValueNode[] array)
             : base(elementType, array)
         {
             this.collectionType = collectionType;
@@ -22,16 +22,17 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            var col = obj as CollectionNode;
-            if (col == null)
+            if (typeof(CollectionNode) != obj.GetType())
                 return false;
+
+            var col = obj as CollectionNode;
 
             return collectionType.Equals(col.collectionType) &&
                    ElementType.Equals(col.ElementType) &&
                    Array.SequenceEqual(col.Array);
         }
 
-        public Type CollectionType
+        public string CollectionType
         {
             get
             {

@@ -21,10 +21,10 @@ namespace Edge.SyntaxNodes
     public class EnumNode : IValueNode
     {
 
-        private Type type;
+        private string type;
         private object value;
 
-        public EnumNode(Type type, object value)
+        public EnumNode(string type, object value)
         {
             this.type = type;
             this.value = value;
@@ -35,14 +35,15 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            var e = obj as EnumNode;
-            if (e == null)
+            if (typeof(EnumNode) != obj.GetType())
                 return false;
+
+            var e = obj as EnumNode;
 
             return type.Equals(e.type) && value.Equals(e.value);
         }
 
-        public Type Info
+        public string Type
         {
             get
             {

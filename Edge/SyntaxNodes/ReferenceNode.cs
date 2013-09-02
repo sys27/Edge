@@ -33,9 +33,10 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            var reference = obj as ReferenceNode;
-            if (reference == null)
+            if (typeof(ReferenceNode) != obj.GetType())
                 return false;
+
+            var reference = obj as ReferenceNode;
 
             return id == reference.id;
         }

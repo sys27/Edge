@@ -33,9 +33,10 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            var sn = obj as StringNode;
-            if (sn == null)
+            if (typeof(StringNode) != obj.GetType())
                 return false;
+
+            var sn = obj as StringNode;
 
             return str == sn.str;
         }

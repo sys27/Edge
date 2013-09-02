@@ -33,9 +33,10 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            var num = obj as NumberNode;
-            if (num == null)
+            if (typeof(NumberNode) != obj.GetType())
                 return false;
+
+            var num = obj as NumberNode;
 
             return number == num.number;
         }
