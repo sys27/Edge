@@ -719,10 +719,7 @@ namespace Edge
                 token = GetToken();
 
                 if (CheckSymbol(token, ')'))
-                {
-                    position++;
                     break;
-                }
 
                 if (token is WordToken)
                 {

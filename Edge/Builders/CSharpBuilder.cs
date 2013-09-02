@@ -184,8 +184,15 @@ namespace Edge.Builders
             if (!string.IsNullOrWhiteSpace(binding.ElementName))
                 sb.Append("ElementName = ").Append(binding.ElementName).Append(',').Append(nl);
 
-            sb.Append("Path = ").Append(binding.Path).Append(nl)
-              .Append('}').Append(nl);
+            sb.Append("Path = ").Append(binding.Path);
+
+            if (binding.Mode != BindingMode.Default)
+            {
+                sb.Append(',').Append(nl)
+                  .Append("Mode = ").Append(binding.Mode);
+            }
+
+            sb.Append(nl).Append('}').Append(nl);
 
             return sb.ToString();
         }

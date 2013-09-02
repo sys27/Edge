@@ -28,8 +28,8 @@ namespace Edge
 
         public EdgeLexer()
         {
-            brackets = new HashSet<char>() { '{', '}', '[', ']', '(', ')' };
-            symbols = new HashSet<char>() { ':', ';', '.', ',', '@' };
+            brackets = new HashSet<char>() { '{', '[', '(' };
+            symbols = new HashSet<char>() { ':', ';', '.', ',', '@', '=', '}', ']', ')' };
         }
 
         public IEnumerable<IToken> Tokenize(string text)
@@ -111,7 +111,7 @@ namespace Edge
                         // todo: error message
                         throw new EdgeLexerException();
 
-                    string word = text.Substring(i + 1, length);
+                    string word = text.Substring(i, length + 1);
                     i += length + 1;
 
                     tokens.Add(new SymbolToken('#'));

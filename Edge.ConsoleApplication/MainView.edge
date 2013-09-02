@@ -10,6 +10,13 @@ Window {
         ColumnDefinitions: [
             ColumnDefinition(),
             ColumnDefinition()
+        ],
+
+        Children: [
+            TextBlock {
+                Text: @(ElementName = tb, Path = Text, Mode = OneTime)
+            },
+            TextBox#tb
         ]
     }
 }
