@@ -711,7 +711,66 @@ namespace Edge
 
         private IDictionary<string, string> GetBindingValues()
         {
-            throw new NotImplementedException();
+            IToken token;
+            var result = new Dictionary<string, string>();
+
+            while (true)
+            {
+                token = GetToken();
+
+                if (CheckSymbol(token, ')'))
+                {
+                    position++;
+                    break;
+                }
+
+                if (token is WordToken)
+                {
+                    var word = token as WordToken;
+
+                    var key = word.Word;
+
+                    token = GetToken();
+                    if (!CheckSymbol(token, '='))
+                        // todo: error message
+                        throw new EdgeParserException();
+
+                    token = GetToken();
+                    if (token is WordToken)
+                    {
+                        word = token as WordToken;
+
+                        result[key] = word.Word;
+                    }
+                    else
+                    {
+                        // todo: error message
+                        throw new EdgeParserException();
+                    }
+                }
+                else
+                {
+                    // todo: error message
+                    throw new EdgeParserException();
+                }
+
+                token = PeekToken();
+                if (CheckSymbol(token, ','))
+                {
+                    position++;
+                    token = PeekToken();
+
+                    if (!(token is WordToken))
+                        // todo: error message
+                        throw new EdgeParserException();
+                }
+            }
+
+            if (result.Count == 0)
+                // todo: error message
+                throw new EdgeParserException();
+            else
+                return result;
         }
 
         public SyntaxTree Parse(string text)
