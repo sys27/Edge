@@ -27,11 +27,10 @@ namespace Edge.Tokens
 
         public override bool Equals(object obj)
         {
-            var token = obj as UsingToken;
-            if (token == null)
-                return false;
+            if (this == obj)
+                return true;
 
-            return true;
+            return typeof(UsingToken) == obj.GetType();
         }
 
         public override string ToString()

@@ -29,11 +29,15 @@ namespace Edge.Tokens
 
         public override bool Equals(object obj)
         {
-            var token = obj as NumberToken;
-            if (token != null && token.number == this.number)
+            if (this == obj)
                 return true;
 
-            return false;
+            if (typeof(NumberToken) != obj.GetType())
+                return false;
+
+            var token = obj as NumberToken;
+
+            return token.number == this.number;
         }
 
         public override string ToString()
