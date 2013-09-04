@@ -51,10 +51,13 @@
     <Compile Include="Builders\CSharpBuilder.cs" />
     <Compile Include="Builders\IBuilder.cs" />
     <Compile Include="CastHelper.cs" />
+    <Compile Include="EdgeAnalyzer.cs" />
+    <Compile Include="EdgeAnalyzerException.cs" />
     <Compile Include="EdgeLexer.cs" />
     <Compile Include="EdgeLexerException.cs" />
     <Compile Include="EdgeParser.cs" />
     <Compile Include="EdgeParserException.cs" />
+    <Compile Include="IAnalyzer.cs" />
     <Compile Include="ILexer.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
