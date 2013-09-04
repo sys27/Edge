@@ -21,6 +21,7 @@ namespace Edge
         public void Analyze(SyntaxTree tree)
         {
             ChechNamespaces(tree.Namespaces.Concat(namespaces).Distinct());
+            ChechObjects(tree.Objects);
         }
 
         private void ChechNamespaces(IEnumerable<string> namespaces)
@@ -44,6 +45,17 @@ namespace Edge
 
             // todo: error message
             throw new EdgeAnalyzerException();
+        }
+
+        private void ChechObjects(IEnumerable<ObjectNode> objects)
+        {
+            foreach (var obj in objects)
+                CheckObject(obj);
+        }
+
+        private void CheckObject(ObjectNode obj)
+        {
+
         }
 
         public IEnumerable<string> Assemblies
