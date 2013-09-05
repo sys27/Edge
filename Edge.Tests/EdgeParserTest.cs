@@ -191,7 +191,7 @@ namespace Edge.Tests
                         "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode("Content", new ReferenceNode("grid1"))
+                            new PropertyNode("Content", new ReferenceNode("grid1","Grid"))
                         }),
                     new ObjectNode("Grid", "grid1")
                 }));
@@ -308,8 +308,8 @@ namespace Edge.Tests
                         "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode("Icon", new ReferenceNode("bitmap")),
-                            new PropertyNode("Content", new ReferenceNode("bitmap"))
+                            new PropertyNode("Icon", new ReferenceNode("bitmap","BitmapImage")),
+                            new PropertyNode("Content", new ReferenceNode("bitmap","BitmapImage"))
                         })
                 }));
         }
@@ -409,7 +409,7 @@ namespace Edge.Tests
                         "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode("Content", new ReferenceNode("grid"))
+                            new PropertyNode("Content", new ReferenceNode("grid","Grid"))
                         })
                 }));
         }
@@ -434,7 +434,7 @@ namespace Edge.Tests
                         "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode("Content", new ReferenceNode("grid1"))
+                            new PropertyNode("Content", new ReferenceNode("grid1","Grid"))
                         }),
                     new ObjectNode("Grid", "grid1")
                 }));
@@ -486,14 +486,14 @@ namespace Edge.Tests
                         "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode("Icon", new ReferenceNode("bitmapImage1"))
+                            new PropertyNode("Icon", new ReferenceNode("bitmapImage1","BitmapImage"))
                         }),
                     new ObjectNode(
                         "BitmapImage",
                         "bitmapImage1",
                         new List<IValueNode>()
                         {
-                            new ReferenceNode("uri1")
+                            new ReferenceNode("uri1","Uri")
                         }),
                     new ObjectNode(
                         "Uri",
@@ -607,7 +607,7 @@ namespace Edge.Tests
                         new List<PropertyNode>()
                         {
                             new PropertyNode("Title", new BindingNode("tb", "Text")),
-                            new PropertyNode("Content", new ReferenceNode("tb"))
+                            new PropertyNode("Content", new ReferenceNode("tb","TextBox"))
                         })
                 }));
         }
@@ -653,7 +653,7 @@ namespace Edge.Tests
                         new List<PropertyNode>()
                         {
                             new PropertyNode("Title", new BindingNode("tb", "Text", BindingMode.OneTime)),
-                            new PropertyNode("Content", new ReferenceNode("tb"))
+                            new PropertyNode("Content", new ReferenceNode("tb","TextBox"))
                         })
                 }));
         }
@@ -715,8 +715,8 @@ namespace Edge.Tests
                                     "TextBox", 
                                     new IValueNode[] 
                                     { 
-                                        new ReferenceNode("textBox1"),
-                                        new ReferenceNode("textBox2")
+                                        new ReferenceNode("textBox1", "TextBox"),
+                                        new ReferenceNode("textBox2", "TextBox")
                                     }))
                         }),
                     new ObjectNode("TextBox", "textBox1"), 
@@ -754,8 +754,8 @@ namespace Edge.Tests
                                     "TextBox", 
                                     new IValueNode[] 
                                     { 
-                                        new ReferenceNode("textBox1"),
-                                        new ReferenceNode("textBox2")
+                                        new ReferenceNode("textBox1", "TextBox"),
+                                        new ReferenceNode("textBox2", "TextBox")
                                     }))
                         }),
                     new ObjectNode("TextBox", "textBox1"),
@@ -800,8 +800,8 @@ namespace Edge.Tests
                                     "Object", 
                                     new IValueNode[] 
                                     { 
-                                        new ReferenceNode("baseStyle"),
-                                        new ReferenceNode("newBrush")
+                                        new ReferenceNode("baseStyle", "Style"),
+                                        new ReferenceNode("newBrush", "Brush")
                                     }))
                         })
                 }));
@@ -838,8 +838,8 @@ namespace Edge.Tests
                                     "ColumnDefinition", 
                                     new IValueNode[] 
                                     { 
-                                        new ReferenceNode("columnDefinition1"), 
-                                        new ReferenceNode("columnDefinition2") 
+                                        new ReferenceNode("columnDefinition1", "ColumnDefinition"), 
+                                        new ReferenceNode("columnDefinition2", "ColumnDefinition") 
                                     }))
                         }),
                     new ObjectNode("ColumnDefinition","columnDefinition1"),

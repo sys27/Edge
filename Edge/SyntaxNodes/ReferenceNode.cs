@@ -21,11 +21,13 @@ namespace Edge.SyntaxNodes
     public class ReferenceNode : IValueNode
     {
 
+        private string type;
         private string id;
 
-        public ReferenceNode(string id)
+        public ReferenceNode(string id, string type)
         {
             this.id = id;
+            this.type = type;
         }
 
         public override bool Equals(object obj)
@@ -38,7 +40,15 @@ namespace Edge.SyntaxNodes
 
             var reference = obj as ReferenceNode;
 
-            return id == reference.id;
+            return id == reference.id && type == reference.type;
+        }
+
+        public string Type
+        {
+            get
+            {
+                return type;
+            }
         }
 
         public string Id

@@ -240,7 +240,7 @@ namespace Edge
             var obj = new ObjectNode(type.Name, id, ctor, properties);
             objects[id] = obj;
 
-            return new ReferenceNode(id);
+            return new ReferenceNode(id, type.Name);
         }
 
         private string ObjectId(string type)
@@ -614,7 +614,7 @@ namespace Edge
 
                         objects[id] = obj;
 
-                        return new ReferenceNode(id);
+                        return new ReferenceNode(id, outType.Name);
                     }
 
                     return new EnumNode(type.Name, Enum.Parse(type, word.Word));
@@ -632,7 +632,7 @@ namespace Edge
 
                         var id = token as IdToken;
 
-                        return new ReferenceNode(id.Id);
+                        return new ReferenceNode(id.Id, objects[id.Id].Type);
                     }
                     if (symbol.Symbol == '@')
                     {

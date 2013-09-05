@@ -96,6 +96,46 @@ namespace Edge
         private void CheckObject(ObjectNode obj)
         {
             var type = CheckType(obj.Type);
+            CheckCtor(type, obj.ConstructorArguments);
+        }
+
+        private void CheckCtor(Type objType, IEnumerable<IValueNode> ctorArgs)
+        {
+            ConstructorInfo ctor = null;
+            var args = ctorArgs.ToList();
+
+            if (ctorArgs == null || args.Count == 0)
+            {
+                ctor = objType.GetConstructor(Type.EmptyTypes);
+            }
+            else
+            {
+                Type[] types = new Type[args.Count];
+                var strType = typeof(string);
+                var doubleType = typeof(double);
+
+                for (int i = 0; i < types.Length; i++)
+                {
+                    var t = args[0];
+                    if (t is ReferenceNode)
+                        types[i] = CheckType(((ReferenceNode)t).Type);
+                    else if (t is StringNode)
+                        types[i] = strType;
+                    else if (t is NumberNode)
+                        types[i] = doubleType;
+                    else if (t is EnumNode)
+                        types[i] = CheckType(((EnumNode)t).Type);
+                    else
+                        // todo: error message
+                        throw new EdgeParserException();
+                }
+
+                ctor = objType.GetConstructor(types);
+            }
+
+            if (ctor == null)
+                // todo: error message
+                throw new EdgeAnalyzerException();
         }
 
         public IEnumerable<string> Assemblies
