@@ -43,11 +43,11 @@ namespace Edge
 
         public void Analyze(SyntaxTree tree)
         {
-            ChechNamespaces(tree.Namespaces.Concat(namespaces).Distinct());
-            ChechObjects(tree.Objects);
+            CheckNamespaces(tree.Namespaces.Concat(namespaces).Distinct());
+            CheckObjects(tree.Objects);
         }
 
-        private void ChechNamespaces(IEnumerable<string> namespaces)
+        private void CheckNamespaces(IEnumerable<string> namespaces)
         {
             foreach (var ns in namespaces)
                 CheckNamespace(ns);
@@ -70,7 +70,7 @@ namespace Edge
             throw new EdgeAnalyzerException();
         }
 
-        private void ChechObjects(IEnumerable<ObjectNode> objects)
+        private void CheckObjects(IEnumerable<ObjectNode> objects)
         {
             ChechAllIDs(objects);
 
@@ -97,6 +97,7 @@ namespace Edge
         {
             var type = CheckType(obj.Type);
             CheckCtor(type, obj.ConstructorArguments);
+            CheckProperties(type, obj.Properties);
         }
 
         private void CheckCtor(Type objType, IEnumerable<IValueNode> ctorArgs)
@@ -134,6 +135,32 @@ namespace Edge
             }
 
             if (ctor == null)
+                // todo: error message
+                throw new EdgeAnalyzerException();
+        }
+
+        private void CheckProperties(Type objType, IEnumerable<PropertyNode> properties)
+        {
+            var list = properties.ToList();
+            for (int i = 0; i < list.Count; i++)
+            {
+                for (int j = i + 1; j < list.Count; j++)
+                {
+                    if (list[i].Property == list[j].Property)
+                        // todo: error message
+                        throw new EdgeAnalyzerException();
+                }
+            }
+
+            foreach (var property in properties)
+                CheckProperty(objType, property);
+        }
+
+        private void CheckProperty(Type objType, PropertyNode property)
+        {
+            var prop = objType.GetProperty(property.Property);
+
+            if (prop == null)
                 // todo: error message
                 throw new EdgeAnalyzerException();
         }
