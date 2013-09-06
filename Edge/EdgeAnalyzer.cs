@@ -103,7 +103,9 @@ namespace Edge
         private void CheckCtor(Type objType, IEnumerable<IValueNode> ctorArgs)
         {
             ConstructorInfo ctor = null;
-            var args = ctorArgs.ToList();
+            List<IValueNode> args = null;
+            if (ctorArgs != null)
+                args = ctorArgs.ToList();
 
             if (ctorArgs == null || args.Count == 0)
             {
@@ -141,19 +143,22 @@ namespace Edge
 
         private void CheckProperties(Type objType, IEnumerable<PropertyNode> properties)
         {
-            var list = properties.ToList();
-            for (int i = 0; i < list.Count; i++)
+            if (properties != null)
             {
-                for (int j = i + 1; j < list.Count; j++)
+                var list = properties.ToList();
+                for (int i = 0; i < list.Count; i++)
                 {
-                    if (list[i].Property == list[j].Property)
-                        // todo: error message
-                        throw new EdgeAnalyzerException();
+                    for (int j = i + 1; j < list.Count; j++)
+                    {
+                        if (list[i].Property == list[j].Property)
+                            // todo: error message
+                            throw new EdgeAnalyzerException();
+                    }
                 }
-            }
 
-            foreach (var property in properties)
-                CheckProperty(objType, property);
+                foreach (var property in properties)
+                    CheckProperty(objType, property);
+            }
         }
 
         private void CheckProperty(Type objType, PropertyNode property)
@@ -174,6 +179,33 @@ namespace Edge
                 if (!expected.IsAssignableFrom(typeof(double)))
                     // todo: error message
                     throw new EdgeAnalyzerException();
+            }
+            else if (value is StringNode)
+            {
+                if (!expected.IsAssignableFrom(typeof(string)))
+                    // todo: error message
+                    throw new EdgeAnalyzerException();
+            }
+            else if (value is ReferenceNode)
+            {
+                if (!expected.IsAssignableFrom(CheckType(((ReferenceNode)value).Type)))
+                    // todo: error message
+                    throw new EdgeAnalyzerException();
+            }
+            else if (value is EnumNode)
+            {
+                if (expected.Name != ((EnumNode)value).Type)
+                    // todo: error message
+                    throw new EdgeAnalyzerException();
+            }
+            else if (value is CollectionNode)
+            {
+            }
+            else if (value is ArrayNode)
+            {
+            }
+            else if (value is BindingNode)
+            {
             }
         }
 

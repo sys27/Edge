@@ -12,7 +12,7 @@ namespace Edge.ConsoleApplication
         static void Main(string[] args)
         {
             string text = File.ReadAllText("MainView.edge");
-            IParser parser = new EdgeParser()
+            EdgeParser parser = new EdgeParser()
             {
                 Assemblies = new HashSet<string>()
                 {
@@ -39,6 +39,12 @@ namespace Edge.ConsoleApplication
                 }
             };
             var st = parser.Parse(text);
+            var a = new EdgeAnalyzer()
+            {
+                Assemblies = parser.Assemblies,
+                Namespaces = parser.Namespaces
+            };
+            a.Analyze(st);
             string file = st.Build(new CSharpBuilder(), "MainView", "WPF.Views");
             File.WriteAllText("MainView.cs", file);
         }
