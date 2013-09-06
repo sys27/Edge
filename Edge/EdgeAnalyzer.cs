@@ -49,8 +49,9 @@ namespace Edge
 
         private void CheckNamespaces(IEnumerable<string> namespaces)
         {
-            foreach (var ns in namespaces)
-                CheckNamespace(ns);
+            if (namespaces != null)
+                foreach (var ns in namespaces)
+                    CheckNamespace(ns);
         }
 
         private void CheckNamespace(string ns)
@@ -72,6 +73,10 @@ namespace Edge
 
         private void CheckObjects(IEnumerable<ObjectNode> objects)
         {
+            if (objects.Count() == 0)
+                // todo: error message
+                throw new ArgumentException();
+
             ChechAllIDs(objects);
 
             foreach (var obj in objects)
