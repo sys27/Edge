@@ -163,6 +163,18 @@ namespace Edge
             if (prop == null)
                 // todo: error message
                 throw new EdgeAnalyzerException();
+
+            CheckValue(prop.PropertyType, property.Value);
+        }
+
+        private void CheckValue(Type expected, IValueNode value)
+        {
+            if (value is NumberNode)
+            {
+                if (!expected.IsAssignableFrom(typeof(double)))
+                    // todo: error message
+                    throw new EdgeAnalyzerException();
+            }
         }
 
         public IEnumerable<string> Assemblies
