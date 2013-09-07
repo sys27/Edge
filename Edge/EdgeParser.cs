@@ -160,7 +160,7 @@ namespace Edge
             GetNamespaces();
             Root();
 
-            return new SyntaxTree(namespaces, from obj in objects select obj.Value);
+            return new SyntaxTree(namespaces, objects.Values);
         }
 
         private void Root()
@@ -170,7 +170,7 @@ namespace Edge
                 // todo: error message
                 throw new EdgeParserException();
 
-            var type = SearchType(((TypeToken)token).Type);
+            var type = ((TypeToken)token).Type;
 
             objects["this"] = null;
 
@@ -178,10 +178,10 @@ namespace Edge
                 // todo: error message
                 throw new EdgeParserException();
 
-            var ctor = CtorArgs(type);
-            var properties = Properties(type);
+            var ctor = CtorArgs();
+            var properties = Properties();
 
-            var obj = new RootObjectNode(type.Name, ctor, properties);
+            var obj = new RootObjectNode(type, ctor, properties);
             objects["this"] = obj;
         }
 
@@ -231,16 +231,16 @@ namespace Edge
                 // todo: error message
                 throw new EdgeParserException();
 
-            var type = SearchType(((TypeToken)token).Type);
-            var id = ObjectId(type.Name);
+            var type = ((TypeToken)token).Type;
+            var id = ObjectId(type);
             objects[id] = null;
-            var ctor = CtorArgs(type);
-            var properties = Properties(type);
+            var ctor = CtorArgs();
+            var properties = Properties();
 
-            var obj = new ObjectNode(type.Name, id, ctor, properties);
+            var obj = new ObjectNode(type, id, ctor, properties);
             objects[id] = obj;
 
-            return new ReferenceNode(id, type.Name);
+            return new ReferenceNode(id, type);
         }
 
         private string ObjectId(string type)
@@ -261,7 +261,7 @@ namespace Edge
             return GenereteId(type);
         }
 
-        private IEnumerable<IValueNode> CtorArgs(Type objType)
+        private IEnumerable<IValueNode> CtorArgs()
         {
             var token = PeekToken();
             if (CheckSymbol(token, '('))
@@ -293,42 +293,13 @@ namespace Edge
                 }
 
                 if (args.Count > 0)
-                {
-                    var types = new Type[args.Count];
-                    var strType = typeof(string);
-                    var doubleType = typeof(double);
-
-                    for (int i = 0; i < types.Length; i++)
-                    {
-                        var t = args[0];
-                        if (t is ReferenceNode)
-                            types[i] = SearchType(objects[((ReferenceNode)t).Id].Type);
-                        else if (t is StringNode)
-                            types[i] = strType;
-                        else if (t is NumberNode)
-                            types[i] = doubleType;
-                        else if (t is EnumNode)
-                            types[i] = SearchType(((EnumNode)t).Type);
-                        else
-                            // todo: error message
-                            throw new EdgeParserException();
-                    }
-
-                    var ctor = objType.GetConstructor(types);
-                    if (ctor == null)
-                        // todo: error message
-                        throw new EdgeParserException();
-
                     return args;
-                }
-
-                return null;
             }
 
             return null;
         }
 
-        private IEnumerable<PropertyNode> Properties(Type objType)
+        private IEnumerable<PropertyNode> Properties()
         {
             var token = PeekToken();
             if (CheckSymbol(token, '{'))
@@ -347,7 +318,7 @@ namespace Edge
 
                     if (token is PropertyToken)
                     {
-                        var prop = GetProperty(objType);
+                        var prop = GetProperty();
                         if ((from property in properties
                              where property.Property.Equals(prop.Property)
                              select property).Count() > 0)
@@ -373,55 +344,47 @@ namespace Edge
                     }
                 }
 
-                if (properties.Count == 0)
-                    return null;
-
-                return properties;
+                if (properties.Count > 0)
+                    return properties;
             }
 
             return null;
         }
 
-        private PropertyNode GetProperty(Type objType)
+        private PropertyNode GetProperty()
         {
             var token = GetToken();
             if (!(token is PropertyToken))
                 // todo: error message
                 throw new EdgeParserException();
 
-            var propertyInfo = objType.GetProperty(((PropertyToken)token).Property);
+            var propertyInfo = ((PropertyToken)token).Property;
             if (propertyInfo == null)
                 // todo: error message
                 throw new EdgeParserException();
-            var propertyValue = PropertyValue(propertyInfo.PropertyType);
+            var propertyValue = PropertyValue();
 
-            return new PropertyNode(propertyInfo.Name, propertyValue);
+            return new PropertyNode(propertyInfo, propertyValue);
         }
 
-        private IValueNode PropertyValue(Type propType)
+        private IValueNode PropertyValue()
         {
             var token = GetToken();
             if (!(token is SymbolToken) || ((SymbolToken)token).Symbol != ':')
                 // todo: error message
                 throw new EdgeParserException();
 
-            return GetValue(propType);
+            return GetValue();
         }
 
         private ArrayNode Array()
         {
-            return Array(null);
-        }
-
-        private ArrayNode Array(Type type)
-        {
             var token = GetToken();
-            Type elementType = null;
-            bool isArray = true;
+            string elementType = null;
 
             if (token is TypeToken)
             {
-                elementType = SearchType(((TypeToken)token).Type);
+                elementType = ((TypeToken)token).Type;
 
                 token = GetToken();
             }
@@ -441,80 +404,7 @@ namespace Edge
                         break;
                     }
 
-                    IValueNode obj = null;
-
-                    if (type != null)
-                    {
-                        if (type.IsArray)
-                        {
-                            elementType = type.GetElementType();
-                            isArray = true;
-                        }
-                        else
-                        {
-                            Type genericType;
-                            if (TryCheckGenerics(type, typeof(IDictionary<,>), out genericType))
-                            {
-                                elementType = genericType.GetGenericArguments()[1];
-                                obj = GetValue(elementType);
-                                isArray = false;
-                            }
-                            else if (TryCheckGenerics(type, typeof(ICollection<>), out genericType))
-                            {
-                                elementType = genericType.GetGenericArguments()[0];
-                                obj = GetValue(elementType);
-                                isArray = false;
-                            }
-                            else if (typeof(ICollection).IsAssignableFrom(type))
-                            {
-                                elementType = typeof(object);
-                                obj = GetValue(elementType);
-                                isArray = false;
-                            }
-                            else
-                            {
-                                obj = GetValue();
-
-                                if (obj is ReferenceNode)
-                                    elementType = SearchType(objects[((ReferenceNode)obj).Id].Type);
-                                else if (obj is StringNode)
-                                    elementType = strType;
-                                else if (obj is NumberNode)
-                                    elementType = doubleType;
-                                else if (obj is EnumNode)
-                                    elementType = SearchType(((EnumNode)obj).Type);
-                                else
-                                    // todo: error message
-                                    throw new EdgeParserException();
-
-                                isArray = true;
-                            }
-                        }
-                    }
-                    else if (elementType != null)
-                    {
-                        obj = GetValue(elementType);
-                        isArray = true;
-                    }
-                    else
-                    {
-                        obj = GetValue();
-
-                        if (obj is ReferenceNode)
-                            elementType = SearchType(objects[((ReferenceNode)obj).Id].Type);
-                        else if (obj is StringNode)
-                            elementType = strType;
-                        else if (obj is NumberNode)
-                            elementType = doubleType;
-                        else if (obj is EnumNode)
-                            elementType = SearchType(((EnumNode)obj).Type);
-                        else
-                            // todo: error message
-                            throw new EdgeParserException();
-
-                        isArray = true;
-                    }
-
+                    IValueNode obj = GetValue();
                     arr.Add(obj);
 
                     token = PeekToken();
@@ -528,24 +418,14 @@ namespace Edge
                     }
                 }
 
-                if (arr.Count == 0)
-                    return null;
-
-                if (isArray)
-                    return new ArrayNode(elementType.Name, arr.ToArray());
-                else
-                    return new CollectionNode(type.Name, elementType.Name, arr.ToArray());
+                if (arr.Count > 0)
+                    return new ArrayNode(elementType, arr.ToArray());
             }
 
             return null;
         }
 
         private IValueNode GetValue()
-        {
-            return GetValue(null);
-        }
-
-        private IValueNode GetValue(Type type)
         {
             try
             {
@@ -556,18 +436,12 @@ namespace Edge
                     var numberToken = token as NumberToken;
                     var number = numberToken.Number;
 
-                    if (type != null)
-                        CastHelper.CheckCast(number, type);
-
                     return new NumberNode(number);
                 }
                 if (token is StringToken)
                 {
                     var stringToken = token as StringToken;
                     var str = stringToken.Str;
-
-                    if (type != null)
-                        CastHelper.CheckCast(str, type);
 
                     return new StringNode(str);
                 }
@@ -580,13 +454,7 @@ namespace Edge
                     }
 
                     position--;
-                    var reference = Object();
-
-                    if (type != null && !type.IsAssignableFrom(SearchType(objects[reference.Id].Type)))
-                        // todo: error message
-                        throw new InvalidCastException();
-
-                    return reference;
+                    return Object();
                 }
                 if (token is WordToken)
                 {
@@ -642,7 +510,7 @@ namespace Edge
                     {
                         position--;
 
-                        return Array(type);
+                        return Array();
                     }
                     else
                     {
@@ -809,4 +677,5 @@ namespace Edge
         }
 
     }
+
 }
