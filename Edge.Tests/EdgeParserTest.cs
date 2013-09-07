@@ -217,7 +217,7 @@ namespace Edge.Tests
                         "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode("WindowState", new EnumNode("WindowState", System.Windows.WindowState.Maximized))
+                            new PropertyNode("WindowState", new EnumNode(null, "Maximized"))
                         })
                 }));
         }
@@ -244,7 +244,7 @@ namespace Edge.Tests
                         "Window",
                         new List<PropertyNode>()
                         {
-                            new PropertyNode("WindowState", new EnumNode("WindowState", System.Windows.WindowState.Maximized))
+                            new PropertyNode("WindowState", new EnumNode("WindowState", "Maximized"))
                         })
                 }));
         }
@@ -359,21 +359,6 @@ namespace Edge.Tests
 
         [TestMethod]
         [ExpectedException(typeof(EdgeParserException))]
-        public void PropertyIsNotInTypeTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Column"),
-                new SymbolToken(':'),
-                new NumberToken(1),
-                new SymbolToken('}')
-            });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
         public void RootObjectWithIdTest()
         {
             TestFail(new List<IToken>()
@@ -423,7 +408,9 @@ namespace Edge.Tests
                 new SymbolToken('{'),
                 new PropertyToken("Content"),
                 new SymbolToken(':'),
-                new WordToken("Grid"),
+                new TypeToken("Grid"),
+                new SymbolToken('('),
+                new SymbolToken(')'),
                 new SymbolToken('}')
             },
             new SyntaxTree(
@@ -546,39 +533,6 @@ namespace Edge.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void ObjectCtorWrongArgsTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Icon"),
-                new SymbolToken(':'),
-                new TypeToken("BitmapImage"),
-                new SymbolToken('('),
-                new NumberToken(1024),
-                new SymbolToken(')'),
-                new SymbolToken('}')
-            });
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(EdgeParserException))]
-        public void TypeInNotNamespaceTest()
-        {
-            TestFail(new List<IToken>()
-            {
-                new TypeToken("Window"),
-                new SymbolToken('{'),
-                new PropertyToken("Content"),
-                new SymbolToken(':'),
-                new TypeToken("ArrayList"),
-                new SymbolToken('}')
-            });
-        }
-
-        [TestMethod]
         public void BindingShortTest()
         {
             Test(new List<IToken>()
@@ -695,9 +649,13 @@ namespace Edge.Tests
                 new SymbolToken(':'),
                 new TypeToken("TextBox"),
                 new SymbolToken('['),
-                new WordToken("TextBox"),
+                new TypeToken("TextBox"),
+                new SymbolToken('('),
+                new SymbolToken(')'),
                 new SymbolToken(','),
-                new WordToken("TextBox"),
+                new TypeToken("TextBox"),
+                new SymbolToken('('),
+                new SymbolToken(')'),
                 new SymbolToken(']'),
                 new SymbolToken('}')
             },
@@ -734,9 +692,13 @@ namespace Edge.Tests
                 new PropertyToken("Content"),
                 new SymbolToken(':'),
                 new SymbolToken('['),
-                new WordToken("TextBox"),
+                new TypeToken("TextBox"),
+                new SymbolToken('('),
+                new SymbolToken(')'),
                 new SymbolToken(','),
-                new WordToken("TextBox"),
+                new TypeToken("TextBox"),
+                new SymbolToken('('),
+                new SymbolToken(')'),
                 new SymbolToken(']'),
                 new SymbolToken('}')
             },
@@ -751,7 +713,7 @@ namespace Edge.Tests
                             new PropertyNode(
                                 "Content", 
                                 new ArrayNode(
-                                    "TextBox", 
+                                    null, 
                                     new IValueNode[] 
                                     { 
                                         new ReferenceNode("textBox1", "TextBox"),
@@ -795,9 +757,8 @@ namespace Edge.Tests
                         {
                             new PropertyNode(
                                 "Resources", 
-                                new CollectionNode(
-                                    "ResourceDictionary",
-                                    "Object", 
+                                new ArrayNode(
+                                    null, 
                                     new IValueNode[] 
                                     { 
                                         new ReferenceNode("baseStyle", "Style"),
@@ -818,8 +779,12 @@ namespace Edge.Tests
                 new SymbolToken(':'),
                 new SymbolToken('['),
                 new TypeToken("ColumnDefinition"),
+                new SymbolToken('('),
+                new SymbolToken(')'),
                 new SymbolToken(','),
                 new TypeToken("ColumnDefinition"),
+                new SymbolToken('('),
+                new SymbolToken(')'),
                 new SymbolToken(']'),
                 new SymbolToken('}')
             },
@@ -833,9 +798,8 @@ namespace Edge.Tests
                         {
                             new PropertyNode(
                                 "ColumnDefinitions", 
-                                new CollectionNode(
-                                    "ColumnDefinitionCollection",
-                                    "ColumnDefinition", 
+                                new ArrayNode(
+                                    null, 
                                     new IValueNode[] 
                                     { 
                                         new ReferenceNode("columnDefinition1", "ColumnDefinition"), 

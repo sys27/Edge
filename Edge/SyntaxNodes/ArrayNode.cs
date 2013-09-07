@@ -44,7 +44,9 @@ namespace Edge.SyntaxNodes
 
             var arr = obj as ArrayNode;
 
-            return elementType.Equals(arr.elementType) && array.SequenceEqual(arr.array);
+            return ((elementType == null && arr.elementType == null) ||
+                    (elementType != null && arr.elementType != null && elementType.Equals(arr.elementType))) && 
+                   array.SequenceEqual(arr.array);
         }
 
         public string ElementType

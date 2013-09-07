@@ -24,6 +24,11 @@ namespace Edge.SyntaxNodes
         private string type;
         private object value;
 
+        public EnumNode(object value)
+            : this(null, value)
+        {
+        }
+
         public EnumNode(string type, object value)
         {
             this.type = type;
@@ -40,7 +45,9 @@ namespace Edge.SyntaxNodes
 
             var e = obj as EnumNode;
 
-            return type.Equals(e.type) && value.Equals(e.value);
+            return ((type == null && e.type == null) ||
+                    type != null && e.type != null && type.Equals(e.type)) &&
+                   value.Equals(e.value);
         }
 
         public string Type

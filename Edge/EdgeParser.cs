@@ -392,8 +392,6 @@ namespace Edge
             if (CheckSymbol(token, '['))
             {
                 var arr = new List<IValueNode>();
-                var strType = typeof(string);
-                var doubleType = typeof(double);
 
                 while (true)
                 {
@@ -450,6 +448,7 @@ namespace Edge
                     token = PeekToken();
                     if (CheckSymbol(token, '['))
                     {
+                        position--;
                         return Array();
                     }
 
@@ -470,22 +469,11 @@ namespace Edge
                             // todo: error message
                             throw new EdgeParserException();
 
-                        word = token as WordToken;
-                        return new EnumNode(type.Name, Enum.Parse(type, word.Word));
+                        var word2 = token as WordToken;
+                        return new EnumNode(word.Word, word2.Word);
                     }
 
-                    Type outType;
-                    if (TrySearchType(word.Word, out outType))
-                    {
-                        var id = GenereteId(outType.Name);
-                        var obj = new ObjectNode(outType.Name, id);
-
-                        objects[id] = obj;
-
-                        return new ReferenceNode(id, outType.Name);
-                    }
-
-                    return new EnumNode(type.Name, Enum.Parse(type, word.Word));
+                    return new EnumNode(word.Word);
                 }
                 if (token is SymbolToken)
                 {
