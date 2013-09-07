@@ -500,17 +500,10 @@ namespace Edge
 
                         return Array();
                     }
-                    else
-                    {
-                        // todo: error message
-                        throw new EdgeParserException();
-                    }
                 }
-                else
-                {
-                    // todo: error message
-                    throw new EdgeParserException();
-                }
+
+                // todo: error message
+                throw new EdgeParserException();
             }
             catch (ArgumentException ae)
             {
