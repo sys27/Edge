@@ -202,6 +202,32 @@ namespace Edge.Tests
             analyzer.Analyze(st);
         }
 
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void SamePropsTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("Width", new NumberNode(1)), new PropertyNode("Width", new NumberNode(1)) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void PropNotFoundTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("hello", new StringNode("hello")) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
     }
 
 }
