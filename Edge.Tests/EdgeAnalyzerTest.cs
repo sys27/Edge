@@ -1,6 +1,7 @@
 ﻿using Edge;
-using System;
+using Edge.SyntaxNodes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 
 namespace Edge.Tests
@@ -40,6 +41,81 @@ namespace Edge.Tests
                     "System.Windows.Shapes"
                 }
             };
+        }
+
+        [TestMethod]
+        public void CheckNamespaceTest()
+        {
+            var st = new SyntaxTree(
+                new List<string>()
+                {
+                    "System"
+                },
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window")
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void CheckWrongNamespaceTest()
+        {
+            var st = new SyntaxTree(
+                new List<string>()
+                {
+                    "System.Windows.Forms"
+                },
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window")
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        public void NullNamespacesTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window")
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void ZeroObjectsTest()
+        {
+            var st = new SyntaxTree(new List<ObjectNode>());
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void ObjectsWithSameID()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new ObjectNode("Window", "w1"),
+                    new ObjectNode("Window", "w1")
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void CheckTypeTest()
+        {
+
         }
 
     }

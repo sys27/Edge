@@ -43,7 +43,15 @@ namespace Edge
 
         public void Analyze(SyntaxTree tree)
         {
-            CheckNamespaces(tree.Namespaces.Concat(namespaces).Distinct());
+            if (tree.Namespaces != null)
+            {
+                CheckNamespaces(tree.Namespaces.Concat(namespaces).Distinct());
+            }
+            else
+            {
+                tree.Namespaces = namespaces;
+                CheckNamespaces(tree.Namespaces);
+            }
             CheckObjects(tree.Objects);
         }
 

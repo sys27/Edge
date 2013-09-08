@@ -64,6 +64,10 @@ namespace Edge.SyntaxNodes
             {
                 return namespaces;
             }
+            set
+            {
+                namespaces = value;
+            }
         }
 
         public IEnumerable<ObjectNode> Objects
