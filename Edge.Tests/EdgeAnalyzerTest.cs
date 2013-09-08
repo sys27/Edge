@@ -113,9 +113,93 @@ namespace Edge.Tests
 
         [TestMethod]
         [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void ObjectWithoutRoot()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new ObjectNode("Window", "hello")
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void ObjectWithTwoRoot()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window"),
+                    new RootObjectNode("Window")
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
         public void CheckTypeTest()
         {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("ArrayList")
+                });
 
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        public void CtorTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Uri", new List<IValueNode>() { new StringNode("icon.ico") })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void CtorWrongCountOfArgsTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Uri", new List<IValueNode>() { new StringNode("icon.ico"), new StringNode("hello") })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void CtorWrongCountOfArgs2Test()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Uri")
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void CtorWrongTypesTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Uri", new List<IValueNode>() { new NumberNode(1) })
+                });
+
+            analyzer.Analyze(st);
         }
 
     }

@@ -85,6 +85,10 @@ namespace Edge
                 // todo: error message
                 throw new ArgumentException();
 
+            if (objects.Count(obj => obj is RootObjectNode) != 1)
+                // todo: error message
+                throw new EdgeAnalyzerException();
+
             ChechAllIDs(objects);
 
             foreach (var obj in objects)
