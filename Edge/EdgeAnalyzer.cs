@@ -186,33 +186,38 @@ namespace Edge
                 // todo: error message
                 throw new EdgeAnalyzerException();
 
-            CheckValue(prop.PropertyType, property.Value);
+            CheckValue(prop.PropertyType, property);
         }
 
-        private void CheckValue(Type expected, IValueNode value)
+        private void CheckValue(Type expected, PropertyNode property)
         {
-            if (value is NumberNode)
+            if (property.Value is NumberNode)
             {
                 if (!expected.IsAssignableFrom(typeof(double)))
                     // todo: error message
                     throw new EdgeAnalyzerException();
             }
-            else if (value is StringNode)
+            else if (property.Value is StringNode)
             {
                 if (!expected.IsAssignableFrom(typeof(string)))
                     // todo: error message
                     throw new EdgeAnalyzerException();
             }
-            else if (value is ReferenceNode)
+            else if (property.Value is ReferenceNode)
             {
-                if (!expected.IsAssignableFrom(CheckType(((ReferenceNode)value).Type)))
+                if (!expected.IsAssignableFrom(CheckType(((ReferenceNode)property.Value).Type)))
                     // todo: error message
                     throw new EdgeAnalyzerException();
             }
-            else if (value is EnumNode)
+            else if (property.Value is EnumNode)
             {
-                var e = (EnumNode)value;
-                var eType = CheckType(e.Type);
+                var e = (EnumNode)property.Value;
+
+                Type eType = null;
+                if (e.Type != null)
+                    eType = CheckType(e.Type);
+                else
+                    eType = expected;
 
                 if (!expected.Equals(eType))
                     // todo: error message
@@ -222,10 +227,10 @@ namespace Edge
                     // todo: error message
                     throw new EdgeAnalyzerException();
             }
-            else if (value is ArrayNode)
+            else if (property.Value is ArrayNode)
             {
             }
-            else if (value is BindingNode)
+            else if (property.Value is BindingNode)
             {
             }
         }
