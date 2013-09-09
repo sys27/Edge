@@ -211,7 +211,6 @@ namespace Edge
             }
             else if (value is EnumNode)
             {
-                // todo: !!!
                 var e = (EnumNode)value;
                 var eType = CheckType(e.Type);
 
@@ -222,9 +221,6 @@ namespace Edge
                 if (!Enum.IsDefined(eType, e.Value))
                     // todo: error message
                     throw new EdgeAnalyzerException();
-            }
-            else if (value is CollectionNode)
-            {
             }
             else if (value is ArrayNode)
             {
