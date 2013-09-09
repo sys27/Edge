@@ -211,7 +211,15 @@ namespace Edge
             }
             else if (value is EnumNode)
             {
-                if (expected.Name != ((EnumNode)value).Type)
+                // todo: !!!
+                var e = (EnumNode)value;
+                var eType = CheckType(e.Type);
+
+                if (!expected.Equals(eType))
+                    // todo: error message
+                    throw new EdgeAnalyzerException();
+
+                if (!Enum.IsDefined(eType, e.Value))
                     // todo: error message
                     throw new EdgeAnalyzerException();
             }

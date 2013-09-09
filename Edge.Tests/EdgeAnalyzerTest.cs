@@ -228,6 +228,121 @@ namespace Edge.Tests
             analyzer.Analyze(st);
         }
 
+        [TestMethod]
+        public void PropNumberTypeTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("Width", new NumberNode(1024)) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void PropIsNotNumberTypeTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("Title", new NumberNode(1024)) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        public void PropStrTypeTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("Title", new StringNode("Hello")) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void PropIsNotStrTypeTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("Width", new StringNode("Hello")) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        public void PropRefTypeTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new ObjectNode("Uri", "uri", new List<IValueNode>() { new StringNode("ico.ico") }),
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("Content", new ReferenceNode("uri", "Uri")) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void PropIsNotRefTypeTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new ObjectNode("Uri", "uri", new List<IValueNode>() { new StringNode("ico.ico") }),
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("Title", new ReferenceNode("uri", "Uri")) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        public void PropEnumTypeTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("WindowState", new EnumNode("WindowState", "Normal")) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void PropIsNotEnumTypeTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("Title", new EnumNode("WindowState", "Normal")) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void PropIsNotEnumValueTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", null, new List<PropertyNode>() { new PropertyNode("WindowState", new EnumNode("WindowState", "Hello")) })
+                });
+
+            analyzer.Analyze(st);
+        }
+
     }
 
 }
