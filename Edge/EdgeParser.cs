@@ -66,53 +66,6 @@ namespace Edge
             return tokens[position];
         }
 
-        private IEnumerable<Type> GetAppropriateTypes(string type)
-        {
-            return from lib in assemblies
-                   let assembly = Assembly.Load(lib)
-                   from t in assembly.GetTypes()
-                   from ns in namespaces
-                   where t.Namespace == ns && t.Name == type
-                   select t;
-        }
-
-        private Type SearchType(string type)
-        {
-            var types = GetAppropriateTypes(type);
-
-            // todo: error message
-            if (types.Count() == 0)
-                throw new EdgeParserException();
-            if (types.Count() > 1)
-                throw new EdgeParserException();
-
-            return types.First();
-        }
-
-        private bool TrySearchType(string type, out Type outType)
-        {
-            var types = GetAppropriateTypes(type);
-
-            // todo: error message
-            if (types.Count() != 1)
-            {
-                outType = null;
-                return false;
-            }
-
-            outType = types.First();
-            return true;
-        }
-
-        private bool TryCheckGenerics(Type type, Type genericDefinition, out Type genericType)
-        {
-            genericType = (from interfaceType in type.GetInterfaces()
-                           where interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == genericDefinition
-                           select interfaceType).FirstOrDefault();
-
-            return genericType != null;
-        }
-
         private bool CheckSymbol(IToken token, char symbol)
         {
             return token is SymbolToken && ((SymbolToken)token).Symbol == symbol;

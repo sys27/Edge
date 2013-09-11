@@ -1,5 +1,6 @@
 ﻿using Edge.SyntaxNodes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -39,6 +40,15 @@ namespace Edge
                 throw new EdgeAnalyzerException();
 
             return types.First();
+        }
+
+        private bool TryCheckGenerics(Type type, Type genericDefinition, out Type genericType)
+        {
+            genericType = (from interfaceType in type.GetInterfaces()
+                           where interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == genericDefinition
+                           select interfaceType).FirstOrDefault();
+
+            return genericType != null;
         }
 
         public void Analyze(SyntaxTree tree)
@@ -229,6 +239,27 @@ namespace Edge
             }
             else if (property.Value is ArrayNode)
             {
+                var arr = (ArrayNode)property.Value;
+                Type genericType;
+
+                if (TryCheckGenerics(expected, typeof(IDictionary<,>), out genericType))
+                {
+                    // todo: ?
+                    property.Value = new CollectionNode(expected.Name, expected.GetGenericArguments()[1].Name, arr.Array);
+                }
+                else if (TryCheckGenerics(expected, typeof(ICollection<>), out genericType))
+                {
+                    property.Value = new CollectionNode(expected.Name, expected.GetElementType().Name, arr.Array);
+                }
+                else if (typeof(ICollection).IsAssignableFrom(expected))
+                {
+                    property.Value = new CollectionNode(expected.Name, "Object", arr.Array);
+                }
+                else if (!expected.IsAssignableFrom(CheckType(arr.ElementType)))
+                {
+                    // todo: error message
+                    throw new EdgeAnalyzerException();
+                }
             }
             else if (property.Value is BindingNode)
             {

@@ -343,6 +343,55 @@ namespace Edge.Tests
             analyzer.Analyze(st);
         }
 
+        [TestMethod]
+        public void PropArrayTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", 
+                        new List<PropertyNode>() 
+                        { 
+                            new PropertyNode("Content", 
+                                new ArrayNode("TextBox", 
+                                    new IValueNode[] 
+                                    {
+                                        new ReferenceNode("tb1", "TextBox"),
+                                        new ReferenceNode("tb2", "TextBox")
+                                    })) 
+                        }),
+                    new ObjectNode("TextBox", "tb1"),
+                    new ObjectNode("TextBox", "tb2")
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(EdgeAnalyzerException))]
+        public void PropIsNotArrayTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>()
+                {
+                    new RootObjectNode("Window", 
+                        new List<PropertyNode>() 
+                        { 
+                            new PropertyNode("Title", 
+                                new ArrayNode("TextBox", 
+                                    new IValueNode[] 
+                                    {
+                                        new ReferenceNode("tb1", "TextBox"),
+                                        new ReferenceNode("tb2", "TextBox")
+                                    })) 
+                        }),
+                    new ObjectNode("TextBox", "tb1"),
+                    new ObjectNode("TextBox", "tb2")
+                });
+
+            analyzer.Analyze(st);
+        }
+
     }
 
 }

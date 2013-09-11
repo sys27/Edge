@@ -62,6 +62,10 @@ namespace Edge.SyntaxNodes
             {
                 return value;
             }
+            set
+            {
+                this.value = value;
+            }
         }
 
     }
