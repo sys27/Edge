@@ -1,4 +1,4 @@
-﻿// Copyright 2013 Dmitry Kischenko
+﻿// Copyright 2013 - 2015 Dmitry Kischenko
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 // express or implied. 
 // See the License for the specific language governing permissions and 
 // limitations under the License.
-using Edge.Builders;
 using System;
 
 namespace Edge.SyntaxNodes
@@ -27,9 +26,9 @@ namespace Edge.SyntaxNodes
         public PropertyNode(string property, IValueNode value)
         {
             if (property == null)
-                throw new ArgumentNullException("propertyInfo");
+                throw new ArgumentNullException(nameof(property));
             if (value == null)
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
 
             this.property = property;
             this.value = value;

@@ -1,4 +1,18 @@
-﻿using Edge.SyntaxNodes;
+﻿// Copyright 2013 - 2015 Dmitry Kischenko
+//
+// Licensed under the Apache License, Version 2.0 (the "License"); 
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software 
+// distributed under the License is distributed on an "AS IS" BASIS, 
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either 
+// express or implied. 
+// See the License for the specific language governing permissions and 
+// limitations under the License.
+using Edge.SyntaxNodes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +35,7 @@ namespace Edge
 
         private IEnumerable<Type> GetAppropriateTypes(string type)
         {
+            // todo: rewrite
             return from lib in assemblies
                    let assembly = Assembly.Load(lib)
                    from t in assembly.GetTypes()
@@ -31,15 +46,15 @@ namespace Edge
 
         private Type CheckType(string type)
         {
-            var types = GetAppropriateTypes(type);
+            var types = GetAppropriateTypes(type).ToList();
 
             // todo: error message
-            if (types.Count() == 0)
+            if (types.Count == 0)
                 throw new EdgeAnalyzerException();
-            if (types.Count() > 1)
+            if (types.Count > 1)
                 throw new EdgeAnalyzerException();
 
-            return types.First();
+            return types[0];
         }
 
         public void Analyze(SyntaxTree tree)
@@ -65,16 +80,9 @@ namespace Edge
 
         private void CheckNamespace(string ns)
         {
-            foreach (var lib in assemblies)
-            {
-                var assembly = Assembly.Load(lib);
-
-                foreach (var type in assembly.GetTypes())
-                {
-                    if (type.Namespace == ns)
-                        return;
-                }
-            }
+            // todo: rewrite
+            if (assemblies.Select(Assembly.Load).Any(assembly => assembly.GetTypes().Any(type => type.Namespace == ns)))
+                return;
 
             // todo: error message
             throw new EdgeAnalyzerException();
@@ -82,17 +90,19 @@ namespace Edge
 
         private void CheckObjects(IEnumerable<ObjectNode> objects)
         {
-            if (objects.Count() == 0)
+            var objs = objects.ToList();
+
+            if (objs.Count == 0)
                 // todo: error message
                 throw new ArgumentException();
 
-            if (objects.Count(obj => obj is RootObjectNode) != 1)
+            if (objs.Count(obj => obj is RootObjectNode) != 1)
                 // todo: error message
                 throw new EdgeAnalyzerException();
 
-            ChechAllIDs(objects);
+            ChechAllIDs(objs);
 
-            foreach (var obj in objects)
+            foreach (var obj in objs)
                 CheckObject(obj);
         }
 
@@ -120,7 +130,7 @@ namespace Edge
 
         private void CheckCtor(Type objType, IEnumerable<IValueNode> ctorArgs)
         {
-            ConstructorInfo ctor = null;
+            ConstructorInfo ctor;
             List<IValueNode> args = null;
             if (ctorArgs != null)
                 args = ctorArgs.ToList();
@@ -174,7 +184,7 @@ namespace Edge
                     }
                 }
 
-                foreach (var property in properties)
+                foreach (var property in list)
                     CheckProperty(objType, property);
             }
         }
@@ -213,13 +223,13 @@ namespace Edge
             else if (property.Value is EnumNode)
             {
                 var e = (EnumNode)property.Value;
-                Type eType = null;
+                Type eType;
 
                 if (e.Type != null)
                 {
                     eType = CheckType(e.Type);
 
-                    if (!expected.Equals(eType))
+                    if (expected != eType)
                         // todo: error message
                         throw new EdgeAnalyzerException();
                 }

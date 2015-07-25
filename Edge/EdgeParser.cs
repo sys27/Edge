@@ -1,4 +1,4 @@
-﻿// Copyright 2013 Dmitry Kischenko
+﻿// Copyright 2013 - 2015 Dmitry Kischenko
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
 using Edge.SyntaxNodes;
 using Edge.Tokens;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -40,7 +39,6 @@ namespace Edge
         public EdgeParser()
             : this(new EdgeLexer())
         {
-
         }
 
         public EdgeParser(ILexer lexer)
@@ -84,11 +82,9 @@ namespace Edge
 
         private void CheckIds()
         {
-            foreach (var id in objects)
+            if (objects.Any(id => id.Value == null))
             {
-                if (id.Value == null)
-                    // todo: error message
-                    throw new EdgeParserException();
+                throw new EdgeParserException();
             }
         }
 
@@ -151,7 +147,7 @@ namespace Edge
                 // todo: error message
                 throw new EdgeParserException();
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             while (true)
             {
@@ -159,8 +155,9 @@ namespace Edge
                 if (CheckSymbol(token, ';'))
                     break;
 
-                if (token is WordToken)
-                    sb.Append(((WordToken)token).Word);
+                var wordToken = token as WordToken;
+                if (wordToken != null)
+                    sb.Append(wordToken.Word);
                 else if (CheckSymbol(token, '.'))
                     sb.Append('.');
                 else
@@ -271,9 +268,7 @@ namespace Edge
                     if (token is PropertyToken)
                     {
                         var prop = GetProperty();
-                        if ((from property in properties
-                             where property.Property.Equals(prop.Property)
-                             select property).Count() > 0)
+                        if (properties.Any(property => property.Property.Equals(prop.Property)))
                             // todo: error message ...
                             throw new EdgeParserException();
 
@@ -334,9 +329,10 @@ namespace Edge
             var token = GetToken();
             string elementType = null;
 
-            if (token is TypeToken)
+            var typeToken = token as TypeToken;
+            if (typeToken != null)
             {
-                elementType = ((TypeToken)token).Type;
+                elementType = typeToken.Type;
 
                 token = GetToken();
             }
@@ -354,7 +350,7 @@ namespace Edge
                         break;
                     }
 
-                    IValueNode obj = GetValue();
+                    var obj = GetValue();
                     arr.Add(obj);
 
                     token = PeekToken();
@@ -480,7 +476,7 @@ namespace Edge
                 string elementName;
                 string path;
                 string strMode;
-                BindingMode mode = BindingMode.Default;
+                var mode = BindingMode.Default;
 
                 values.TryGetValue("ElementName", out elementName);
                 values.TryGetValue("Path", out path);
@@ -489,7 +485,7 @@ namespace Edge
 
                 return new BindingNode(elementName, path, mode);
             }
-            else if (token is WordToken)
+            if (token is WordToken)
             {
                 var word = token as WordToken;
 
@@ -502,11 +498,9 @@ namespace Edge
 
                 return new BindingNode(word.Word);
             }
-            else
-            {
-                // todo: error message
-                throw new EdgeParserException();
-            }
+
+            // todo: error message
+            throw new EdgeParserException();
         }
 
         private IDictionary<string, string> GetBindingValues()
@@ -566,14 +560,14 @@ namespace Edge
             if (result.Count == 0)
                 // todo: error message
                 throw new EdgeParserException();
-            else
-                return result;
+
+            return result;
         }
 
         public SyntaxTree Parse(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
-                throw new ArgumentNullException("text");
+                throw new ArgumentNullException(nameof(text));
 
             tokens = lexer.Tokenize(text).ToList();
             ReadIds();

@@ -1,4 +1,4 @@
-﻿// Copyright 2013 Dmitry Kischenko
+﻿// Copyright 2013 - 2015 Dmitry Kischenko
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License.
@@ -28,20 +28,20 @@ namespace Edge
 
         public EdgeLexer()
         {
-            brackets = new HashSet<char>() { '{', '[', '(' };
-            symbols = new HashSet<char>() { ':', ';', '.', ',', '@', '=', '}', ']', ')' };
+            brackets = new HashSet<char> { '{', '[', '(' };
+            symbols = new HashSet<char> { ':', ';', '.', ',', '@', '=', '}', ']', ')' };
         }
 
         public IEnumerable<IToken> Tokenize(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
-                throw new ArgumentNullException("text");
+                throw new ArgumentNullException(nameof(text));
 
             var tokens = new List<IToken>();
 
             for (int i = 0; i < text.Length; )
             {
-                char peek = text[i];
+                var peek = text[i];
 
                 if (peek == ' ' || peek == '\n' || peek == '\r' || peek == '\t')
                 {
@@ -55,7 +55,7 @@ namespace Edge
                     for (int j = i + 1; j < text.Length && (char.IsLetter(text[j]) || text[j] == '.'); j++)
                         length++;
 
-                    string word = text.Substring(i, length);
+                    var word = text.Substring(i, length);
                     i += length;
 
                     if (i < text.Length)
@@ -111,7 +111,7 @@ namespace Edge
                         // todo: error message
                         throw new EdgeLexerException();
 
-                    string word = text.Substring(i, length + 1);
+                    var word = text.Substring(i, length + 1);
                     i += length + 1;
 
                     tokens.Add(new SymbolToken('#'));
@@ -147,7 +147,7 @@ namespace Edge
                     for (int j = i + 1; j < text.Length && text[j] != '"'; j++)
                         length++;
 
-                    string str = text.Substring(i + 1, length);
+                    var str = text.Substring(i + 1, length);
                     tokens.Add(new StringToken(str));
 
                     i += length + 2;
@@ -168,8 +168,8 @@ namespace Edge
                             length++;
                     }
 
-                    string strNumber = text.Substring(i, length);
-                    double number = double.Parse(strNumber, CultureInfo.InvariantCulture);
+                    var strNumber = text.Substring(i, length);
+                    var number = double.Parse(strNumber, CultureInfo.InvariantCulture);
 
                     tokens.Add(new NumberToken(number));
 

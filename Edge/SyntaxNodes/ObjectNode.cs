@@ -1,4 +1,4 @@
-﻿// Copyright 2013 Dmitry Kischenko
+﻿// Copyright 2013 - 2015 Dmitry Kischenko
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,6 @@
 // express or implied. 
 // See the License for the specific language governing permissions and 
 // limitations under the License.
-using Edge.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,9 +45,9 @@ namespace Edge.SyntaxNodes
         public ObjectNode(string type, string id, IEnumerable<IValueNode> ctorArgs, IEnumerable<PropertyNode> properties)
         {
             if (type == null)
-                throw new ArgumentNullException("typeInfo");
+                throw new ArgumentNullException(nameof(type));
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException("id");
+                throw new ArgumentNullException(nameof(id));
 
             this.type = type;
             this.id = id;

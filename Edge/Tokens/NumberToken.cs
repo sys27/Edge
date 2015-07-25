@@ -1,4 +1,4 @@
-﻿// Copyright 2013 Dmitry Kischenko
+﻿// Copyright 2013 - 2015 Dmitry Kischenko
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ namespace Edge.Tokens
     public class NumberToken : IToken
     {
 
-        private double number;
+        private readonly double number;
 
         public NumberToken(double number)
         {
@@ -31,13 +31,10 @@ namespace Edge.Tokens
         {
             if (this == obj)
                 return true;
-
-            if (typeof(NumberToken) != obj.GetType())
-                return false;
-
+            
             var token = obj as NumberToken;
 
-            return token.number == this.number;
+            return token?.number == this.number;
         }
 
         public override string ToString()

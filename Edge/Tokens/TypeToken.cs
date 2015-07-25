@@ -1,4 +1,4 @@
-﻿// Copyright 2013 Dmitry Kischenko
+﻿// Copyright 2013 - 2015 Dmitry Kischenko
 //
 // Licensed under the Apache License, Version 2.0 (the "License"); 
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ namespace Edge.Tokens
     public class TypeToken : IToken
     {
 
-        private string type;
+        private readonly string type;
 
         public TypeToken(string type)
         {
@@ -32,12 +32,9 @@ namespace Edge.Tokens
             if (this == obj)
                 return true;
 
-            if (typeof(TypeToken) != obj.GetType())
-                return false;
-
             var token = obj as TypeToken;
 
-            return token.type == this.type;
+            return token?.type == this.type;
         }
 
         public override string ToString()
