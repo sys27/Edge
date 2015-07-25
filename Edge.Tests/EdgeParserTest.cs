@@ -12,8 +12,8 @@ namespace Edge.Tests
     public class EdgeParserTest
     {
 
-        private MockEdgeLexer lexer;
-        private EdgeParser parser;
+        private readonly MockEdgeLexer lexer;
+        private readonly EdgeParser parser;
 
         public EdgeParserTest()
         {
@@ -59,13 +59,13 @@ namespace Edge.Tests
         {
             lexer.Tokens = tokens;
 
-            var root = parser.Parse("-- // --");
+            parser.Parse("-- // --");
         }
 
         [TestMethod]
         public void NamespaceWithObjectTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new UsingToken(),
                 new WordToken("System"),
@@ -76,26 +76,24 @@ namespace Edge.Tests
                 new TypeToken("Window"),
                 new SymbolToken('{'),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces.Union(
-                    new List<string>()
-                    {
-                        "System",
-                        "System.Windows"
-                    }
-                ),
-                new List<ObjectNode>()
-                {
-                    new RootObjectNode("Window")
-                }));
+            };
+
+            var namespaces = parser.Namespaces.Union(new List<string>
+            {
+                "System",
+                "System.Windows"
+            });
+            var root = new RootObjectNode("Window");
+            var objectNodes = new List<ObjectNode> { root };
+
+            Test(tokens, new SyntaxTree(namespaces, root, objectNodes));
         }
 
         [TestMethod]
         [ExpectedException(typeof(EdgeParserException))]
         public void UsingFailTest()
         {
-            TestFail(new List<IToken>()
+            TestFail(new List<IToken>
             {
                 new UsingToken(),
                 new TypeToken("Window"),
@@ -108,7 +106,7 @@ namespace Edge.Tests
         [ExpectedException(typeof(EdgeParserException))]
         public void NamespaceWithEmptyWordTest()
         {
-            TestFail(new List<IToken>()
+            TestFail(new List<IToken>
             {
                 new UsingToken(),
                 new WordToken(""),
@@ -122,7 +120,12 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectWithNumberPropertyTest()
         {
-            Test(new List<IToken>()
+            var root = new RootObjectNode("Window",
+                                          new List<PropertyNode>
+                                          {
+                                              new PropertyNode("Width", new NumberNode(1024.6))
+                                          });
+            Test(new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -131,23 +134,13 @@ namespace Edge.Tests
                 new NumberToken(1024.6),
                 new SymbolToken('}')
             },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
-                {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Width", new NumberNode(1024.6))
-                        })
-                }));
+            new SyntaxTree(parser.Namespaces, root, new List<ObjectNode> { root }));
         }
 
         [TestMethod]
         public void ObjectWithStringPropertyTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -155,24 +148,22 @@ namespace Edge.Tests
                 new SymbolToken(':'),
                 new StringToken("Hello"),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Title", new StringNode("Hello"))
-                        })
-                }));
+                    new PropertyNode("Title", new StringNode("Hello"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root, new List<ObjectNode> { root }));
         }
 
         [TestMethod]
         public void ObjectWithObjectPropertyTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -182,17 +173,19 @@ namespace Edge.Tests
                 new SymbolToken('{'),
                 new SymbolToken('}'),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Content", new ReferenceNode("grid1","Grid"))
-                        }),
+                    new PropertyNode("Content", new ReferenceNode("grid1","Grid"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
+                {
+                    root,
                     new ObjectNode("Grid", "grid1")
                 }));
         }
@@ -200,7 +193,7 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectWithEnumPropertyTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -208,24 +201,25 @@ namespace Edge.Tests
                 new SymbolToken(':'),
                 new WordToken("Maximized"),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("WindowState", new EnumNode(null, "Maximized"))
-                        })
+                    new PropertyNode("WindowState", new EnumNode(null, "Maximized"))
+                });
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
+                {
+                    root
                 }));
         }
 
         [TestMethod]
         public void ObjectWithFullNameEnumPropertyTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -235,25 +229,26 @@ namespace Edge.Tests
                 new SymbolToken('.'),
                 new WordToken("Maximized"),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("WindowState", new EnumNode("WindowState", "Maximized"))
-                        })
+                    new PropertyNode("WindowState", new EnumNode("WindowState", "Maximized"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
+                {
+                    root
                 }));
         }
 
         [TestMethod]
         public void ObjectWithPropertiesTest()
         {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -265,25 +260,27 @@ namespace Edge.Tests
                 new SymbolToken(':'),
                 new NumberToken(1024.6),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Title", new StringNode("Hello")),
-                            new PropertyNode("Width", new NumberNode(1024.6))
-                        })
+                    new PropertyNode("Title", new StringNode("Hello")),
+                    new PropertyNode("Width", new NumberNode(1024.6))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
+                {
+                    root
                 }));
         }
 
         [TestMethod]
         public void ObjectWithIdPropertyTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -298,19 +295,21 @@ namespace Edge.Tests
                 new SymbolToken('#'),
                 new IdToken("bitmap"),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
+                {
+                    new PropertyNode("Icon", new ReferenceNode("bitmap","BitmapImage")),
+                    new PropertyNode("Content", new ReferenceNode("bitmap","BitmapImage"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
                 {
                     new ObjectNode("BitmapImage", "bitmap"),
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Icon", new ReferenceNode("bitmap","BitmapImage")),
-                            new PropertyNode("Content", new ReferenceNode("bitmap","BitmapImage"))
-                        })
+                    root
                 }));
         }
 
@@ -318,7 +317,7 @@ namespace Edge.Tests
         [ExpectedException(typeof(EdgeParserException))]
         public void ObjectFailTest()
         {
-            TestFail(new List<IToken>()
+            TestFail(new List<IToken>
             {
                 new WordToken("Window"),
                 new SymbolToken('{'),
@@ -330,7 +329,7 @@ namespace Edge.Tests
         [ExpectedException(typeof(EdgeParserException))]
         public void PropertyAsWordTest()
         {
-            TestFail(new List<IToken>()
+            TestFail(new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -345,7 +344,7 @@ namespace Edge.Tests
         [ExpectedException(typeof(EdgeParserException))]
         public void PropertyWithCommaTest()
         {
-            TestFail(new List<IToken>()
+            TestFail(new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -361,7 +360,7 @@ namespace Edge.Tests
         [ExpectedException(typeof(EdgeParserException))]
         public void RootObjectWithIdTest()
         {
-            TestFail(new List<IToken>()
+            TestFail(new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('#'),
@@ -374,7 +373,7 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectWithIdTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -384,25 +383,27 @@ namespace Edge.Tests
                 new SymbolToken('#'),
                 new IdToken("grid"),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
+                {
+                    new PropertyNode("Content", new ReferenceNode("grid","Grid"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
                 {
                     new ObjectNode("Grid", "grid"),
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Content", new ReferenceNode("grid","Grid"))
-                        })
+                    root
                 }));
         }
 
         [TestMethod]
         public void PropertyObjectWithoutPropertiesTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -412,17 +413,19 @@ namespace Edge.Tests
                 new SymbolToken('('),
                 new SymbolToken(')'),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Content", new ReferenceNode("grid1","Grid"))
-                        }),
+                    new PropertyNode("Content", new ReferenceNode("grid1","Grid"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
+                {
+                    root,
                     new ObjectNode("Grid", "grid1")
                 }));
         }
@@ -431,7 +434,7 @@ namespace Edge.Tests
         [ExpectedException(typeof(EdgeParserException))]
         public void SamePropertiesTest()
         {
-            TestFail(new List<IToken>()
+            TestFail(new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -449,8 +452,7 @@ namespace Edge.Tests
         [TestMethod]
         public void ObjectCtorTest()
         {
-            var type = typeof(System.Windows.Window);
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -464,28 +466,30 @@ namespace Edge.Tests
                 new SymbolToken(')'),
                 new SymbolToken(')'),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Icon", new ReferenceNode("bitmapImage1","BitmapImage"))
-                        }),
+                    new PropertyNode("Icon", new ReferenceNode("bitmapImage1","BitmapImage"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
+                {
+                    root,
                     new ObjectNode(
                         "BitmapImage",
                         "bitmapImage1",
-                        new List<IValueNode>()
+                        new List<IValueNode>
                         {
                             new ReferenceNode("uri1","Uri")
                         }),
                     new ObjectNode(
                         "Uri",
                         "uri1",
-                        new List<IValueNode>()
+                        new List<IValueNode>
                         {
                             new StringNode("Icon.ico")
                         })
@@ -496,7 +500,7 @@ namespace Edge.Tests
         [ExpectedException(typeof(EdgeParserException))]
         public void ObjectCtorCommaFailTest()
         {
-            TestFail(new List<IToken>()
+            TestFail(new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -518,7 +522,7 @@ namespace Edge.Tests
         [ExpectedException(typeof(EdgeParserException))]
         public void ObjectCtorWrongTokenTest()
         {
-            TestFail(new List<IToken>()
+            TestFail(new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -535,7 +539,7 @@ namespace Edge.Tests
         [TestMethod]
         public void BindingShortTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -550,26 +554,28 @@ namespace Edge.Tests
                 new SymbolToken('#'),
                 new IdToken("tb"),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
+                {
+                    new PropertyNode("Title", new BindingNode("tb", "Text")),
+                    new PropertyNode("Content", new ReferenceNode("tb","TextBox"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
                 {
                     new ObjectNode("TextBox", "tb"),
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Title", new BindingNode("tb", "Text")),
-                            new PropertyNode("Content", new ReferenceNode("tb","TextBox"))
-                        })
+                    root
                 }));
         }
 
         [TestMethod]
         public void BindingFullTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -596,26 +602,28 @@ namespace Edge.Tests
                 new SymbolToken('#'),
                 new IdToken("tb"),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
+                {
+                    new PropertyNode("Title", new BindingNode("tb", "Text", BindingMode.OneTime)),
+                    new PropertyNode("Content", new ReferenceNode("tb","TextBox"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
                 {
                     new ObjectNode("TextBox", "tb"),
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Title", new BindingNode("tb", "Text", BindingMode.OneTime)),
-                            new PropertyNode("Content", new ReferenceNode("tb","TextBox"))
-                        })
+                    root
                 }));
         }
 
         [TestMethod]
         public void ShortBindingOnlyPathTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -624,24 +632,26 @@ namespace Edge.Tests
                 new SymbolToken('@'),
                 new WordToken("WindowState"),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode("Title", new BindingNode("WindowState"))
-                        })
+                    new PropertyNode("Title", new BindingNode("WindowState"))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
+                {
+                    root
                 }));
         }
 
         [TestMethod]
         public void ArrayTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -658,34 +668,36 @@ namespace Edge.Tests
                 new SymbolToken(')'),
                 new SymbolToken(']'),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode(
-                                "Content", 
-                                new ArrayNode(
-                                    "TextBox", 
-                                    new IValueNode[] 
-                                    { 
-                                        new ReferenceNode("textBox1", "TextBox"),
-                                        new ReferenceNode("textBox2", "TextBox")
-                                    }))
-                        }),
-                    new ObjectNode("TextBox", "textBox1"), 
-                    new ObjectNode("TextBox", "textBox2") 
+                    new PropertyNode(
+                        "Content",
+                        new ArrayNode(
+                            "TextBox",
+                            new IValueNode[]
+                            {
+                                new ReferenceNode("textBox1", "TextBox"),
+                                new ReferenceNode("textBox2", "TextBox")
+                            }))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
+                {
+                    root,
+                    new ObjectNode("TextBox", "textBox1"),
+                    new ObjectNode("TextBox", "textBox2")
                 }));
         }
 
         [TestMethod]
         public void ArrayWithoutTypeTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -701,25 +713,26 @@ namespace Edge.Tests
                 new SymbolToken(')'),
                 new SymbolToken(']'),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode(
-                                "Content", 
-                                new ArrayNode(
-                                    null, 
-                                    new IValueNode[] 
-                                    { 
-                                        new ReferenceNode("textBox1", "TextBox"),
-                                        new ReferenceNode("textBox2", "TextBox")
-                                    }))
-                        }),
+                    new PropertyNode(
+                        "Content",
+                        new ArrayNode(
+                            null,
+                            new IValueNode[]
+                            {
+                                new ReferenceNode("textBox1", "TextBox"),
+                                new ReferenceNode("textBox2", "TextBox")
+                            }))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root, new List<ObjectNode>
+                {
+                    root,
                     new ObjectNode("TextBox", "textBox1"),
                     new ObjectNode("TextBox", "textBox2")
                 }));
@@ -728,7 +741,7 @@ namespace Edge.Tests
         [TestMethod]
         public void WindowResourceTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Window"),
                 new SymbolToken('{'),
@@ -744,34 +757,36 @@ namespace Edge.Tests
                 new IdToken("newBrush"),
                 new SymbolToken(']'),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Window",
+                new List<PropertyNode>
+                {
+                    new PropertyNode(
+                        "Resources",
+                        new ArrayNode(
+                            null,
+                            new IValueNode[]
+                            {
+                                new ReferenceNode("baseStyle", "Style"),
+                                new ReferenceNode("newBrush", "Brush")
+                            }))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
                 {
                     new ObjectNode("Style", "baseStyle"),
                     new ObjectNode("Brush", "newBrush"),
-                    new RootObjectNode(
-                        "Window",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode(
-                                "Resources", 
-                                new ArrayNode(
-                                    null, 
-                                    new IValueNode[] 
-                                    { 
-                                        new ReferenceNode("baseStyle", "Style"),
-                                        new ReferenceNode("newBrush", "Brush")
-                                    }))
-                        })
+                    root
                 }));
         }
 
         [TestMethod]
         public void GridColumnDefinitionsTest()
         {
-            Test(new List<IToken>()
+            var tokens = new List<IToken>
             {
                 new TypeToken("Grid"),
                 new SymbolToken('{'),
@@ -787,30 +802,31 @@ namespace Edge.Tests
                 new SymbolToken(')'),
                 new SymbolToken(']'),
                 new SymbolToken('}')
-            },
-            new SyntaxTree(
-                parser.Namespaces,
-                new List<ObjectNode>()
+            };
+
+            var root = new RootObjectNode(
+                "Grid",
+                new List<PropertyNode>
                 {
-                    new RootObjectNode(
-                        "Grid",
-                        new List<PropertyNode>()
-                        {
-                            new PropertyNode(
-                                "ColumnDefinitions", 
-                                new ArrayNode(
-                                    null, 
-                                    new IValueNode[] 
-                                    { 
-                                        new ReferenceNode("columnDefinition1", "ColumnDefinition"), 
-                                        new ReferenceNode("columnDefinition2", "ColumnDefinition") 
-                                    }))
-                        }),
+                    new PropertyNode(
+                        "ColumnDefinitions",
+                        new ArrayNode(
+                            null,
+                            new IValueNode[]
+                            {
+                                new ReferenceNode("columnDefinition1", "ColumnDefinition"),
+                                new ReferenceNode("columnDefinition2", "ColumnDefinition")
+                            }))
+                });
+
+            Test(tokens, new SyntaxTree(parser.Namespaces, root,
+                new List<ObjectNode>
+                {
+                    root,
                     new ObjectNode("ColumnDefinition","columnDefinition1"),
                     new ObjectNode("ColumnDefinition","columnDefinition2")
                 }));
         }
-
     }
 
 }

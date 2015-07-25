@@ -42,15 +42,6 @@ namespace Edge
             return types.First();
         }
 
-        private bool TryCheckGenerics(Type type, Type genericDefinition, out Type genericType)
-        {
-            genericType = (from interfaceType in type.GetInterfaces()
-                           where interfaceType.IsGenericType && interfaceType.GetGenericTypeDefinition() == genericDefinition
-                           select interfaceType).FirstOrDefault();
-
-            return genericType != null;
-        }
-
         public void Analyze(SyntaxTree tree)
         {
             if (tree.Namespaces != null)
@@ -222,34 +213,39 @@ namespace Edge
             else if (property.Value is EnumNode)
             {
                 var e = (EnumNode)property.Value;
-
                 Type eType = null;
-                if (e.Type != null)
-                    eType = CheckType(e.Type);
-                else
-                    eType = expected;
 
-                if (!expected.Equals(eType))
-                    // todo: error message
-                    throw new EdgeAnalyzerException();
+                if (e.Type != null)
+                {
+                    eType = CheckType(e.Type);
+
+                    if (!expected.Equals(eType))
+                        // todo: error message
+                        throw new EdgeAnalyzerException();
+                }
+                else
+                {
+                    eType = expected;
+                }
 
                 if (!Enum.IsDefined(eType, e.Value))
                     // todo: error message
                     throw new EdgeAnalyzerException();
+
+                e.Type = eType.Name;
             }
             else if (property.Value is ArrayNode)
             {
                 var arr = (ArrayNode)property.Value;
-                Type genericType;
 
-                if (TryCheckGenerics(expected, typeof(IDictionary<,>), out genericType))
+                var interfaceType = expected.GetInterface("IDictionary`2");
+                if (interfaceType != null)
                 {
-                    // todo: ?
-                    property.Value = new CollectionNode(expected.Name, expected.GetGenericArguments()[1].Name, arr.Array);
+                    property.Value = new CollectionNode(expected.Name, interfaceType.GetGenericArguments()[1].Name, arr.Array);
                 }
-                else if (TryCheckGenerics(expected, typeof(ICollection<>), out genericType))
+                else if ((interfaceType = expected.GetInterface("ICollection`1")) != null)
                 {
-                    property.Value = new CollectionNode(expected.Name, expected.GetElementType().Name, arr.Array);
+                    property.Value = new CollectionNode(expected.Name, interfaceType.GetGenericArguments()[0].Name, arr.Array);
                 }
                 else if (typeof(ICollection).IsAssignableFrom(expected))
                 {

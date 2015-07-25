@@ -1,5 +1,4 @@
-﻿using Edge;
-using Edge.SyntaxNodes;
+﻿using Edge.SyntaxNodes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace Edge.Tests
     public class EdgeAnalyzerTest
     {
 
-        private EdgeAnalyzer analyzer;
+        private readonly EdgeAnalyzer analyzer;
 
         public EdgeAnalyzerTest()
         {
@@ -46,15 +45,8 @@ namespace Edge.Tests
         [TestMethod]
         public void CheckNamespaceTest()
         {
-            var st = new SyntaxTree(
-                new List<string>()
-                {
-                    "System"
-                },
-                new List<ObjectNode>()
-                {
-                    new RootObjectNode("Window")
-                });
+            var root = new RootObjectNode("Window");
+            var st = new SyntaxTree(new List<string> { "System" }, root, new List<ObjectNode> { root });
 
             analyzer.Analyze(st);
         }
@@ -63,15 +55,8 @@ namespace Edge.Tests
         [ExpectedException(typeof(EdgeAnalyzerException))]
         public void CheckWrongNamespaceTest()
         {
-            var st = new SyntaxTree(
-                new List<string>()
-                {
-                    "System.Windows.Forms"
-                },
-                new List<ObjectNode>()
-                {
-                    new RootObjectNode("Window")
-                });
+            var root = new RootObjectNode("Window");
+            var st = new SyntaxTree(new List<string> { "System.Windows.Forms" }, root, new List<ObjectNode> { root });
 
             analyzer.Analyze(st);
         }
@@ -92,14 +77,14 @@ namespace Edge.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void ZeroObjectsTest()
         {
-            var st = new SyntaxTree(new List<ObjectNode>());
+            var st = new SyntaxTree(null, new List<ObjectNode>());
 
             analyzer.Analyze(st);
         }
 
         [TestMethod]
         [ExpectedException(typeof(EdgeAnalyzerException))]
-        public void ObjectsWithSameID()
+        public void ObjectsWithSameId()
         {
             var st = new SyntaxTree(null,
                 new List<ObjectNode>()
@@ -116,7 +101,7 @@ namespace Edge.Tests
         public void ObjectWithoutRoot()
         {
             var st = new SyntaxTree(null,
-                new List<ObjectNode>()
+                new List<ObjectNode>
                 {
                     new ObjectNode("Window", "hello")
                 });
@@ -143,7 +128,7 @@ namespace Edge.Tests
         public void CheckTypeTest()
         {
             var st = new SyntaxTree(null,
-                new List<ObjectNode>()
+                new List<ObjectNode>
                 {
                     new RootObjectNode("ArrayList")
                 });
@@ -155,7 +140,7 @@ namespace Edge.Tests
         public void CtorTest()
         {
             var st = new SyntaxTree(null,
-                new List<ObjectNode>()
+                new List<ObjectNode>
                 {
                     new RootObjectNode("Uri", new List<IValueNode>() { new StringNode("icon.ico") })
                 });
@@ -349,16 +334,16 @@ namespace Edge.Tests
             var st = new SyntaxTree(null,
                 new List<ObjectNode>()
                 {
-                    new RootObjectNode("Window", 
-                        new List<PropertyNode>() 
-                        { 
-                            new PropertyNode("Content", 
-                                new ArrayNode("TextBox", 
-                                    new IValueNode[] 
+                    new RootObjectNode("Window",
+                        new List<PropertyNode>()
+                        {
+                            new PropertyNode("Content",
+                                new ArrayNode("TextBox",
+                                    new IValueNode[]
                                     {
                                         new ReferenceNode("tb1", "TextBox"),
                                         new ReferenceNode("tb2", "TextBox")
-                                    })) 
+                                    }))
                         }),
                     new ObjectNode("TextBox", "tb1"),
                     new ObjectNode("TextBox", "tb2")
@@ -374,16 +359,16 @@ namespace Edge.Tests
             var st = new SyntaxTree(null,
                 new List<ObjectNode>()
                 {
-                    new RootObjectNode("Window", 
-                        new List<PropertyNode>() 
-                        { 
-                            new PropertyNode("Title", 
-                                new ArrayNode("TextBox", 
-                                    new IValueNode[] 
+                    new RootObjectNode("Window",
+                        new List<PropertyNode>()
+                        {
+                            new PropertyNode("Title",
+                                new ArrayNode("TextBox",
+                                    new IValueNode[]
                                     {
                                         new ReferenceNode("tb1", "TextBox"),
                                         new ReferenceNode("tb2", "TextBox")
-                                    })) 
+                                    }))
                         }),
                     new ObjectNode("TextBox", "tb1"),
                     new ObjectNode("TextBox", "tb2")

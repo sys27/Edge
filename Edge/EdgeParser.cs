@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace Edge
@@ -113,7 +112,7 @@ namespace Edge
             GetNamespaces();
             Root();
 
-            return new SyntaxTree(namespaces, objects.Values);
+            return new SyntaxTree(namespaces, objects["this"], objects.Values);
         }
 
         private void Root()
