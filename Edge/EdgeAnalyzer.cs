@@ -35,13 +35,25 @@ namespace Edge
 
         private IEnumerable<Type> GetAppropriateTypes(string type)
         {
-            // todo: rewrite
-            return from lib in assemblies
-                   let assembly = Assembly.Load(lib)
-                   from t in assembly.GetTypes()
-                   from ns in namespaces
-                   where t.Namespace == ns && t.Name == type
-                   select t;
+            var appDomain = AppDomain.CreateDomain("For Libs");
+            try
+            {
+                var allTypes = new List<Type>();
+
+                foreach (var lib in assemblies)
+                {
+                    var types = appDomain.Load(lib).GetTypes();
+
+                    foreach (var ns in namespaces)
+                        allTypes.AddRange(types.Where(t => t.Namespace == ns && t.Name == type));
+                }
+
+                return allTypes;
+            }
+            finally
+            {
+                AppDomain.Unload(appDomain);
+            }
         }
 
         private Type CheckType(string type)
@@ -74,15 +86,28 @@ namespace Edge
         private void CheckNamespaces(IEnumerable<string> namespaces)
         {
             if (namespaces != null)
-                foreach (var ns in namespaces)
-                    CheckNamespace(ns);
+            {
+                var appDomain = AppDomain.CreateDomain("For Libs");
+
+                try
+                {
+                    // todo: inline?
+                    foreach (var ns in namespaces)
+                        CheckNamespace(appDomain, ns);
+                }
+                finally
+                {
+                    AppDomain.Unload(appDomain);
+                }
+            }
         }
 
-        private void CheckNamespace(string ns)
+        private void CheckNamespace(AppDomain appDomain, string ns)
         {
-            // todo: rewrite
-            if (assemblies.Select(Assembly.Load).Any(assembly => assembly.GetTypes().Any(type => type.Namespace == ns)))
-                return;
+            foreach (var assembly in assemblies)
+                foreach (var type in appDomain.Load(assembly).GetTypes())
+                    if (type.Namespace == ns)
+                        return;
 
             // todo: error message
             throw new EdgeAnalyzerException();
