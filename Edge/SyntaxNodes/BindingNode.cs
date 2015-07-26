@@ -58,6 +58,11 @@ namespace Edge.SyntaxNodes
             return elementName == binding.elementName && path == binding.path;
         }
 
+        public override string ToString()
+        {
+            return $"Binding: {path}";
+        }
+
         public string ElementName
         {
             get

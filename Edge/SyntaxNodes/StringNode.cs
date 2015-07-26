@@ -40,6 +40,11 @@ namespace Edge.SyntaxNodes
             return str == sn.str;
         }
 
+        public override string ToString()
+        {
+            return $"String node: {str}";
+        }
+
         public string Str
         {
             get

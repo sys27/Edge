@@ -42,6 +42,11 @@ namespace Edge.SyntaxNodes
             return id == reference.id && type == reference.type;
         }
 
+        public override string ToString()
+        {
+            return $"Reference: #{id} ({type})";
+        }
+
         public string Type
         {
             get

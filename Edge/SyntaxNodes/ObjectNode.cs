@@ -73,6 +73,11 @@ namespace Edge.SyntaxNodes
                     (properties != null && o.properties != null && properties.SequenceEqual(o.properties)));
         }
 
+        public override string ToString()
+        {
+            return $"Objec: #{id} ({type})";
+        }
+
         public string Type
         {
             get

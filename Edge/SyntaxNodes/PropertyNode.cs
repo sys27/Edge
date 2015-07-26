@@ -47,6 +47,11 @@ namespace Edge.SyntaxNodes
             return property.Equals(prop.property) && value.Equals(prop.value);
         }
 
+        public override string ToString()
+        {
+            return $"Property: {property} = {value.ToString()}";
+        }
+
         public string Property
         {
             get

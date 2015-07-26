@@ -40,6 +40,11 @@ namespace Edge.SyntaxNodes
             return number == num.number;
         }
 
+        public override string ToString()
+        {
+            return $"Number: {number}";
+        }
+
         public double Number
         {
             get

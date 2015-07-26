@@ -49,6 +49,11 @@ namespace Edge.SyntaxNodes
                    value.Equals(e.value);
         }
 
+        public override string ToString()
+        {
+            return $"Enum: {type}.{value}";
+        }
+
         public string Type
         {
             get
