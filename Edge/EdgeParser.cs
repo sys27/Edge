@@ -83,9 +83,7 @@ namespace Edge
         private void CheckIds()
         {
             if (objects.Any(id => id.Value == null))
-            {
                 throw new EdgeParserException();
-            }
         }
 
         private string GenereteId(string type)

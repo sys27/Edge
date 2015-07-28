@@ -80,7 +80,7 @@ namespace Edge
                 tree.Namespaces = namespaces;
                 CheckNamespaces(tree.Namespaces);
             }
-            CheckObjects(tree.Objects);
+            CheckObjects(tree);
         }
 
         private void CheckNamespaces(IEnumerable<string> namespaces)
@@ -113,9 +113,9 @@ namespace Edge
             throw new EdgeAnalyzerException();
         }
 
-        private void CheckObjects(IEnumerable<ObjectNode> objects)
+        private void CheckObjects(SyntaxTree tree)
         {
-            var objs = objects.ToList();
+            var objs = tree.Objects.ToList();
 
             if (objs.Count == 0)
                 // todo: error message
@@ -128,7 +128,7 @@ namespace Edge
             ChechAllIDs(objs);
 
             foreach (var obj in objs)
-                CheckObject(obj);
+                CheckObject(tree, obj);
         }
 
         private void ChechAllIDs(IEnumerable<ObjectNode> objects)
@@ -146,52 +146,115 @@ namespace Edge
             }
         }
 
-        private void CheckObject(ObjectNode obj)
+        private void CheckObject(SyntaxTree tree, ObjectNode obj)
         {
             var type = CheckType(obj.Type);
-            CheckCtor(type, obj.ConstructorArguments);
+            CheckCtor(tree, type, obj);
             CheckProperties(type, obj.Properties);
         }
 
-        private void CheckCtor(Type objType, IEnumerable<IValueNode> ctorArgs)
+        private void CheckCtor(SyntaxTree tree, Type objType, ObjectNode objNode)
         {
             ConstructorInfo ctor;
             List<IValueNode> args = null;
-            if (ctorArgs != null)
-                args = ctorArgs.ToList();
+            if (objNode.ConstructorArguments != null)
+                args = objNode.ConstructorArguments.ToList();
 
-            if (ctorArgs == null || args.Count == 0)
+            if (objNode.ConstructorArguments == null || args.Count == 0)
             {
                 ctor = objType.GetConstructor(Type.EmptyTypes);
+                if (ctor != null)
+                    return;
             }
             else
             {
-                Type[] types = new Type[args.Count];
+                var types = new Type[args.Count];
+
                 var strType = typeof(string);
                 var doubleType = typeof(double);
 
                 for (int i = 0; i < types.Length; i++)
                 {
                     var t = args[0];
-                    if (t is ReferenceNode)
-                        types[i] = CheckType(((ReferenceNode)t).Type);
+
+                    var refType = t as ReferenceNode;
+                    if (refType != null)
+                    {
+                        types[i] = CheckType(refType.Type);
+                    }
                     else if (t is StringNode)
+                    {
                         types[i] = strType;
+                    }
                     else if (t is NumberNode)
+                    {
                         types[i] = doubleType;
+                    }
                     else if (t is EnumNode)
+                    {
                         types[i] = CheckType(((EnumNode)t).Type);
+                    }
                     else
+                    {
                         // todo: error message
                         throw new EdgeParserException();
+                    }
                 }
 
                 ctor = objType.GetConstructor(types);
+                if (ctor != null)
+                    return;
+
+                // ctor type inference
+                // todo: refactor!!!
+                var avaliableCtors = objType.GetConstructors()
+                                            .Select(t => t.GetParameters())
+                                            .Where(t => t.Length == types.Length)
+                                            .ToArray();
+                var uriType = typeof(Uri);
+
+                for (int i = 0; i < avaliableCtors.Length && ctor == null; i++)
+                {
+                    var currentCtor = avaliableCtors[i];
+
+                    for (int j = 0; j < currentCtor.Length && ctor == null; j++)
+                    {
+                        if (currentCtor[j].ParameterType == uriType && types[j] == strType)
+                        {
+                            types[j] = uriType;
+
+                            // id
+                            var urlStrType = char.ToLowerInvariant(uriType.Name[0]) + uriType.Name.Substring(1);
+                            string id = null;
+                            for (int k = 1; k < int.MaxValue; k++)
+                            {
+                                id = urlStrType + k;
+                                if (!tree.Objects.Any(obj => obj.Id == id))
+                                    break;
+                            }
+                            if (id == null)
+                                // todo: message
+                                throw new EdgeAnalyzerException();
+
+                            tree.AddObject(new ObjectNode(uriType.Name, id, new[] { args[j] }));
+                            args[j] = new ReferenceNode(id, uriType.Name);
+
+                            ctor = objType.GetConstructor(types);
+                        }
+                    }
+                }
+
+                // todo: fix
+                if (ctor != null)
+                {
+                    objNode.ConstructorArguments = args;
+
+                    return;
+                }
             }
 
-            if (ctor == null)
-                // todo: error message
-                throw new EdgeAnalyzerException();
+            // todo: error message
+            throw new EdgeAnalyzerException();
         }
 
         private void CheckProperties(Type objType, IEnumerable<PropertyNode> properties)

@@ -100,6 +100,10 @@ namespace Edge.SyntaxNodes
             {
                 return ctorArgs;
             }
+            internal set
+            {
+                ctorArgs = value;
+            }
         }
 
         public IEnumerable<PropertyNode> Properties
@@ -107,6 +111,10 @@ namespace Edge.SyntaxNodes
             get
             {
                 return properties;
+            }
+            internal set
+            {
+                properties = value;
             }
         }
 

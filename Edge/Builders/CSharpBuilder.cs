@@ -107,7 +107,7 @@ namespace Edge.Builders
 
         private string InitMembers(IEnumerable<ObjectNode> ids)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             foreach (var obj in ids)
                 if (obj.Id != "this")

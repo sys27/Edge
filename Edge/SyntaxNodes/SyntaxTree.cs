@@ -23,9 +23,9 @@ namespace Edge.SyntaxNodes
     public class SyntaxTree
     {
 
-        private IEnumerable<string> namespaces;
+        private HashSet<string> namespaces;
         private ObjectNode rootObject;
-        private IEnumerable<ObjectNode> objects;
+        private List<ObjectNode> objects;
 
         public SyntaxTree(ObjectNode rootObject, IEnumerable<ObjectNode> objects)
             : this(null, rootObject, objects)
@@ -34,9 +34,9 @@ namespace Edge.SyntaxNodes
 
         public SyntaxTree(IEnumerable<string> namespaces, ObjectNode rootObject, IEnumerable<ObjectNode> objects)
         {
-            this.namespaces = namespaces;
+            this.namespaces = new HashSet<string>(namespaces);
             this.rootObject = rootObject;
-            this.objects = objects;
+            this.objects = new List<ObjectNode>(objects);
         }
 
         public override bool Equals(object obj)
@@ -60,6 +60,16 @@ namespace Edge.SyntaxNodes
             return builder.Build(this, @class, @namespace);
         }
 
+        public void AddObject(ObjectNode node)
+        {
+            objects.Add(node);
+        }
+
+        public void RemoveObject(ObjectNode node)
+        {
+            objects.Remove(node);
+        }
+
         public IEnumerable<string> Namespaces
         {
             get
@@ -68,7 +78,7 @@ namespace Edge.SyntaxNodes
             }
             set
             {
-                namespaces = value;
+                namespaces = new HashSet<string>(value);
             }
         }
 
@@ -85,6 +95,10 @@ namespace Edge.SyntaxNodes
             get
             {
                 return objects;
+            }
+            set
+            {
+                objects = new List<ObjectNode>(value);
             }
         }
 
