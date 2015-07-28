@@ -40,6 +40,11 @@ namespace Edge.SyntaxNodes
             return number == num.number;
         }
 
+        public override int GetHashCode()
+        {
+            return 15121 ^ number.GetHashCode();
+        }
+
         public override string ToString()
         {
             return $"Number: {number}";

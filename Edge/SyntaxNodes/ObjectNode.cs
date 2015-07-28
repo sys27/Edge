@@ -22,8 +22,8 @@ namespace Edge.SyntaxNodes
     public class ObjectNode : IValueNode
     {
 
-        private string type;
-        private string id;
+        private readonly string type;
+        private readonly string id;
         private IEnumerable<IValueNode> ctorArgs;
         private IEnumerable<PropertyNode> properties;
 
@@ -60,10 +60,9 @@ namespace Edge.SyntaxNodes
             if (this == obj)
                 return true;
 
-            if (typeof(ObjectNode) != obj.GetType())
-                return false;
-
             var o = obj as ObjectNode;
+            if (o == null)
+                return false;
 
             return type.Equals(o.type) &&
                    id == o.id &&
@@ -71,6 +70,11 @@ namespace Edge.SyntaxNodes
                     (ctorArgs != null && o.ctorArgs != null && ctorArgs.SequenceEqual(o.ctorArgs))) &&
                    ((properties == null && o.properties == null) ||
                     (properties != null && o.properties != null && properties.SequenceEqual(o.properties)));
+        }
+
+        public override int GetHashCode()
+        {
+            return 102881 ^ type.GetHashCode();
         }
 
         public override string ToString()

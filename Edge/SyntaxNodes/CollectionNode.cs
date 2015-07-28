@@ -44,6 +44,11 @@ namespace Edge.SyntaxNodes
                    Array.SequenceEqual(col.Array);
         }
 
+        public override string ToString()
+        {
+            return $"Collection: [{string.Join<IValueNode>(", ", array)}]";
+        }
+
         public string CollectionType
         {
             get

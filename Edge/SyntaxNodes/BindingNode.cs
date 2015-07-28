@@ -58,6 +58,11 @@ namespace Edge.SyntaxNodes
             return elementName == binding.elementName && path == binding.path;
         }
 
+        public override int GetHashCode()
+        {
+            return 94993 + path.GetHashCode();
+        }
+
         public override string ToString()
         {
             return $"Binding: {path}";

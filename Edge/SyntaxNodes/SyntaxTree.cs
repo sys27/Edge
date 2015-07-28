@@ -34,7 +34,8 @@ namespace Edge.SyntaxNodes
 
         public SyntaxTree(IEnumerable<string> namespaces, ObjectNode rootObject, IEnumerable<ObjectNode> objects)
         {
-            this.namespaces = new HashSet<string>(namespaces);
+            if (namespaces != null)
+                this.namespaces = new HashSet<string>(namespaces);
             this.rootObject = rootObject;
             this.objects = new List<ObjectNode>(objects);
         }

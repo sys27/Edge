@@ -41,24 +41,6 @@ namespace Edge.SyntaxNodes
             : base(typeInfo, "this", ctorArgs, properties)
         {
         }
-
-        public override bool Equals(object obj)
-        {
-            if (this == obj)
-                return true;
-
-            if (typeof(RootObjectNode) != obj.GetType())
-                return false;
-
-            var o = obj as RootObjectNode;
-
-            return Type.Equals(o.Type) &&
-                   Id == o.Id &&
-                   ((ConstructorArguments == null && o.ConstructorArguments == null) ||
-                    (ConstructorArguments != null && o.ConstructorArguments != null && ConstructorArguments.SequenceEqual(o.ConstructorArguments))) &&
-                   ((Properties == null && o.Properties == null) ||
-                    (Properties != null && o.Properties != null && Properties.SequenceEqual(o.Properties)));
-        }
         
     }
 

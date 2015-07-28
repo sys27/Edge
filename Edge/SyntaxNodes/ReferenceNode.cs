@@ -20,8 +20,8 @@ namespace Edge.SyntaxNodes
     public class ReferenceNode : IValueNode
     {
 
-        private string type;
-        private string id;
+        private readonly string type;
+        private readonly string id;
 
         public ReferenceNode(string id, string type)
         {
@@ -40,6 +40,11 @@ namespace Edge.SyntaxNodes
             var reference = obj as ReferenceNode;
 
             return id == reference.id && type == reference.type;
+        }
+
+        public override int GetHashCode()
+        {
+            return 21737 ^ id.GetHashCode();
         }
 
         public override string ToString()

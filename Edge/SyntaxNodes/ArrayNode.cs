@@ -22,7 +22,7 @@ namespace Edge.SyntaxNodes
     {
 
         private string elementType;
-        private IValueNode[] array;
+        protected IValueNode[] array;
 
         public ArrayNode(string elementType, IValueNode[] array)
         {
@@ -44,8 +44,23 @@ namespace Edge.SyntaxNodes
             var arr = obj as ArrayNode;
 
             return ((elementType == null && arr.elementType == null) ||
-                    (elementType != null && arr.elementType != null && elementType.Equals(arr.elementType))) && 
+                    (elementType != null && arr.elementType != null && elementType.Equals(arr.elementType))) &&
                    array.SequenceEqual(arr.array);
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = 104659;
+
+            hash = hash * 75781 + elementType.GetHashCode();
+            hash = hash * 75781 + array.Length.GetHashCode();
+
+            return hash;
+        }
+
+        public override string ToString()
+        {
+            return $"Array: [{string.Join<IValueNode>(", ", array)}]";
         }
 
         public string ElementType

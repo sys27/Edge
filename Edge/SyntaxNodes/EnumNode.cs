@@ -49,6 +49,16 @@ namespace Edge.SyntaxNodes
                    value.Equals(e.value);
         }
 
+        public override int GetHashCode()
+        {
+            var hash = 509;
+
+            hash = hash * 81173 + type.GetHashCode();
+            hash = hash * 81173 + value.GetHashCode();
+
+            return hash;
+        }
+
         public override string ToString()
         {
             return $"Enum: {type}.{value}";

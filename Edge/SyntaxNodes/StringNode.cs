@@ -16,7 +16,7 @@ using System;
 
 namespace Edge.SyntaxNodes
 {
-    
+
     public class StringNode : IValueNode
     {
 
@@ -38,6 +38,11 @@ namespace Edge.SyntaxNodes
             var sn = obj as StringNode;
 
             return str == sn.str;
+        }
+
+        public override int GetHashCode()
+        {
+            return 77471 ^ str.GetHashCode();
         }
 
         public override string ToString()
