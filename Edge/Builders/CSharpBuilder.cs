@@ -111,9 +111,17 @@ namespace Edge.Builders
 
             foreach (var obj in ids)
                 if (obj.Id != "this")
-                    sb.AppendFormat("{0} = new {1}();", obj.Id, obj.Type).Append(nl);
+                    sb.AppendFormat("{0} = {1};", obj.Id, CreateConstructor(obj)).Append(nl);
 
             return sb.ToString();
+        }
+
+        private string CreateConstructor(ObjectNode node)
+        {
+            if (node.ConstructorArguments == null)
+                return $"new {node.Type}()";
+
+            return $"new {node.Type}({string.Join("m", node.ConstructorArguments.Select(CreateValue))})";
         }
 
         private string CreateProperties(IEnumerable<ObjectNode> objects)

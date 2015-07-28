@@ -19,7 +19,7 @@ using System.Linq;
 namespace Edge.SyntaxNodes
 {
 
-    public class ObjectNode : INode
+    public class ObjectNode : IValueNode
     {
 
         private string type;
