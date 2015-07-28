@@ -155,7 +155,7 @@ namespace Edge.Tests
             var st = new SyntaxTree(null,
                 new List<ObjectNode>()
                 {
-                    new RootObjectNode("Uri", new List<IValueNode>() { new StringNode("icon.ico"), new StringNode("hello") })
+                    new RootObjectNode("Int32", new List<IValueNode>() { new StringNode("icon.ico"), new StringNode("hello") })
                 });
 
             analyzer.Analyze(st);
@@ -372,6 +372,18 @@ namespace Edge.Tests
                         }),
                     new ObjectNode("TextBox", "tb1"),
                     new ObjectNode("TextBox", "tb2")
+                });
+
+            analyzer.Analyze(st);
+        }
+
+        [TestMethod]
+        public void CtorTypeInferenceTest()
+        {
+            var st = new SyntaxTree(null,
+                new List<ObjectNode>
+                {
+                    new RootObjectNode("BitmapImage", new List<IValueNode>() { new StringNode("icon.ico") })
                 });
 
             analyzer.Analyze(st);
