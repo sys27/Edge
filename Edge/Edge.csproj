@@ -57,6 +57,7 @@
     <Compile Include="EdgeLexerException.cs" />
     <Compile Include="EdgeParser.cs" />
     <Compile Include="EdgeParserException.cs" />
+    <Compile Include="EnumerableExtentions.cs" />
     <Compile Include="IAnalyzer.cs" />
     <Compile Include="ILexer.cs" />
     <Compile Include="IParser.cs" />

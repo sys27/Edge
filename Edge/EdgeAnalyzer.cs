@@ -69,6 +69,30 @@ namespace Edge
             return types[0];
         }
 
+        private IEnumerable<ObjectNode> GetDependencies(IEnumerable<ObjectNode> objects, IEnumerable<IValueNode> args)
+        {
+            var list = new List<ObjectNode>();
+            if (args == null)
+                return list;
+
+            foreach (var arg in args)
+            {
+                var refNode = arg as ReferenceNode;
+                if (refNode != null)
+                {
+                    list.Add(objects.Single(obj => obj.Id == refNode.Id));
+                }
+                else
+                {
+                    var objNode = arg as ObjectNode;
+                    if (objNode != null)
+                        list.Add(objNode);
+                }
+            }
+
+            return list;
+        }
+
         public void Analyze(SyntaxTree tree)
         {
             if (tree.Namespaces != null)
@@ -81,6 +105,8 @@ namespace Edge
                 CheckNamespaces(tree.Namespaces);
             }
             CheckObjects(tree);
+
+            tree.Objects = tree.Objects.TSort(obj => GetDependencies(tree.Objects, obj.ConstructorArguments));
         }
 
         private void CheckNamespaces(IEnumerable<string> namespaces)
